@@ -25,6 +25,7 @@
         }];
 
         this.searchRadius = 10;
+        this.beams = [];
     };
 
     ArcBall.prototype = {
@@ -109,7 +110,7 @@
                 textures: "https://s3.amazonaws.com/hifi-public/eric/textures/particleSprites/beamParticle.png",
                 emitterShouldTrail: true
             }
-            this.particleArc = Entities.addEntity(props);
+            this.beam = Entities.addEntity(props);
         },
 
         updateBeam: function() {
@@ -121,7 +122,7 @@
             var rotation = Entities.getEntityProperties(this.entityID, "rotation").rotation;
             var sourceToTargetVec = Vec3.subtract(targetPosition, startPosition);
             var emitOrientation = Quat.rotationBetween(Vec3.UNIT_Z, sourceToTargetVec);
-            Entities.editEntity(this.particleArc, {
+            Entities.editEntity(this.beam, {
                 emitOrientation: emitOrientation
             });
         },
@@ -135,15 +136,15 @@
         },
 
         releaseGrab: function() {
-            Entities.editEntity(this.particleArc, {
+            Entities.editEntity(this.beam, {
                 isEmitting: false
             });
             this.target = null;
         },
 
         unload: function() {
-            if (this.particleArc) {
-                Entities.deleteEntity(this.particleArc);
+            if (this.beam) {
+                Entities.deleteEntity(this.beam);
             }
         },
 

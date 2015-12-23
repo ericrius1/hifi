@@ -117,9 +117,9 @@ var DEFAULT_GRABBABLE_DATA = {
 };
 
 //we've created various ways of visualizing looking for and moving distant objects
-var USE_ENTITY_LINES_FOR_SEARCHING = false;
+var USE_ENTITY_LINES_FOR_SEARCHING = true;
 var USE_OVERLAY_LINES_FOR_SEARCHING = false;
-var USE_PARTICLE_BEAM_FOR_SEARCHING = true;
+var USE_PARTICLE_BEAM_FOR_SEARCHING = false;
 
 var USE_ENTITY_LINES_FOR_MOVING = false;
 var USE_OVERLAY_LINES_FOR_MOVING = false;

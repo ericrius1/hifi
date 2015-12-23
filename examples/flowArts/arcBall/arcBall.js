@@ -45,20 +45,7 @@ ArcBall = function(spawnPosition) {
             blue: 150
         },
         ignoreForCollisions: true,
-        damping: 0.8,
-        collisionsWillMove: true,
-        userData: JSON.stringify({
-            grabbableKey: {
-                spatialKey: {
-                    // relativePosition: {
-                    //     x: 0,
-                    //     y: -0.5,
-                    //     z: 0.0
-                    // },
-                },
-                // invertSolidWhileHeld: true
-            }
-        })
+        collisionsWillMove: true
     });
 
 
