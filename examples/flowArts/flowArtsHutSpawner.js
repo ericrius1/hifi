@@ -30,6 +30,7 @@ basePosition.y = MyAvatar.position.y + 1;
 var arcBall = new ArcBall(basePosition);
 var arcBall2 = new ArcBall(Vec3.sum(basePosition, {x: -1, y: 0, z: 0}));
 var arcBall3 = new ArcBall(Vec3.sum(basePosition, {x: 0, y: 0.5, z: 0}));
+
 var raveStick = new RaveStick(Vec3.sum(basePosition, {x: 1, y: 0.5, z: 1}));
 var lightSaber = new LightSaber(Vec3.sum(basePosition, {x: 3, y: 0.5, z: 1}));
 

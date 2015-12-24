@@ -24,7 +24,7 @@
             blue: 10
         }];
 
-        this.searchRadius = 10;
+        this.searchRadius = 5;
 
         // Each edge represents a connection between this ball and another
         // {beam, target}
@@ -39,6 +39,10 @@
 
         startNearGrab: function() {
             this.createGraph();
+        },
+
+        destroyGraph: function() {
+            this.edges = [];
         },
 
         createGraph: function() {
@@ -90,6 +94,9 @@
         },
 
         releaseGrab: function() {
+            this.edges.forEach( function(edge) {
+                Entities.editEntity(edge.beam, {isEmitting: false});
+            })
         
         },
 
