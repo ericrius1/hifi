@@ -25,48 +25,88 @@
         }];
 
         this.searchRadius = 10;
-        this.beams = [];
+
+        // Each edge represents a connection between this ball and another
+        // {beam, target}
+        this.edges = [];
     };
 
     ArcBall.prototype = {
         isGrabbed: false,
         startDistantGrab: function() {
-            this.searchForNearbyArcBalls();
+            this.createGraph();
         },
 
         startNearGrab: function() {
-            this.searchForNearbyArcBalls();
+            this.createGraph();
         },
 
-        searchForNearbyArcBalls: function() {
+        createGraph: function() {
             //Search for nearby balls and create an arc to it if one is found
             var position = Entities.getEntityProperties(this.entityID, "position").position
             var entities = Entities.findEntities(position, this.searchRadius);
             entities.forEach(function(entity) {
                 var props = Entities.getEntityProperties(entity, ["position", "name"]);
                 if (props.name === "Arc Ball" && JSON.stringify(_this.entityID) !== JSON.stringify(entity)) {
-                    _this.target = entity;
-                    _this.createBeam(position, props.position);
-
+                    _this.createEdge(entity);
                 }
             });
         },
 
-        createBeam: function(startPosition, endPosition) {
+        createEdge: function(entity) {
+            var edge = {node: entity, beam: this.createBeam()}
+            this.edges.push(edge);
+        },
 
-            // Creates particle arc from start position to end position
-            var rotation = Entities.getEntityProperties(this.entityID, "rotation").rotation;
-            var sourceToTargetVec = Vec3.subtract(endPosition, startPosition);
+        createBeam: function() {
+            return Entities.addEntity(this.beamProps);
+        },
+
+        updateBeam: function(edge) {
+            var startPosition = Entities.getEntityProperties(this.entityID, "position").position;
+            var targetPosition = Entities.getEntityProperties(edge.node, "position").position;
+            print("TARGET POSITION " + JSON.stringify(targetPosition));
+            var sourceToTargetVec = Vec3.subtract(targetPosition, startPosition);
             var emitOrientation = Quat.rotationBetween(Vec3.UNIT_Z, sourceToTargetVec);
-            emitOrientation = Quat.multiply(Quat.inverse(rotation), emitOrientation);
+            print("EMIT ORIE " + JSON.stringify(emitOrientation))
+            Entities.editEntity(edge.beam, {
+                emitOrientation: emitOrientation
+            });
+        },
 
+        updateGraph: function() {
+            this.edges.forEach(function(edge) {
+                _this.updateBeam(edge);
+            });
+
+        },
+
+        continueNearGrab: function() {
+            this.updateGraph();
+        },
+
+        continueDistantGrab: function() {
+            this.updateGraph();
+        },
+
+        releaseGrab: function() {
+        
+        },
+
+        unload: function() {
+             this.edges.forEach(function(edge) {
+                Entities.deleteEntity(edge.node);
+            });
+        },
+
+        preload: function(entityID) {
+            this.entityID = entityID;
             var color = this.colorPalette[randInt(0, this.colorPalette.length)];
-            var props = {
+            this.beamProps = {
                 type: "ParticleEffect",
                 name: "Particle Arc",
                 parentID: this.entityID,
                 parentJointIndex: -1,
-                // position: startPosition,
                 isEmitting: true,
                 colorStart: color,
                 color: {
@@ -78,7 +118,6 @@
                 maxParticles: 100000,
                 lifespan: 1,
                 emitRate: 1000,
-                emitOrientation: emitOrientation,
                 emitSpeed: 1,
                 speedSpread: 0.02,
                 emitDimensions: {
@@ -110,46 +149,6 @@
                 textures: "https://s3.amazonaws.com/hifi-public/eric/textures/particleSprites/beamParticle.png",
                 emitterShouldTrail: true
             }
-            this.beam = Entities.addEntity(props);
-        },
-
-        updateBeam: function() {
-            if(!this.target) {
-                return;
-            }
-            var startPosition = Entities.getEntityProperties(this.entityID, "position").position;
-            var targetPosition = Entities.getEntityProperties(this.target, "position").position;
-            var rotation = Entities.getEntityProperties(this.entityID, "rotation").rotation;
-            var sourceToTargetVec = Vec3.subtract(targetPosition, startPosition);
-            var emitOrientation = Quat.rotationBetween(Vec3.UNIT_Z, sourceToTargetVec);
-            Entities.editEntity(this.beam, {
-                emitOrientation: emitOrientation
-            });
-        },
-
-        continueNearGrab: function() {
-            this.updateBeam();
-        },
-
-        continueDistantGrab: function() {
-            this.updateBeam();
-        },
-
-        releaseGrab: function() {
-            Entities.editEntity(this.beam, {
-                isEmitting: false
-            });
-            this.target = null;
-        },
-
-        unload: function() {
-            if (this.beam) {
-                Entities.deleteEntity(this.beam);
-            }
-        },
-
-        preload: function(entityID) {
-            this.entityID = entityID;
         },
     };
     return new ArcBall();

@@ -85,7 +85,7 @@ ArcBall = function(spawnPosition) {
         },
         maxParticles: 100000,
         lifespan: 2,
-        emitRate: 400,
+        emitRate: 40,
         emitSpeed: .1,
         lifetime: -1,
         speedSpread: 0.0,
