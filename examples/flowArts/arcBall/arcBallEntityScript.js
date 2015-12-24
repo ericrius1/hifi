@@ -63,16 +63,16 @@
         },
 
         createBeam: function() {
+            this.beamProps.colorStart = randomColor();
+            this.beamProps.colorFinish = randomColor();
             return Entities.addEntity(this.beamProps);
         },
 
         updateBeam: function(edge) {
             var startPosition = Entities.getEntityProperties(this.entityID, "position").position;
             var targetPosition = Entities.getEntityProperties(edge.node, "position").position;
-            print("TARGET POSITION " + JSON.stringify(targetPosition));
             var sourceToTargetVec = Vec3.subtract(targetPosition, startPosition);
             var emitOrientation = Quat.rotationBetween(Vec3.UNIT_Z, sourceToTargetVec);
-            print("EMIT ORIE " + JSON.stringify(emitOrientation))
             Entities.editEntity(edge.beam, {
                 emitOrientation: emitOrientation
             });
@@ -95,7 +95,7 @@
 
         releaseGrab: function() {
             this.edges.forEach( function(edge) {
-                Entities.editEntity(edge.beam, {isEmitting: false});
+                // Entities.editEntity(edge.beam, {isEmitting: false});
             })
         
         },
@@ -109,19 +109,18 @@
         preload: function(entityID) {
             this.entityID = entityID;
             var color = this.colorPalette[randInt(0, this.colorPalette.length)];
+            var color = randomColor();
             this.beamProps = {
                 type: "ParticleEffect",
                 name: "Particle Arc",
                 parentID: this.entityID,
                 parentJointIndex: -1,
                 isEmitting: true,
-                colorStart: color,
                 color: {
                     red: 200,
                     green: 200,
                     blue: 255
                 },
-                colorFinish: color,
                 maxParticles: 100000,
                 lifespan: 1,
                 emitRate: 1000,

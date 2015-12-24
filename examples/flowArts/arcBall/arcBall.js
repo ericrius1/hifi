@@ -35,17 +35,30 @@ ArcBall = function(spawnPosition) {
             z: 0
         }),
         dimensions: {
-            x: .05,
-            y: .05,
-            z: .05
+            x: .15,
+            y: .15,
+            z: .15
         },
         color: {
             red: 100,
             green: 10,
             blue: 150
         },
-        ignoreForCollisions: true,
-        collisionsWillMove: true
+        visible: false,
+        // ignoreForCollisions: true,
+        collisionsWillMove: true,
+        damping: 0.7,
+        gravity: {
+            x: 0, 
+            y: -1.5, 
+            z: 0
+        },
+        userData: JSON.stringify({
+            handControllerKey: {
+                disableReleaseVelocity: true,
+                disableMoveWithHead: true
+            }
+        })
     });
 
 
@@ -85,8 +98,8 @@ ArcBall = function(spawnPosition) {
         },
         maxParticles: 100000,
         lifespan: 2,
-        emitRate: 40,
-        emitSpeed: .1,
+        emitRate: 400,
+        emitSpeed: .03,
         lifetime: -1,
         speedSpread: 0.0,
         emitDimensions: {
@@ -122,11 +135,11 @@ ArcBall = function(spawnPosition) {
 
 
 
-        function cleanup() {
-            Entities.deleteEntity(arcBall);
-            Entities.deleteEntity(containerBall);
-            Entities.deleteEntity(light);
-        }
+    function cleanup() {
+        Entities.deleteEntity(arcBall);
+        Entities.deleteEntity(containerBall);
+        Entities.deleteEntity(light);
+    }
 
     this.cleanup = cleanup;
 }

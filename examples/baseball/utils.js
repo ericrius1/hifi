@@ -22,6 +22,13 @@ randomFloat = function(low, high) {
 };
 
 randomColor = function(redMin, redMax, greenMin, greenMax, blueMin, blueMax) {
+    var redMin = redMin || 0;
+    var greenMin = greenMin || 0;
+    var blueMin = blueMin || 0;
+    var redMax = redMax || 255;
+    var greenMax = greenMax || 255;
+    var blueMax = blueMax || 255;
+    print(blueMax)
     return {
         red: Math.ceil(randomFloat(redMin, redMax)),
         green: Math.ceil(randomFloat(greenMin, greenMax)),

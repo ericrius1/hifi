@@ -27,9 +27,9 @@ basePosition.y = MyAvatar.position.y + 1;
 // RAVE ITEMS
 // var lightBall = new LightBall(basePosition);
 
-var arcBall = new ArcBall(basePosition);
-var arcBall2 = new ArcBall(Vec3.sum(basePosition, {x: -1, y: 0, z: 0}));
-var arcBall3 = new ArcBall(Vec3.sum(basePosition, {x: 0, y: 0.5, z: 0}));
+var arcBalls = [];
+var numArcBalls = 4;
+createArcBalls();
 
 var raveStick = new RaveStick(Vec3.sum(basePosition, {x: 1, y: 0.5, z: 1}));
 var lightSaber = new LightSaber(Vec3.sum(basePosition, {x: 3, y: 0.5, z: 1}));
@@ -78,15 +78,23 @@ var lightZone = Entities.addEntity({
     }
 });
 
+function createArcBalls() {
+    for(var i = 0; i < numArcBalls; i++) {
+        var arcBall = new ArcBall(Vec3.sum(basePosition, {x: Math.random(), y: Math.random(), z: Math.random()}));
+        arcBalls.push(arcBall);
+    }
+
+}
+
 function cleanup() {
 
     Entities.deleteEntity(raveRoom);
     Entities.deleteEntity(lightZone);
     Entities.deleteEntity(floor);
     // lightBall.cleanup();
-    arcBall.cleanup();
-    arcBall2.cleanup();
-    arcBall3.cleanup();
+    arcBalls.forEach(function(arcBall) {
+        Entities.deleteEntity(arcBall);
+    });
     raveStick.cleanup();
     lightSaber.cleanup();
 }
