@@ -28,59 +28,28 @@ basePosition.y = MyAvatar.position.y + 1;
 // var lightBall = new LightBall(basePosition);
 
 var arcBalls = [];
-var numArcBalls = 4;
+var numArcBalls = 5;
 createArcBalls();
 
-var raveStick = new RaveStick(Vec3.sum(basePosition, {x: 1, y: 0.5, z: 1}));
-var lightSaber = new LightSaber(Vec3.sum(basePosition, {x: 3, y: 0.5, z: 1}));
 
 
 var modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/models/RaveRoom.fbx";
 
-var roomDimensions = {x: 30.58, y: 15.29, z: 30.58}; 
+var roomDimensions = {
+    x: 30.58,
+    y: 15.29,
+    z: 30.58
+};
 
-var raveRoom = Entities.addEntity({
-    type: "Model",
-    name: "Rave Hut Room",
-    modelURL: modelURL,
-    position: basePosition,
-    dimensions:roomDimensions,
-    visible: true
-});
-
-var floor = Entities.addEntity({
-    type: "Box",
-    name: "Rave Floor",
-    position: Vec3.sum(basePosition, {x: 0, y: -1.2, z: 0}),
-    dimensions: {x: roomDimensions.x, y: 0.6, z: roomDimensions.z},
-    color: {red: 50, green: 10, blue: 100},
-    shapeType: 'box'
-});
-
-
-
-var lightZone = Entities.addEntity({
-    type: "Zone",
-    name: "Rave Hut Zone",
-    shapeType: 'box',
-    keyLightIntensity: 0.4,
-    keyLightColor: {
-        red: 50,
-        green: 0,
-        blue: 50
-    },
-    keyLightAmbientIntensity: .2,
-    position: MyAvatar.position,
-    dimensions: {
-        x: 100,
-        y: 100,
-        z: 100
-    }
-});
 
 function createArcBalls() {
-    for(var i = 0; i < numArcBalls; i++) {
-        var arcBall = new ArcBall(Vec3.sum(basePosition, {x: Math.random(), y: Math.random(), z: Math.random()}));
+    for (var i = 0; i < numArcBalls; i++) {
+        var beamVisible = i < 1 ? true : false;
+        var arcBall = new ArcBall(Vec3.sum(basePosition, {
+            x: Math.random(),
+            y: Math.random(),
+            z: Math.random()
+        }), beamVisible);
         arcBalls.push(arcBall);
     }
 
@@ -88,15 +57,17 @@ function createArcBalls() {
 
 function cleanup() {
 
-    Entities.deleteEntity(raveRoom);
-    Entities.deleteEntity(lightZone);
-    Entities.deleteEntity(floor);
     // lightBall.cleanup();
     arcBalls.forEach(function(arcBall) {
-        Entities.deleteEntity(arcBall);
+        arcBall.cleanup();
     });
-    raveStick.cleanup();
-    lightSaber.cleanup();
 }
 
 Script.scriptEnding.connect(cleanup);
+
+function mousePressEvent() {
+    arcBalls.forEach(function(arcBall) {
+        arcBall.toggleVisibility();
+    });
+}
+Controller.mousePressEvent.connect(mousePressEvent);

@@ -14,16 +14,6 @@
     var _this;
     var ArcBall = function() {
         _this = this;
-        this.colorPalette = [{
-            red: 25,
-            green: 20,
-            blue: 162
-        }, {
-            red: 200,
-            green: 10,
-            blue: 10
-        }];
-
         this.searchRadius = 5;
 
         // Each edge represents a connection between this ball and another
@@ -55,6 +45,10 @@
                     _this.createEdge(entity);
                 }
             });
+
+            this.updateInterval = Script.setInterval(function() {
+                _this.updateGraph();
+            }, 50);
         },
 
         createEdge: function(entity) {
@@ -63,8 +57,8 @@
         },
 
         createBeam: function() {
-            this.beamProps.colorStart = randomColor();
-            this.beamProps.colorFinish = randomColor();
+            this.beamProps.colorStart = randomColor(10, 40, 150, 250, 0, 50);
+            this.beamProps.colorFinish = randomColor(10, 50, 50, 150, 0, 50);
             return Entities.addEntity(this.beamProps);
         },
 
@@ -85,14 +79,6 @@
 
         },
 
-        continueNearGrab: function() {
-            this.updateGraph();
-        },
-
-        continueDistantGrab: function() {
-            this.updateGraph();
-        },
-
         releaseGrab: function() {
             this.edges.forEach( function(edge) {
                 // Entities.editEntity(edge.beam, {isEmitting: false});
@@ -108,7 +94,6 @@
 
         preload: function(entityID) {
             this.entityID = entityID;
-            var color = this.colorPalette[randInt(0, this.colorPalette.length)];
             var color = randomColor();
             this.beamProps = {
                 type: "ParticleEffect",
@@ -122,9 +107,9 @@
                     blue: 255
                 },
                 maxParticles: 100000,
-                lifespan: 1,
-                emitRate: 1000,
-                emitSpeed: 1,
+                lifespan: 5,
+                emitRate: 2000,
+                emitSpeed: .2,
                 speedSpread: 0.02,
                 emitDimensions: {
                     x: .01,
@@ -132,7 +117,7 @@
                     z: .01
                 },
                 polarStart: 0,
-                polarFinish: 0,
+                polarFinish: .1,
                 azimuthStart: 0.02,
                 azimuthFinish: .01,
                 emitAcceleration: {

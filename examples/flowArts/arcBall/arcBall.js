@@ -16,41 +16,34 @@ Script.include("../../libraries/utils.js");
 
 
 var scriptURL = Script.resolvePath("arcBallEntityScript.js?v1" + Math.random());
-ArcBall = function(spawnPosition) {
-
-    var colorPalette = [{
-        red: 25,
-        green: 20,
-        blue: 162
-    }];
-
-
+ArcBall = function(spawnPosition, beamVisible) {
+    var radius = randFloat(0.04, 0.06);
     var containerBall = Entities.addEntity({
         type: "Sphere",
         name: "Arc Ball",
-        script: scriptURL,
+        script: beamVisible ? scriptURL : "",
         position: Vec3.sum(spawnPosition, {
             x: 0,
-            y: .7,
+            y: .1,
             z: 0
         }),
         dimensions: {
-            x: .15,
-            y: .15,
-            z: .15
+            x: radius,
+            y: radius,
+            z: radius
         },
-        color: {
-            red: 100,
+        color: beamVisible ? randomColor(0, 50, 100, 250, 0, 50) : {
+            red: 250,
             green: 10,
-            blue: 150
+            blue: 10
         },
-        visible: false,
-        // ignoreForCollisions: true,
+        visible: true,
+        ignoreForCollisions: true,
         collisionsWillMove: true,
         damping: 0.7,
         gravity: {
-            x: 0, 
-            y: -1.5, 
+            x: 0,
+            y: 0,
             z: 0
         },
         userData: JSON.stringify({
@@ -59,20 +52,6 @@ ArcBall = function(spawnPosition) {
                 disableMoveWithHead: true
             }
         })
-    });
-
-
-    var light = Entities.addEntity({
-        type: 'Light',
-        name: "ballLight",
-        parentID: containerBall,
-        dimensions: {
-            x: 30,
-            y: 30,
-            z: 30
-        },
-        color: colorPalette[randInt(0, colorPalette.length)],
-        intensity: 5
     });
 
 
@@ -92,14 +71,14 @@ ArcBall = function(spawnPosition) {
             blue: 255
         },
         colorFinish: {
-            red: 25,
+            red: 250,
             green: 20,
-            blue: 255
+            blue: 10
         },
         maxParticles: 100000,
         lifespan: 2,
-        emitRate: 400,
-        emitSpeed: .03,
+        emitRate: 40,
+        emitSpeed: .01,
         lifetime: -1,
         speedSpread: 0.0,
         emitDimensions: {
@@ -133,13 +112,18 @@ ArcBall = function(spawnPosition) {
         emitterShouldTrail: true
     })
 
+    function toggleVisibility() {
+        var visible = Entities.getEntityProperties(containerBall, "visible").visible;
+        Entities.editEntity(containerBall, {visible: !visible});
+    }
+
 
 
     function cleanup() {
         Entities.deleteEntity(arcBall);
         Entities.deleteEntity(containerBall);
-        Entities.deleteEntity(light);
     }
 
     this.cleanup = cleanup;
+    this.toggleVisibility = toggleVisibility;
 }
