@@ -22,7 +22,7 @@ Script.include("arcBall/arcBall.js");
 
 
 var basePosition = Vec3.sum(MyAvatar.position, Vec3.multiply(1, Quat.getFront(Camera.getOrientation())));
-basePosition.y = MyAvatar.position.y + 1;
+basePosition.y = MyAvatar.position.y;
 
 // RAVE ITEMS
 // var lightBall = new LightBall(basePosition);
@@ -70,4 +70,4 @@ function mousePressEvent() {
         arcBall.toggleVisibility();
     });
 }
-Controller.mousePressEvent.connect(mousePressEvent);
+// Controller.mousePressEvent.connect(mousePressEvent);
