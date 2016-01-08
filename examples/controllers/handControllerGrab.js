@@ -1680,7 +1680,9 @@ function MyController(hand) {
         this.turnLightsOff();
         this.turnOffVisualizations();
 
+
         if (this.grabbedEntity !== null) {
+            Messages.sendMessage('Hifi-StickyStuff-Manager', JSON.stringify(this.grabbedEntity));
             if (this.actionID !== null) {
                 //add velocity whatnot
                 var defaultReleaseVelocityData = {
