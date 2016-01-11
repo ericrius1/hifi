@@ -20,14 +20,16 @@ function StickyStuffManager() {
 
     this.handleReleaseMessage = function(entityID) {
         var props = Entities.getEntityProperties(entityID, ["dimensions", "position"]);
-        var searchBox = Vec3.multiply(props.dimensions, 0.5);
+        var searchBox = Vec3.multiply(props.dimensions, 1);
         var intersectedEntities = Entities.findEntitiesInBox(props.position, searchBox);
-        if (intersectedEntities.length > 1) {
-            var name = Entities.getEntityProperties(intersectedEntities[5], "name").name;
-            print("NAME " + name)
-            Entities.editEntity(entityID, {parentID: intersectedEntities[5]});
-        }
-
+        intersectedEntities.forEach( function(entity) {
+            var name = Entities.getEntityProperties(entity, "name").name;
+            if (name === "block" && JSON.stringify(entity) !== JSON.stringify(entityID)) {
+                print ("OTHER BLOCK!!")
+                Entities.editEntity(entity, {parentID: entityID, collisionsWillMove: false});
+                return;
+            }
+        });
     }
 }
 
