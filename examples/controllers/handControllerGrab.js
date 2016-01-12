@@ -1682,7 +1682,6 @@ function MyController(hand) {
 
 
         if (this.grabbedEntity !== null) {
-            Messages.sendMessage('Hifi-StickyStuff-Manager', JSON.stringify(this.grabbedEntity));
             if (this.actionID !== null) {
                 //add velocity whatnot
                 var defaultReleaseVelocityData = {
@@ -1716,6 +1715,7 @@ function MyController(hand) {
         }
 
         this.deactivateEntity(this.grabbedEntity);
+        Messages.sendMessage('Hifi-StickyStuff-Manager', JSON.stringify(this.grabbedEntity));
 
         this.grabbedEntity = null;
         this.actionID = null;
