@@ -12,17 +12,26 @@
 //  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
 //
 
-var sculptureRadius = 2;
-var basePosition = MyAvatar.position;
+Script.include('../libraries/utils.js');
 
-var sphereRadius = 0.2;
+var sculptureRadius = 0.7;
+var basePosition = MyAvatar.position;
+basePosition.y += 0.5;
+
+var sphereRadius = 0.03;
 
 //create spheres all around avatar
-var numSpheres = 10;
-var thetaStart = 0;
-var thetaLength = Math.PI * 2;
+var yRot = Quat.safeEulerAngles(MyAvatar.orientation).y;
+var numSpheres = 50;
+var thetaStart = degreesToRadians(yRot) - Math.PI/4;
+var thetaLength =  Math.PI;
 
 var spheres = [];
+
+// Cutoff at which spheres respond to attractor
+var attractionDistanceThreshold = 0.1;
+
+var hslColor = {h: 0.7, s: 0.5, l: 0.5};
 
 // var direction = Quat.getOrientation
 
@@ -41,17 +50,24 @@ for (var i = 0; i < numSpheres; i++) {
             y: sphereRadius,
             z: sphereRadius
         },
-        color: {
-            red: 200,
-            green: 10,
-            blue: 200
-        }
+        color: hslToRgb(hslColor)
     });
     spheres.push(sphere);
 }
 
 function update() {
-    // Go through each sphere- if it's within a certain range, move it outward from center of sphere
+    // Go through each sphere- if it's within a certain range, move it towards avatar as a function of how close it is to avatar
+    var spherePosition, distance, hue;
+    var handPosition = MyAvatar.getRightPalmPosition();
+    spheres.forEach( function(sphere) {
+        spherePosition = Entities.getEntityProperties(sphere, "position").position;
+        distance = Vec3.distance(spherePosition, handPosition);
+        if (distance < attractionDistanceThreshold) {
+            hue = map(distance, 0, attractionDistanceThreshold, 0.2, 0.7);
+            hslColor.h = hue;
+            Entities.editEntity(sphere, {color: hslToRgb(hslColor)})
+        }
+    });
 }
 
 function cleanup() {

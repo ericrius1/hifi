@@ -199,7 +199,7 @@ pointInExtents = function(point, minPoint, maxPoint) {
  * @param   Number  l       The lightness
  * @return  Array           The RGB representation
  */
-hslToRgb = function(hsl, hueOffset) {
+hslToRgb = function(hsl) {
     var r, g, b;
     if (hsl.s == 0) {
         r = g = b = hsl.l; // achromatic
@@ -251,6 +251,14 @@ orientationOf = function(vector) {
     yaw = Quat.angleAxis(Math.atan2(direction.x, direction.z) * RAD_TO_DEG, Y_AXIS);
     pitch = Quat.angleAxis(Math.asin(-direction.y) * RAD_TO_DEG, X_AXIS);
     return Quat.multiply(yaw, pitch);
+}
+
+radiansToDegrees = function(radians) {
+    return radians * 180.0/Math.PI
+}
+
+degreesToRadians = function(degrees) {
+    return degrees * (Math.PI / 180);
 }
 
 randFloat = function(low, high) {
