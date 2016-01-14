@@ -23,15 +23,19 @@ var sphereRadius = 0.03;
 //create spheres all around avatar
 var yRot = Quat.safeEulerAngles(MyAvatar.orientation).y;
 var numSpheres = 50;
-var thetaStart = degreesToRadians(yRot) - Math.PI/4;
-var thetaLength =  Math.PI;
+var thetaStart = degreesToRadians(yRot) - Math.PI / 4;
+var thetaLength = Math.PI;
 
 var spheres = [];
 
 // Cutoff at which spheres respond to attractor
-var attractionDistanceThreshold = 0.1;
-
-var hslColor = {h: 0.7, s: 0.5, l: 0.5};
+var attractionDistanceThreshold = 0.2;
+var startingHue = 0.2;
+var hslColor = {
+    h: startingHue,
+    s: 0.5,
+    l: 0.5
+};
 
 // var direction = Quat.getOrientation
 
@@ -57,16 +61,26 @@ for (var i = 0; i < numSpheres; i++) {
 
 function update() {
     // Go through each sphere- if it's within a certain range, move it towards avatar as a function of how close it is to avatar
-    var spherePosition, distance, hue;
-    var handPosition = MyAvatar.getRightPalmPosition();
-    spheres.forEach( function(sphere) {
+    var spherePosition, rightHandDistance, leftHandDistance;
+    var rightHue = startingHue;
+    var leftHue = startingHue;
+    var rightHandPosition = MyAvatar.getRightPalmPosition();
+    var leftHandPosition = MyAvatar.getLeftPalmPosition();
+    spheres.forEach(function(sphere) {
         spherePosition = Entities.getEntityProperties(sphere, "position").position;
-        distance = Vec3.distance(spherePosition, handPosition);
-        if (distance < attractionDistanceThreshold) {
-            hue = map(distance, 0, attractionDistanceThreshold, 0.2, 0.7);
-            hslColor.h = hue;
-            Entities.editEntity(sphere, {color: hslToRgb(hslColor)})
+        rightHandDistance = Vec3.distance(spherePosition, rightHandPosition);
+        leftHandDistance = Vec3.distance(spherePosition, leftHandPosition);
+        if (rightHandDistance < attractionDistanceThreshold) {
+            rightHue = map(rightHandDistance, 0, attractionDistanceThreshold, 0.7, startingHue);
         }
+        if (leftHandDistance < attractionDistanceThreshold) {
+            leftHue = map(leftHandDistance, 0, attractionDistanceThreshold, 0.7, startingHue);
+        }
+        hue = (rightHue + leftHue) / 2;
+        hslColor.h = hue;
+        Entities.editEntity(sphere, {
+            color: hslToRgb(hslColor)
+        })
     });
 }
 
