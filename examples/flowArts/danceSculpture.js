@@ -39,10 +39,10 @@ createSphereOfSpheres();
 function createSphereOfSpheres() {
     var sphereRadius = 0.03;
     var radiusDecrement = -0.06;
-    var numSpheresInLayer = 40;
+    var numSpheresInLayer = 20;
     var radius = 0.7;
     var verticalOffset = 0;
-    var numVerticalLayersInHemisphere = 10
+    var numVerticalLayersInHemisphere = 5
     var thetaStart = 0;
     var thetaLength = Math.PI * 2;
     var spherePosition = basePosition;
