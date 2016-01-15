@@ -14,49 +14,79 @@
 
 Script.include('../libraries/utils.js');
 
-var sculptureRadius = 0.7;
 var basePosition = MyAvatar.position;
 basePosition.y += 0.5;
 
-var sphereRadius = 0.03;
 
 //create spheres all around avatar
 var yRot = Quat.safeEulerAngles(MyAvatar.orientation).y;
-var numSpheres = 50;
-var thetaStart = degreesToRadians(yRot) - Math.PI / 4;
-var thetaLength = Math.PI;
 
 var spheres = [];
 
 // Cutoff at which spheres respond to attractor
-var attractionDistanceThreshold = 0.2;
-var startingHue = 0.2;
+var attractionDistanceThreshold = 0.1;
+var startingHue = 0.0;
+var maxHue = 1.0;
 var hslColor = {
     h: startingHue,
-    s: 0.5,
+    s: 0.7,
     l: 0.5
 };
 
 // var direction = Quat.getOrientation
+createSphereOfSpheres();
 
-var spherePosition = basePosition;
-for (var i = 0; i < numSpheres; i++) {
-    var segmentAngle = thetaStart + i / numSpheres * thetaLength;
-    var orientation = Quat.fromPitchYawRollRadians(0, segmentAngle, 0);
-    var offset = Vec3.multiply(Quat.getFront(orientation), sculptureRadius);
-    var spherePosition = Vec3.sum(basePosition, offset);
+function createSphereOfSpheres() {
+    var sphereRadius = 0.03;
 
-    var sphere = Entities.addEntity({
-        type: "Sphere",
-        position: spherePosition,
-        dimensions: {
-            x: sphereRadius,
-            y: sphereRadius,
-            z: sphereRadius
-        },
-        color: hslToRgb(hslColor)
-    });
-    spheres.push(sphere);
+    var numSpheresInLayer = 10;
+    var radius = 0.7;
+    var verticalOffset = 0;
+    var numVerticalLayersInHemisphere = 5
+    var thetaStart = degreesToRadians(yRot) - Math.PI / 4;
+    var thetaLength = Math.PI;
+    var spherePosition = basePosition;
+    // Create stacked layers of circles made from spheres, to create a metasphere!
+    for (var verticalLayerIndex = 0; verticalLayerIndex < numVerticalLayersInHemisphere; verticalLayerIndex++) {
+        for (var i = 0; i < numSpheresInLayer; i++) {
+            var segmentAngle = thetaStart + i / numSpheresInLayer * thetaLength;
+            var orientation = Quat.fromPitchYawRollRadians(0, segmentAngle, 0);
+            var offset = Vec3.multiply(Quat.getFront(orientation), radius);
+
+            // Top Hemisphere layer
+            offset.y += verticalOffset;
+            spherePosition = Vec3.sum(basePosition, offset);
+            var sphere = Entities.addEntity({
+                type: "Sphere",
+                position: spherePosition,
+                dimensions: {
+                    x: sphereRadius,
+                    y: sphereRadius,
+                    z: sphereRadius
+                },
+                color: hslToRgb(hslColor)
+            });
+            spheres.push(sphere);
+
+            // Bottom Hemisphere Layer
+            offset.y -= verticalOffset * 2;
+            spherePosition = Vec3.sum(basePosition, offset);
+            var sphere = Entities.addEntity({
+                type: "Sphere",
+                position: spherePosition,
+                dimensions: {
+                    x: sphereRadius,
+                    y: sphereRadius,
+                    z: sphereRadius
+                },
+                color: hslToRgb(hslColor)
+            });
+            spheres.push(sphere);
+        }
+        verticalOffset += 0.1;
+        radius -= 0.1;
+    }
+
 }
 
 function update() {
@@ -71,12 +101,12 @@ function update() {
         rightHandDistance = Vec3.distance(spherePosition, rightHandPosition);
         leftHandDistance = Vec3.distance(spherePosition, leftHandPosition);
         if (rightHandDistance < attractionDistanceThreshold) {
-            rightHue = map(rightHandDistance, 0, attractionDistanceThreshold, 0.7, startingHue);
+            rightHue = map(rightHandDistance, 0, attractionDistanceThreshold, maxHue, startingHue);
         }
         if (leftHandDistance < attractionDistanceThreshold) {
-            leftHue = map(leftHandDistance, 0, attractionDistanceThreshold, 0.7, startingHue);
+            leftHue = map(leftHandDistance, 0, attractionDistanceThreshold, maxHue, startingHue);
         }
-        hue = (rightHue + leftHue) / 2;
+        hue = rightHue;
         hslColor.h = hue;
         Entities.editEntity(sphere, {
             color: hslToRgb(hslColor)
