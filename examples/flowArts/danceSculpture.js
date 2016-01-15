@@ -24,9 +24,9 @@ var yRot = Quat.safeEulerAngles(MyAvatar.orientation).y;
 var spheres = [];
 
 // Cutoff at which spheres respond to attractor
-var attractionDistanceThreshold = 0.1;
-var startingHue = 0.0;
-var maxHue = 1.0;
+var attractionDistanceThreshold = 0.5;
+var startingHue = 0.1;
+var maxHue = 0.9;
 var hslColor = {
     h: startingHue,
     s: 0.7,
@@ -38,13 +38,13 @@ createSphereOfSpheres();
 
 function createSphereOfSpheres() {
     var sphereRadius = 0.03;
-
-    var numSpheresInLayer = 10;
+    var radiusDecrement = -0.06;
+    var numSpheresInLayer = 40;
     var radius = 0.7;
     var verticalOffset = 0;
-    var numVerticalLayersInHemisphere = 5
-    var thetaStart = degreesToRadians(yRot) - Math.PI / 4;
-    var thetaLength = Math.PI;
+    var numVerticalLayersInHemisphere = 10
+    var thetaStart = 0;
+    var thetaLength = Math.PI * 2;
     var spherePosition = basePosition;
     // Create stacked layers of circles made from spheres, to create a metasphere!
     for (var verticalLayerIndex = 0; verticalLayerIndex < numVerticalLayersInHemisphere; verticalLayerIndex++) {
@@ -84,7 +84,8 @@ function createSphereOfSpheres() {
             spheres.push(sphere);
         }
         verticalOffset += 0.1;
-        radius -= 0.1;
+        numSpheresInLayer--;
+        radius += radiusDecrement;
     }
 
 }
@@ -92,11 +93,11 @@ function createSphereOfSpheres() {
 function update() {
     // Go through each sphere- if it's within a certain range, move it towards avatar as a function of how close it is to avatar
     var spherePosition, rightHandDistance, leftHandDistance;
-    var rightHue = startingHue;
-    var leftHue = startingHue;
     var rightHandPosition = MyAvatar.getRightPalmPosition();
     var leftHandPosition = MyAvatar.getLeftPalmPosition();
     spheres.forEach(function(sphere) {
+        var rightHue = startingHue;
+        var leftHue = startingHue;
         spherePosition = Entities.getEntityProperties(sphere, "position").position;
         rightHandDistance = Vec3.distance(spherePosition, rightHandPosition);
         leftHandDistance = Vec3.distance(spherePosition, leftHandPosition);
@@ -106,7 +107,8 @@ function update() {
         if (leftHandDistance < attractionDistanceThreshold) {
             leftHue = map(leftHandDistance, 0, attractionDistanceThreshold, maxHue, startingHue);
         }
-        hue = rightHue;
+        hue = (rightHue + leftHue)/2;
+        var hslColor = {h: hue, s: 0.9, l: 0.5};
         hslColor.h = hue;
         Entities.editEntity(sphere, {
             color: hslToRgb(hslColor)
