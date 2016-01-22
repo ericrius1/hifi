@@ -864,6 +864,10 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                         _textureContent.insert(filename, content);
                     }
                 } else if (object.name == "Material") {
+                    bool isPBRMaterial = false;
+                    if (object.properties.at(1) == "Material::StingrayPBS1") {
+                        isPBRMaterial = true;
+                    }
                     FBXMaterial material;
                     foreach (const FBXNode& subobject, object.children) {
                         bool properties = false;
@@ -914,7 +918,20 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
 #endif
                                 }
                             }
-                        }
+                        } 
+                        //else if (properties && isPBRMaterial) {
+                        //    foreach(const FBXNode& property, subobject.children) {
+                        //        if (property.name == propertyName) {
+                        //            if (property.properties.at(0) == "Maya|base_color") {
+                        //                qDebug() << "Found base color node!";
+                        //                //material.diffuseColor = getVec3(property.properties, index);
+                        //                
+                        //            }
+                        //        }
+                        //    }
+                        //    
+                        //}
+
 #if defined(DEBUG_FBXREADER)
                         else {
                             QString propname = subobject.name.data();
@@ -1032,7 +1049,10 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                         QByteArray type = connection.properties.at(3).toByteArray().toLower();
                         if (type.contains("diffuse")) {
                             diffuseTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
-
+                        }
+                        else if (type.contains("tex_color_map")) {
+                            qDebug() << "insert color map for diffuse!";
+                            diffuseTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
                         } else if (type.contains("transparentcolor")) { // it should be TransparentColor...
                             // THis is how Maya assign a texture that affect diffuse color AND transparency ?
                             diffuseTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));

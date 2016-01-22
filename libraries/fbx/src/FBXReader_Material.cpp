@@ -138,6 +138,7 @@ void FBXReader::consolidateFBXMaterials() {
         material._material->setEmissive(material.emissiveColor);
 
         auto diffuse = material.diffuseColor;
+        qDebug() << "DIFFUSE COLOR " << material.diffuseColor;
         // FIXME: Do not use the Diffuse Factor yet as some FBX models have it set to 0
         // diffuse *= material.diffuseFactor;
         material._material->setDiffuse(diffuse);
