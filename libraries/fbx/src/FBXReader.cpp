@@ -926,7 +926,6 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                                     if (property.properties.at(0) == "Maya|base_color") {
                                         qDebug() << "Found base color node!";
                                         material.diffuseColor = getVec3(property.properties, index);
-                                        
                                     }
                                 }
                             }
@@ -1061,7 +1060,8 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                             bumpTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
                         } else if (type.contains("normal")) {
                             normalTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
-                        } else if (type.contains("specular") || type.contains("reflection")) {
+                        }
+                        else if (type.contains("specular") || type.contains("reflection")) {
                             specularTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
 
                         } else if (type == "lcl rotation") {
