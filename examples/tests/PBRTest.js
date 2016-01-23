@@ -18,6 +18,7 @@ orientation.x = 0;
 orientation = Quat.fromVec3Degrees(orientation);
 var center = Vec3.sum(MyAvatar.position, Vec3.multiply(3, Quat.getFront(orientation)));
 // var modelURL = "http://hifi-content.s3.amazonaws.com/caitlyn/dev/scratch/GrenadeEmbedded.fbx";
+//var modelURL = "file:///C:/Users/Eric/Desktop/GrenadeEmbedded.fbx?v1" + Math.random();
 var modelURL = "file:///C:/Users/Eric/Desktop/grenade.fbx?v1" + Math.random();
 var pbrModel = Entities.addEntity({
     type: "Model",

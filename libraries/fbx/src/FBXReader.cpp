@@ -865,7 +865,8 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                     }
                 } else if (object.name == "Material") {
                     bool isPBRMaterial = false;
-                    if (object.properties.at(1) == "Material::StingrayPBS1") {
+                    qDebug() << "MATERIAL TYPE " << object.properties.at(1).toString();
+                    if (object.properties.at(1).toByteArray().contains("StingrayPBS1")) {
                         isPBRMaterial = true;
                     }
                     FBXMaterial material;
@@ -883,7 +884,7 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                             propertyName = "P";
                             index = 4;
                         }
-                        if (properties) {
+                        if (properties && !isPBRMaterial) {
                             foreach (const FBXNode& property, subobject.children) {
                                 if (property.name == propertyName) {
                                     if (property.properties.at(0) == "DiffuseColor") {
@@ -919,18 +920,18 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                                 }
                             }
                         } 
-                        //else if (properties && isPBRMaterial) {
-                        //    foreach(const FBXNode& property, subobject.children) {
-                        //        if (property.name == propertyName) {
-                        //            if (property.properties.at(0) == "Maya|base_color") {
-                        //                qDebug() << "Found base color node!";
-                        //                //material.diffuseColor = getVec3(property.properties, index);
-                        //                
-                        //            }
-                        //        }
-                        //    }
-                        //    
-                        //}
+                        else if (properties && isPBRMaterial) {
+                            foreach(const FBXNode& property, subobject.children) {
+                                if (property.name == propertyName) {
+                                    if (property.properties.at(0) == "Maya|base_color") {
+                                        qDebug() << "Found base color node!";
+                                        material.diffuseColor = getVec3(property.properties, index);
+                                        
+                                    }
+                                }
+                            }
+                            
+                        }
 
 #if defined(DEBUG_FBXREADER)
                         else {
