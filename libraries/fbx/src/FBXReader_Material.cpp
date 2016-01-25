@@ -100,6 +100,15 @@ void FBXReader::consolidateFBXMaterials() {
             material.normalTexture = normalTexture;
             detectDifferentUVs |= (normalTexture.texcoordSet != 0) || (!normalTexture.transform.isIdentity());
         }
+
+        FBXTexture metallicTexture;
+        QString metallicTextureID = metallicTextures.value(material.materialID);
+        if (!metallicTextureID.isNull()) {
+            material.metallicTexture = getTexture(metallicTextureID);
+        }
+
+        FBXTexture roughnessTexture;
+        QString roughnessTextureID = roughnessTextures.value(material.materialID);
         
                 
         FBXTexture specularTexture;
@@ -142,10 +151,7 @@ void FBXReader::consolidateFBXMaterials() {
         // diffuse *= material.diffuseFactor;
         material._material->setDiffuse(diffuse);
 
-        float metallic = std::max(material.specularColor.x, std::max(material.specularColor.y, material.specularColor.z));
-        // FIXME: Do not use the Specular Factor yet as some FBX models have it set to 0
-        // metallic *= material.specularFactor;
-        material._material->setMetallic(metallic);
+        material._material->setMetallic(material.metallic);
         material._material->setGloss(material.shininess);
 
         if (material.opacity <= 0.0f) {

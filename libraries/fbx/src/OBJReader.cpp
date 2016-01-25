@@ -548,7 +548,9 @@ FBXGeometry* OBJReader::readOBJ(QByteArray& model, const QVariantHash& mapping, 
                                                      glm::vec3(0.0f),
                                                      glm::vec2(0.0f, 1.0f),
                                                      objMaterial.shininess,
-                                                     objMaterial.opacity);
+                                                     objMaterial.opacity,
+                                                     objMaterial.metallic,
+                                                     objMaterial.roughness);
         FBXMaterial& fbxMaterial = geometry.materials[materialID];
         fbxMaterial.materialID = materialID;
         fbxMaterial._material = std::make_shared<model::Material>();

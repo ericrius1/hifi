@@ -865,7 +865,6 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                     }
                 } else if (object.name == "Material") {
                     bool isPBRMaterial = false;
-                    qDebug() << "MATERIAL TYPE " << object.properties.at(1).toString();
                     if (object.properties.at(1).toByteArray().contains("StingrayPBS1")) {
                         isPBRMaterial = true;
                     }
@@ -926,6 +925,15 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                                     if (property.properties.at(0) == "Maya|base_color") {
                                         qDebug() << "Found base color node!";
                                         material.diffuseColor = getVec3(property.properties, index);
+                                    }
+                                    else if (property.properties.at(0) == "Maya|metallic") {
+                                        material.metallic = property.properties.at(index).value<double>();
+                                        qDebug() << "METALLIC: " << material.metallic;
+                                    }
+                                    else if (property.properties.at(0) == "Maya|roughness") {
+                                        material.roughness = property.properties.at(index).value<double>();
+                                        qDebug() << "Roughness::: " << material.roughness;
+
                                     }
                                 }
                             }
@@ -1063,7 +1071,8 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                         }
                         else if (type.contains("specular") || type.contains("reflection")) {
                             specularTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
-
+                        } else if (type.contains("metallic")) {
+                            metallicTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
                         } else if (type == "lcl rotation") {
                             localRotations.insert(getID(connection.properties, 2), getID(connection.properties, 1));
                         } else if (type == "lcl translation") {

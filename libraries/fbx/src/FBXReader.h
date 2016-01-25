@@ -130,12 +130,14 @@ class FBXMaterial {
 public:
     FBXMaterial() {};
     FBXMaterial(const glm::vec3& diffuseColor, const glm::vec3& specularColor, const glm::vec3& emissiveColor,
-        const glm::vec2& emissiveParams, float shininess, float opacity) :
+        const glm::vec2& emissiveParams, float shininess, float opacity, float metallic, float roughness) :
         diffuseColor(diffuseColor),
         specularColor(specularColor),
         emissiveColor(emissiveColor),
         emissiveParams(emissiveParams),
         shininess(shininess),
+        metallic(metallic),
+        roughness(roughness),
         opacity(opacity)  {}
 
     glm::vec3 diffuseColor{ 1.0f };
@@ -148,6 +150,9 @@ public:
     float shininess = 23.0f;
     float opacity = 1.0f;
 
+    float metallic = 0.0f;
+    float roughness = 0.0f;
+
     QString materialID;
     model::MaterialPointer _material;
 
@@ -156,6 +161,8 @@ public:
     FBXTexture normalTexture;
     FBXTexture specularTexture;
     FBXTexture emissiveTexture;
+    FBXTexture metallicTexture;
+    FBXTexture roughnessTexture;
 
     bool needTangentSpace() const;
 };
@@ -402,6 +409,8 @@ public:
     QHash<QString, QString> specularTextures;
     QHash<QString, QString> emissiveTextures;
     QHash<QString, QString> ambientTextures;
+    QHash<QString, QString> metallicTextures;
+    QHash<QString, QString> roughnessTextures;
 
     QHash<QString, FBXMaterial> _fbxMaterials;
 

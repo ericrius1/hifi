@@ -51,12 +51,14 @@ private:
 class OBJMaterial {
 public:
     float shininess;
-    float opacity;
+    float opacity; 
+    float metallic;
+    float roughness;
     glm::vec3 diffuseColor;
     glm::vec3 specularColor;
     QByteArray diffuseTextureFilename;
     QByteArray specularTextureFilename;
-    OBJMaterial() : shininess(96.0f), opacity(1.0f), diffuseColor(1.0f), specularColor(1.0f) {}
+    OBJMaterial() : shininess(96.0f), metallic(0.0), roughness(0.0), opacity(1.0f), diffuseColor(1.0f), specularColor(1.0f) {}
 };
 
 class OBJReader: public QObject { // QObject so we can make network requests.
