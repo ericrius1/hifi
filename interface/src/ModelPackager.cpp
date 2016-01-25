@@ -351,9 +351,9 @@ void ModelPackager::listTextures() {
                 
             _textures << mat.normalTexture.filename;
         }
-        if (!mat.specularTexture.filename.isEmpty() && mat.specularTexture.content.isEmpty() &&
-            !_textures.contains(mat.specularTexture.filename)) {
-            _textures << mat.specularTexture.filename;
+        if (!mat.metallicTexture.filename.isEmpty() && mat.metallicTexture.content.isEmpty() &&
+            !_textures.contains(mat.metallicTexture.filename)) {
+            _textures << mat.metallicTexture.filename;
         }
         if (!mat.emissiveTexture.filename.isEmpty() && mat.emissiveTexture.content.isEmpty() &&
             !_textures.contains(mat.emissiveTexture.filename)) {

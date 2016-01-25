@@ -217,7 +217,7 @@ NetworkTexture::TextureLoaderFunc NetworkTexture::getTextureLoader() const {
             break;
         }
         case DEFAULT_TEXTURE:
-        case SPECULAR_TEXTURE:
+        case METALLIC_TEXTURE:
         case EMISSIVE_TEXTURE:
         default: {
             return TextureLoaderFunc(model::TextureUsage::create2DTextureFromImage);

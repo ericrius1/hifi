@@ -104,21 +104,20 @@ void FBXReader::consolidateFBXMaterials() {
         FBXTexture metallicTexture;
         QString metallicTextureID = metallicTextures.value(material.materialID);
         if (!metallicTextureID.isNull()) {
-            material.metallicTexture = getTexture(metallicTextureID);
+            metallicTexture = getTexture(metallicTextureID);
+            detectDifferentUVs |= (metallicTexture.texcoordSet != 0) || (!metallicTexture.transform.isIdentity());
+
+            material.metallicTexture = metallicTexture;
         }
 
         FBXTexture roughnessTexture;
         QString roughnessTextureID = roughnessTextures.value(material.materialID);
+        if (!roughnessTextureID.isNull()) {
+            material.roughnessTexture = getTexture(roughnessTextureID);
+        }
         
                 
-        FBXTexture specularTexture;
-        QString specularTextureID = specularTextures.value(material.materialID);
-        if (!specularTextureID.isNull()) {
-            specularTexture = getTexture(specularTextureID);
-            detectDifferentUVs |= (specularTexture.texcoordSet != 0) || (!specularTexture.transform.isIdentity());
-        
-            material.specularTexture = specularTexture;            
-        }
+
 
         FBXTexture emissiveTexture;
         glm::vec2 emissiveParams(0.f, 1.f);

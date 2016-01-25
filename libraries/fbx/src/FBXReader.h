@@ -159,7 +159,6 @@ public:
     FBXTexture diffuseTexture;
     FBXTexture opacityTexture;
     FBXTexture normalTexture;
-    FBXTexture specularTexture;
     FBXTexture emissiveTexture;
     FBXTexture metallicTexture;
     FBXTexture roughnessTexture;

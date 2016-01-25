@@ -131,7 +131,7 @@ bool NetworkGeometry::isLoadedWithTextures() const {
         for (auto&& material : _materials) {
             if ((material->diffuseTexture && !material->diffuseTexture->isLoaded()) ||
                 (material->normalTexture && !material->normalTexture->isLoaded()) ||
-                (material->specularTexture && !material->specularTexture->isLoaded()) ||
+                (material->metallicTexture && !material->metallicTexture->isLoaded()) ||
                 (material->emissiveTexture && !material->emissiveTexture->isLoaded())) {
                 return false;
             }
@@ -151,8 +151,8 @@ void NetworkGeometry::setTextureWithNameToURL(const QString& name, const QUrl& u
                 material->diffuseTexture = textureCache->getTexture(url, DEFAULT_TEXTURE);
             } else if (material->normalTextureName == name) {
                 material->normalTexture = textureCache->getTexture(url);
-            } else if (material->specularTextureName == name) {
-                material->specularTexture = textureCache->getTexture(url);
+            } else if (material->metallicTextureName == name) {
+                material->metallicTexture = textureCache->getTexture(url);
             } else if (material->emissiveTextureName == name) {
                 material->emissiveTexture = textureCache->getTexture(url);
             }
@@ -176,9 +176,9 @@ QStringList NetworkGeometry::getTextureNames() const {
             result << material->normalTextureName + ":\"" + textureURL + "\"";
         }
 
-        if (!material->specularTextureName.isEmpty() && material->specularTexture) {
-            QString textureURL = material->specularTexture->getURL().toString();
-            result << material->specularTextureName + ":\"" + textureURL + "\"";
+        if (!material->metallicTextureName.isEmpty() && material->metallicTexture) {
+            QString textureURL = material->metallicTexture->getURL().toString();
+            result << material->metallicTextureName + ":\"" + textureURL + "\"";
         }
 
         if (!material->emissiveTextureName.isEmpty() && material->emissiveTexture) {
@@ -295,12 +295,12 @@ static NetworkMaterial* buildNetworkMaterial(const FBXMaterial& material, const 
 
         material._material->setTextureMap(model::MaterialKey::NORMAL_MAP, normalMap);
     }
-    if (!material.specularTexture.filename.isEmpty()) {
-        networkMaterial->specularTexture = textureCache->getTexture(textureBaseUrl.resolved(QUrl(material.specularTexture.filename)), SPECULAR_TEXTURE, material.specularTexture.content);
-        networkMaterial->specularTextureName = material.specularTexture.name;
+    if (!material.metallicTexture.filename.isEmpty()) {
+        networkMaterial->metallicTexture = textureCache->getTexture(textureBaseUrl.resolved(QUrl(material.metallicTexture.filename)), METALLIC_TEXTURE, material.metallicTexture.content);
+        networkMaterial->metallicTextureName = material.metallicTexture.name;
 
         auto glossMap = model::TextureMapPointer(new model::TextureMap());
-        glossMap->setTextureSource(networkMaterial->specularTexture->_textureSource);
+        glossMap->setTextureSource(networkMaterial->metallicTexture->_textureSource);
 
         material._material->setTextureMap(model::MaterialKey::GLOSS_MAP, glossMap);
     }

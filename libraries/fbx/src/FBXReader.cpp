@@ -1070,7 +1070,7 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                             normalTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
                         }
                         else if (type.contains("specular") || type.contains("reflection")) {
-                            specularTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
+                            metallicTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
                         } else if (type.contains("metallic")) {
                             metallicTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
                         } else if (type == "lcl rotation") {
