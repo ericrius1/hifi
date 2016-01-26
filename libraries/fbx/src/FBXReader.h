@@ -111,6 +111,8 @@ public:
     QString texcoordSetName;
     
     bool isBumpmap{ false };
+
+    bool isRoughnessmap{ true };
     
     bool isNull() const { return name.isEmpty() && filename.isEmpty() && content.isEmpty(); }
 };
@@ -152,6 +154,9 @@ public:
 
     float metallic = 0.0f;
     float roughness = 0.0f;
+
+    bool isPBSMaterial{ false };
+
 
     QString materialID;
     model::MaterialPointer _material;
@@ -410,6 +415,7 @@ public:
     QHash<QString, QString> ambientTextures;
     QHash<QString, QString> metallicTextures;
     QHash<QString, QString> roughnessTextures;
+    QHash<QString, QString> shininessTextures;
 
     QHash<QString, FBXMaterial> _fbxMaterials;
 

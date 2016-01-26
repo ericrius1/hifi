@@ -59,9 +59,9 @@ void Material::setEmissive(const Color&  emissive, bool isSRGB) {
     _schemaBuffer.edit<Schema>()._emissive = (isSRGB ? ColorUtils::toLinearVec3(emissive) : emissive);
 }
 
-void Material::setGloss(float gloss) {
-    _key.setGloss((gloss > 0.0f));
-    _schemaBuffer.edit<Schema>()._gloss = gloss;
+void Material::setRoughness(float roughness) {
+    _key.setRoughness((roughness > 0.0f));
+    _schemaBuffer.edit<Schema>()._roughness = roughness;
 }
 
 void Material::setOpacity(float opacity) {

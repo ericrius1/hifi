@@ -864,11 +864,10 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                         _textureContent.insert(filename, content);
                     }
                 } else if (object.name == "Material") {
-                    bool isPBRMaterial = false;
-                    if (object.properties.at(1).toByteArray().contains("StingrayPBS1")) {
-                        isPBRMaterial = true;
-                    }
                     FBXMaterial material;
+                    if (object.properties.at(1).toByteArray().contains("StingrayPBS1")) {
+                        material.isPBSMaterial = true;
+                    }
                     foreach (const FBXNode& subobject, object.children) {
                         bool properties = false;
                         QByteArray propertyName;
@@ -883,7 +882,7 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                             propertyName = "P";
                             index = 4;
                         }
-                        if (properties && !isPBRMaterial) {
+                        if (properties && !material.isPBSMaterial) {
                             foreach (const FBXNode& property, subobject.children) {
                                 if (property.name == propertyName) {
                                     if (property.properties.at(0) == "DiffuseColor") {
@@ -919,7 +918,7 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                                 }
                             }
                         } 
-                        else if (properties && isPBRMaterial) {
+                        else if (properties && material.isPBSMaterial) {
                             foreach(const FBXNode& property, subobject.children) {
                                 if (property.name == propertyName) {
                                     if (property.properties.at(0) == "Maya|base_color") {
@@ -1086,8 +1085,12 @@ FBXGeometry* FBXReader::extractFBXGeometry(const QVariantHash& mapping, const QS
                             zComponents.insert(getID(connection.properties, 2), getID(connection.properties, 1));
 
                         } else if (type.contains("shininess")) {
+                            shininessTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
                             counter++;
-
+                        }
+                        else if (type.contains("roughness")) {
+                            roughnessTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
+                            counter++;
                         } else if (_loadLightmaps && type.contains("emissive")) {
                             emissiveTextures.insert(getID(connection.properties, 2), getID(connection.properties, 1));
 

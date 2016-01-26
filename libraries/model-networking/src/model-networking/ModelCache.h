@@ -182,6 +182,8 @@ public:
     QSharedPointer<NetworkTexture> metallicTexture;
     QString emissiveTextureName;
     QSharedPointer<NetworkTexture> emissiveTexture;
+    QString roughnessTextureName;
+    QSharedPointer<NetworkTexture> roughnessTexture;
 };
 
 

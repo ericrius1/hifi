@@ -106,19 +106,25 @@ void FBXReader::consolidateFBXMaterials() {
         if (!metallicTextureID.isNull()) {
             metallicTexture = getTexture(metallicTextureID);
             detectDifferentUVs |= (metallicTexture.texcoordSet != 0) || (!metallicTexture.transform.isIdentity());
-
             material.metallicTexture = metallicTexture;
         }
 
         FBXTexture roughnessTexture;
         QString roughnessTextureID = roughnessTextures.value(material.materialID);
+        QString shininessTextureID = shininessTextures.value(material.materialID);
         if (!roughnessTextureID.isNull()) {
-            material.roughnessTexture = getTexture(roughnessTextureID);
+            roughnessTexture = getTexture(roughnessTextureID);
+            roughnessTexture.isRoughnessmap = true;
+            material.roughnessTexture = roughnessTexture;
+            detectDifferentUVs |= (roughnessTexture.texcoordSet != 0) || (!roughnessTexture.transform.isIdentity());
+        }
+        else if (!shininessTextureID.isNull()) {
+            roughnessTexture = getTexture(roughnessTextureID);
+            roughnessTexture.isRoughnessmap = false;    
+            material.roughnessTexture = roughnessTexture;
+            detectDifferentUVs |= (roughnessTexture.texcoordSet != 0) || (!roughnessTexture.transform.isIdentity());
         }
         
-                
-
-
         FBXTexture emissiveTexture;
         glm::vec2 emissiveParams(0.f, 1.f);
         emissiveParams.x = _lightmapOffset;
@@ -150,8 +156,14 @@ void FBXReader::consolidateFBXMaterials() {
         // diffuse *= material.diffuseFactor;
         material._material->setDiffuse(diffuse);
 
-        material._material->setMetallic(material.metallic);
-        material._material->setGloss(material.shininess);
+        if (material.isPBSMaterial) {
+          material._material->setMetallic(material.metallic);
+          material._material->setRoughness((1.0 - material.roughness) * 128.0f);
+        }
+        else {
+            material._material-> setMetallic(std::max(material.specularColor.x, std::max(material.specularColor.y, material.specularColor.z)));
+            material._material->setRoughness(material.shininess);
+        }
 
         if (material.opacity <= 0.0f) {
             material._material->setOpacity(1.0f);

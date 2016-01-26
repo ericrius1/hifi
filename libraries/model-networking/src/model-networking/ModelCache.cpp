@@ -299,10 +299,22 @@ static NetworkMaterial* buildNetworkMaterial(const FBXMaterial& material, const 
         networkMaterial->metallicTexture = textureCache->getTexture(textureBaseUrl.resolved(QUrl(material.metallicTexture.filename)), METALLIC_TEXTURE, material.metallicTexture.content);
         networkMaterial->metallicTextureName = material.metallicTexture.name;
 
-        auto glossMap = model::TextureMapPointer(new model::TextureMap());
-        glossMap->setTextureSource(networkMaterial->metallicTexture->_textureSource);
+        // change to metallic map
+        auto metallicMap = model::TextureMapPointer(new model::TextureMap());
+        metallicMap->setTextureSource(networkMaterial->metallicTexture->_textureSource);
 
-        material._material->setTextureMap(model::MaterialKey::GLOSS_MAP, glossMap);
+        material._material->setTextureMap(model::MaterialKey::METALLIC_MAP, metallicMap);
+    }
+    // Same but for Roughness
+    if (!material.roughnessTexture.filename.isEmpty()) {
+        networkMaterial->roughnessTexture = textureCache->getTexture(textureBaseUrl.resolved(QUrl(material.roughnessTexture.filename)), (material.roughnessTexture.isRoughnessmap ? ROUGHNESS_TEXTURE : SHININESS_TEXTURE), material.roughnessTexture.content);
+        networkMaterial->roughnessTextureName = material.roughnessTexture.name;
+
+        auto roughnessMap = model::TextureMapPointer(new model::TextureMap());
+        roughnessMap->setTextureSource(networkMaterial->roughnessTexture->_textureSource);
+
+        // change to roughness map
+        material._material->setTextureMap(model::MaterialKey::ROUGHNESS_MAP, roughnessMap);
     }
     if (!material.emissiveTexture.filename.isEmpty()) {
         networkMaterial->emissiveTexture = textureCache->getTexture(textureBaseUrl.resolved(QUrl(material.emissiveTexture.filename)), LIGHTMAP_TEXTURE, material.emissiveTexture.content);
