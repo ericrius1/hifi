@@ -73,6 +73,7 @@ Grid = function(opts) {
 
     that.getVisible = function() { return that.visible; };
     that.setVisible = function(visible, noUpdate) {
+        print("EBL GRID TOOL IS VISIBLE?" + visible);
         that.visible = visible;
         updateGrid();
 
@@ -270,6 +271,7 @@ GridTool = function(opts) {
     }
 
     that.setVisible = function(visible) {
+        print("EBL GRID TOOL IS VISIBLE?" + visible);
         webView.setVisible(visible);
     }
 

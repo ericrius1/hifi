@@ -330,6 +330,7 @@ var toolBar = (function() {
 
     that.setActive = function(active) {
         if (active != isActive) {
+            print("EBL 1: setActive")
             if (active && !Entities.canAdjustLocks()) {
                 Window.alert(INSUFFICIENT_PERMISSIONS_ERROR_MSG);
             } else {
@@ -342,6 +343,7 @@ var toolBar = (function() {
                     selectionManager.clearSelections();
                     cameraManager.disable();
                 } else {
+                    print("EBL 2: setActive");
                     hasShownPropertiesTool = false;
                     entityListTool.setVisible(true);
                     gridTool.setVisible(true);
@@ -1288,6 +1290,7 @@ function handeMenuEvent(menuItem) {
             importSVO(importURL);
         }
     } else if (menuItem == "Entity List...") {
+        print("EBL TOGGLE ENTITY LIST");
         entityListTool.toggleVisible();
     } else if (menuItem == "Select All Entities In Box") {
         selectAllEtitiesInCurrentSelectionBox(false);
@@ -1540,6 +1543,7 @@ PropertiesTool = function(opts) {
     });
 
     webView.eventBridge.webEventReceived.connect(function(data) {
+        print("EBL EVENT BRIDGE SIGNAL RECIEVED");
         data = JSON.parse(data);
         if (data.type == "print") {
             if (data.message) {

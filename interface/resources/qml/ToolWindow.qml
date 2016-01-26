@@ -48,6 +48,7 @@ Windows.Window {
         id: tabView;
         onCountChanged: {
             if (0 == count) {
+                console.log("EBL Set tool window to invisible because count is 0")
                 toolWindow.visible = false
             }
         }
@@ -91,8 +92,12 @@ Windows.Window {
         var tab = tabView.getTab(index);
         if (newVisible) {
             toolWindow.visible = true
+            console.log("EBL 5 VISIBLE true");
             tab.enabled = true
+            // Remove this after testing
+            updateVisiblity();
         } else {
+            console.log("EBL VISIBLE FALSE");
             tab.enabled = false;
             updateVisiblity();
         }
@@ -138,7 +143,7 @@ Windows.Window {
 
         console.log("Updating visibility based on child tab added");
         newTab.enabledChanged.connect(function() {
-            console.log("Updating visibility based on child tab enabled change");
+            console.log("EBL Updating visibility based on child tab enabled change");
             updateVisiblity();
         })
         updateVisiblity();

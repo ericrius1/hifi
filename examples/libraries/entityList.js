@@ -15,6 +15,7 @@ EntityListTool = function(opts) {
     webView.setVisible(visible);
 
     that.setVisible = function(newVisible) {
+        print("EBL 3: set visible entity list");
         visible = newVisible;
         webView.setVisible(visible);
     };
