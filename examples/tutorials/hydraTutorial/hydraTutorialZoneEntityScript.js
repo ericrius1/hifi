@@ -31,22 +31,46 @@
         },
 
         placeControllersInHand: function() {
+
+            var rotation = Quat.multiply(MyAvatar.getRightPalmRotation(), Quat.fromPitchYawRollDegrees(0, 180, -100));
+            var position = Vec3.sum(MyAvatar.getRightHandPosition(), Vec3.multiplyQbyV(rotation, {
+                x: 0.1,
+                y: -0.02,
+                z: -0.04
+            }));
+            print("hand rotation " + JSON.stringify(MyAvatar.getRightPalmRotation()));
             this.rightHandHydraModel = Entities.addEntity({
                 type: "Model",
                 name: "Right Hydra",
                 modelURL: this.RIGHT_HYDRA_MODEL_URL,
                 parentID: MyAvatar.sessionUUID,
                 parentJointIndex: this.RIGHT_HAND_JOINT_INDEX,
-                rotation: Quat.fromPitchYawRollDegrees(47, 15, 70),
-                position: Vec3.sum(MyAvatar.getRightHandPosition(), {x: -0.05, y: 0.07, z: -0.02})
+                dimensions: {
+                    x: 0.24,
+                    y: 0.15,
+                    z: 0.11
+                },
+                rotation: rotation,
+                position: position
             });
-s
+
             this.leftHandHydraModel = Entities.addEntity({
                 type: "Model",
                 name: "Left Hydra",
                 modelURL: this.LEFT_HYDRA_MODEL_URL,
+                dimensions: {
+                    x: 0.24,
+                    y: 0.15,
+                    z: 0.11
+                },
                 parentID: MyAvatar.sessionUUID,
-                parentJointIndex: this.LEFT_HAND_JOINT_INDEX
+                parentJointIndex: this.LEFT_HAND_JOINT_INDEX,
+                position: Vec3.sum(MyAvatar.getLeftHandPosition(), {
+                    x: 0.05,
+                    y: 0.07,
+                    z: -0.02
+                }),
+                rotation: Quat.fromPitchYawRollDegrees(47, 15, 70)
             });
 
         },
@@ -65,9 +89,13 @@ s
             Entities.deleteEntity(this.leftHandHydraModel);
         },
 
+
+
         unload: function() {
             this.cleanup();
+
         }
     };
+
     return new HydraTutorialZone();
 });
