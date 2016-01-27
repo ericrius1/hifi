@@ -34,11 +34,10 @@
 
             var rotation = Quat.multiply(MyAvatar.getRightPalmRotation(), Quat.fromPitchYawRollDegrees(0, 180, -100));
             var position = Vec3.sum(MyAvatar.getRightHandPosition(), Vec3.multiplyQbyV(rotation, {
-                x: 0.1,
+                x: 0.13,
                 y: -0.02,
-                z: -0.04
+                z: -0.06
             }));
-            print("hand rotation " + JSON.stringify(MyAvatar.getRightPalmRotation()));
             this.rightHandHydraModel = Entities.addEntity({
                 type: "Model",
                 name: "Right Hydra",
@@ -53,7 +52,12 @@
                 rotation: rotation,
                 position: position
             });
-
+            rotation = Quat.multiply(MyAvatar.getLeftPalmRotation(), Quat.fromPitchYawRollDegrees(0, 0, 100));
+            position = Vec3.sum(MyAvatar.getLeftHandPosition(), Vec3.multiplyQbyV(rotation, {
+                x: 0.11,
+                y: 0.0,
+                z: 0.035
+            }));
             this.leftHandHydraModel = Entities.addEntity({
                 type: "Model",
                 name: "Left Hydra",
@@ -65,12 +69,8 @@
                 },
                 parentID: MyAvatar.sessionUUID,
                 parentJointIndex: this.LEFT_HAND_JOINT_INDEX,
-                position: Vec3.sum(MyAvatar.getLeftHandPosition(), {
-                    x: 0.05,
-                    y: 0.07,
-                    z: -0.02
-                }),
-                rotation: Quat.fromPitchYawRollDegrees(47, 15, 70)
+                position: position,
+                rotation: rotation
             });
 
         },
