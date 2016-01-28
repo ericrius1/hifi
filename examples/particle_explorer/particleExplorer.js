@@ -141,8 +141,10 @@ SettingsWindow = function() {
     this.webWindow = null;
 
     this.init = function() {
+        var url =  Script.resolvePath('index.html');
         Script.update.connect(waitForObjectAuthorization);
-        _this.webWindow = new WebWindow('Particle Explorer', Script.resolvePath('index.html'), 400, 600, false);
+        _this.webWindow = new OverlayWebWindow({title: 'Particle Explorer', source: url,  toolWindow: true});
+        // _this.webWindow.setVisible(true);
         _this.webWindow.eventBridge.webEventReceived.connect(_this.onWebEventReceived);
     };
 

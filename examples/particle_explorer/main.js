@@ -34,6 +34,7 @@ var updateInterval;
 
 var currentInputField;
 var storedController;
+//CHANGE TO WHITELIST
 var keysToIgnore = [
     'importSettings',
     'exportSettings',
@@ -85,8 +86,8 @@ var quatKeys = [];
 var colorKeys = [];
 
 window.onload = function() {
-    if (typeof EventBridge !== 'undefined') {
 
+    openEventBridge(function() {
         var stringifiedData = JSON.stringify({
             messageType: 'page_loaded'
         });
@@ -97,9 +98,9 @@ window.onload = function() {
 
         listenForSettingsUpdates();
         window.onresize = setGUIWidthToWindowWidth;
-    } else {
-        console.log('No event bridge, probably not in interface.');
-    }
+        console.log('JBP HAS EVENT BRIDGE');
+    })
+
 };
 
 function loadGUI() {
@@ -182,7 +183,7 @@ function addIndividualKeys() {
             controller = gui.add(settings, key);
 
         }
-        
+
         //2-way - need to fix not being able to input exact values if constantly listening
         //controller.listen();
 
@@ -501,4 +502,3 @@ function registerDOMElementsForListenerBlocking() {
         });
     });
 }
-
