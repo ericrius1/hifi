@@ -27,6 +27,7 @@ Script.include([
     "libraries/entityCameraTool.js",
     "libraries/gridTool.js",
     "libraries/entityList.js",
+    "particleExplorer/particleExplorer.js",
     "libraries/lightOverlayManager.js",
 ]);
 
