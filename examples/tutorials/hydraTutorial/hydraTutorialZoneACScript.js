@@ -24,7 +24,7 @@ var playRecording = function() {
         y: 495.2,
         z: 471.6
     };
-    Avatar.rotation = Quat.fromPitchYawRollDegrees(0, 100.5, 0);
+    Avatar.orientation = Quat.fromPitchYawRollDegrees(0, 177, 0);
 
     Recording.setPlayFromCurrentLocation(PLAY_FROM_CURRENT_LOCATION);
     Recording.setPlayerUseDisplayName(USE_DISPLAY_NAME);
