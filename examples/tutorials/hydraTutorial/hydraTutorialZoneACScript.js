@@ -57,7 +57,7 @@ var setUpPlatform = function() {
         rotation: Quat.fromPitchYawRollDegrees(0, 180, 0),
         collisionless: true,
         script: SCRIPT_URL,
-        visible: true
+        visible: false
     });
 }
 
