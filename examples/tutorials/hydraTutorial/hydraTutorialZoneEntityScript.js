@@ -10,7 +10,6 @@
 //
 
 (function() {
-    Script.include("..//..libraries/utils.js");
     var _this;
 
     var HydraTutorialZone = function() {
