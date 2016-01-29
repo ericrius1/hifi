@@ -14,6 +14,47 @@ const COOLDOWN_PERIOD = 0; // The period in ms that no animations can be played 
 var isPlaying = false;
 var isPlayable = true;
 
+var setUpPlatform = function() {
+    var PLATFORM_ROTATION = Quat.fromPitchYawRollDegrees(0, 200, 0);
+    var tutorialZone = Entities.addEntity({
+        type: "Model",
+        name: "Tutorial Platform",
+        modelURL: MODEL_URL,
+        position: PLATFORM_POSITION,
+        dimensions: {
+            x: 5.1,
+            y: 2.58,
+            z: 5.1
+        },
+        rotation: PLATFORM_ROTATION
+    });
+
+    var SCRIPT_URL = "https://rawgit.com/ericrius1/hifi/hydraTutorial/examples/tutorials/hydraTutorial/hydraTutorialZoneEntityScript.js";
+    var triggerBox = Entities.addEntity({
+        type: "Box",
+        color: {
+            red: 200,
+            green: 10,
+            blue: 200
+        },
+        parentID: tutorialZone,
+        position: Vec3.sum(PLATFORM_POSITION, {
+            x: 0,
+            y: 0,
+            z: 1
+        }),
+        dimensions: {
+            x: 3.5,
+            y: 0.8,
+            z: 1.8
+        },
+        rotation: Quat.fromPitchYawRollDegrees(0, 180, 0),
+        collisionless: true,
+        script: SCRIPT_URL,
+        visible: true
+    });
+}
+
 var playRecording = function() {
     if (!isPlayable || isPlaying) {
         return;
@@ -56,6 +97,7 @@ Script.update.connect(function(deltaTime) {
 });
 
 Messages.subscribe(RECORDING_CHANNEL);
+setUpPlatform();
 
 Messages.messageReceived.connect(function(channel, message, senderID) {
     print('channel: ' + channel);
