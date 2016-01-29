@@ -1,4 +1,4 @@
-const CLIP_URL = "atp:644901bd04b6200a3b2c6de53785742e8b0408645f9b21698d0b7ebf468d50dc.hfr";
+const CLIP_URL = "atp:6a4866aed4f717933bb5ac6e4824e56f49fedf635550ac7baa84b6ccb1bb6ab4.hfr";
 
 
 const RECORDING_CHANNEL = 'PlayBackOnAssignment';
