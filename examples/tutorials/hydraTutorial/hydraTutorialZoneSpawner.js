@@ -54,4 +54,4 @@
   }
 
 
-  Script.scriptEnding.connect(cleanup);
+ // Script.scriptEnding.connect(cleanup);
