@@ -8,23 +8,24 @@
 
   var MODEL_URL = "https://hifi-content.s3.amazonaws.com/alan/dev/Holographic-Stage-no-roof.fbx"
   var PLATFORM_POSITION = {
-      x: 554.59,
-      y: 495.49,
-      z: 472.41
-    };
-    var PLATFORM_ROTATION = Quat.fromPitchYawRollDegrees(0, 200, 0);
-    var tutorialZone = Entities.addEntity({
-      type: "Model",
-      name: "Tutorial Platform",
-      modelURL: MODEL_URL,
-      position: PLATFORM_POSITION,
-      dimensions: {
-        x: 5.1,
-        y: 2.58,
-        z: 5.1
-      },
-      rotation: PLATFORM_ROTATION 
-    });
+    x: 554.59,
+    y: 495.49,
+    z: 472.41
+  };
+  var PLATFORM_ROTATION = Quat.fromPitchYawRollDegrees(0, 200, 0);
+  var tutorialZone = Entities.addEntity({
+    type: "Model",
+    name: "Tutorial Platform",
+    modelURL: MODEL_URL,
+    compoundShapeURL: "https://hifi-content.s3.amazonaws.com/alan/dev/Holographic-Stage-no-roof.obj",
+    position: PLATFORM_POSITION,
+    dimensions: {
+      x: 5.1,
+      y: 2.58,
+      z: 5.1
+    },
+    rotation: PLATFORM_ROTATION
+  });
 
 
   var triggerBox = Entities.addEntity({
@@ -36,7 +37,11 @@
       blue: 200
     },
     parentID: tutorialZone,
-    position: Vec3.sum(PLATFORM_POSITION, {x: 0, y: 0, z: 1}),
+    position: Vec3.sum(PLATFORM_POSITION, {
+      x: 0,
+      y: 0,
+      z: 1
+    }),
     dimensions: {
       x: 3.5,
       y: 0.8,
@@ -55,4 +60,4 @@
   }
 
 
- // Script.scriptEnding.connect(cleanup);
+  // Script.scriptEnding.connect(cleanup);
