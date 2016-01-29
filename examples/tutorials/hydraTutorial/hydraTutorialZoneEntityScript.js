@@ -21,6 +21,9 @@
         this.LEFT_HYDRA_MODEL_URL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/models/Hydra-Tips-LEFT.fbx";
         this.RIGHT_HAND_JOINT_INDEX = MyAvatar.getJointIndex("RightHand");
         this.LEFT_HAND_JOINT_INDEX = MyAvatar.getJointIndex("LeftHand");
+
+        this.TRIGGER_MESSAGE = "PlayBackOnAssignment";
+        this.TRIGGER_CHANNEL = "HydraTutorialChannel";
     };
 
     HydraTutorialZone.prototype = {
@@ -28,6 +31,7 @@
         enterEntity: function() {
             print("EBL ENTITY ENTERED");
             this.placeControllersInHand();
+            Messages.sendMessage(this.TRIGGER_MESSAGE, this.TRIGGER_CHANNEL);
         },
 
         placeControllersInHand: function() {

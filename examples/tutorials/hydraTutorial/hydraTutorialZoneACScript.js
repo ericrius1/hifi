@@ -2,7 +2,7 @@ const CLIP_URL = "atp:644901bd04b6200a3b2c6de53785742e8b0408645f9b21698d0b7ebf46
 
 
 const RECORDING_CHANNEL = 'PlayBackOnAssignment';
-const RECORDING_CHANNEL_MESSAGE = 'BowShootingGameWelcome'; // For each different assignment add a different message here.
+const RECORDING_CHANNEL_MESSAGE = 'HydraTutorialChannel'; // For each different assignment add a different message here.
 const PLAY_FROM_CURRENT_LOCATION = false;
 const USE_DISPLAY_NAME = true;
 const USE_ATTACHMENTS = true;
