@@ -9,7 +9,7 @@
   var MODEL_URL = "https://hifi-content.s3.amazonaws.com/alan/dev/Holographic-Stage-no-roof.fbx"
   var PLATFORM_POSITION = {
     x: 554.59,
-    y: 495.49,
+    y: 495.41,
     z: 472.41
   };
   var PLATFORM_ROTATION = Quat.fromPitchYawRollDegrees(0, 200, 0);
@@ -25,7 +25,7 @@
       z: 5.1
     },
     rotation: PLATFORM_ROTATION,
-    locked: true
+    locked: false
   });
 
 
@@ -62,4 +62,4 @@
   }
 
 
-  // Script.scriptEnding.connect(cleanup);
+  Script.scriptEnding.connect(cleanup);
