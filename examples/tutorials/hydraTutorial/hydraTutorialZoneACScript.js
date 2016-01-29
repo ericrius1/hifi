@@ -20,9 +20,9 @@ var playRecording = function() {
     }
     Agent.isAvatar = true;
     Avatar.position = {
-        x: 536.839,
-        y: 495.18,
-        z: 457.983
+        x: 554.4,
+        y: 495.2,
+        z: 473.5
     };
     Avatar.rotation = {
         x: 0,
