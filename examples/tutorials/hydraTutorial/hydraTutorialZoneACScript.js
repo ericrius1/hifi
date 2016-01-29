@@ -11,7 +11,7 @@ const AUDIO_OFFSET = 0.0;
 const STARTING_TIME = 0.0;
 
 
-void setUpRecording = function() {
+var setUpRecording = function() {
 
     Agent.isAvatar = true;
     Avatar.position = {
@@ -37,6 +37,7 @@ var playRecording = function() {
 };
 
 Messages.subscribe(RECORDING_CHANNEL);
+setUpRecording();
 
 Messages.messageReceived.connect(function(channel, message, senderID) {
     print('channel: ' + channel);
