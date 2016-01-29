@@ -25,7 +25,7 @@
       z: 5.1
     },
     rotation: PLATFORM_ROTATION,
-    locked: false
+    locked: true
   });
 
 
@@ -62,4 +62,4 @@
   }
 
 
-  Script.scriptEnding.connect(cleanup);
+  // Script.scriptEnding.connect(cleanup);
