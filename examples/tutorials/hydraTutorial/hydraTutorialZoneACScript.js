@@ -15,6 +15,12 @@ var isPlaying = false;
 var isPlayable = true;
 
 var setUpPlatform = function() {
+    var MODEL_URL = "https://hifi-content.s3.amazonaws.com/alan/dev/Holographic-Stage-no-roof.fbx"
+    var PLATFORM_POSITION = {
+        x: 554.59,
+        y: 495.49,
+        z: 472.41
+    };
     var PLATFORM_ROTATION = Quat.fromPitchYawRollDegrees(0, 200, 0);
     var tutorialZone = Entities.addEntity({
         type: "Model",
