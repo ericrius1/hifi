@@ -43,7 +43,8 @@
     },
     rotation: Quat.fromPitchYawRollDegrees(0, 180, 0),
     collisionless: true,
-    script: SCRIPT_URL
+    script: SCRIPT_URL,
+    visible: false
   });
 
 

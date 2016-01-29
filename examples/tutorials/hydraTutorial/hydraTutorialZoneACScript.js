@@ -20,16 +20,12 @@ var playRecording = function() {
     }
     Agent.isAvatar = true;
     Avatar.position = {
-        x: 554.4,
+        x: 555.0,
         y: 495.2,
-        z: 473.5
+        z: 471.6
     };
-    Avatar.rotation = {
-        x: 0,
-        y: -0.850028,
-        z: 0.526738
-    };
-
+    Avatar.rotation = Quat.fromPitchYawRollDegrees(0, 177.5, 0);
+    
     Recording.setPlayFromCurrentLocation(PLAY_FROM_CURRENT_LOCATION);
     Recording.setPlayerUseDisplayName(USE_DISPLAY_NAME);
     Recording.setPlayerUseAttachments(USE_ATTACHMENTS);
