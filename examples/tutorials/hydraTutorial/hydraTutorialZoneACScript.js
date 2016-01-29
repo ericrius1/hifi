@@ -21,7 +21,7 @@ var playRecording = function() {
     Agent.isAvatar = true;
     Avatar.position = {
         x: 555.0,
-        y: 495.5,
+        y: 496,
         z: 471.6
     };
     Avatar.orientation = Quat.fromPitchYawRollDegrees(0, 150, 0);
