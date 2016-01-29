@@ -24,7 +24,8 @@
       y: 2.58,
       z: 5.1
     },
-    rotation: PLATFORM_ROTATION
+    rotation: PLATFORM_ROTATION,
+    locked: true
   });
 
 
@@ -50,7 +51,8 @@
     rotation: Quat.fromPitchYawRollDegrees(0, 180, 0),
     collisionless: true,
     script: SCRIPT_URL,
-    visible: false
+    visible: false,
+    locked: true
   });
 
 
