@@ -29,6 +29,7 @@
 
   var triggerBox = Entities.addEntity({
     type: "Box",
+    name: "Tutorial Trigger Box",
     color: {
       red: 200,
       green: 10,
