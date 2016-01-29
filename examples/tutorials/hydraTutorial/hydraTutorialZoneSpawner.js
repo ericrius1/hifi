@@ -4,7 +4,7 @@
   orientation = Quat.fromVec3Degrees(orientation);
   var center = Vec3.sum(MyAvatar.position, Vec3.multiply(3, Quat.getFront(orientation)));
 
-  var SCRIPT_URL = Script.resolvePath("hydraTutorialZoneEntityScript.js?v1" + Math.random());
+  var SCRIPT_URL = Script.resolvePath("hydraTutorialZoneEntityScript.js");
 
   var MODEL_URL = "https://hifi-content.s3.amazonaws.com/alan/dev/Holographic-Stage-no-roof.fbx"
   var PLATFORM_POSITION = {
