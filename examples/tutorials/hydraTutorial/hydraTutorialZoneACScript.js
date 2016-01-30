@@ -1,7 +1,8 @@
 const CLIP_URL = "atp:6a4866aed4f717933bb5ac6e4824e56f49fedf635550ac7baa84b6ccb1bb6ab4.hfr";
 
 
-const RECORDING_CHANNEL_MESSAGE = 'PlayBackOnAssignment';
+const RECORDING_CHANNEL_PLAY_MESSAGE = 'PlayBackOnAssignment';
+const RECORDING_CHANNEL_STOP_MESSAGE = 'StopPlayBackOnAssignment';
 const RECORDING_CHANNEL = 'HydraTutorialChannel'; // For each different assignment add a different message here.
 const PLAY_FROM_CURRENT_LOCATION = false;
 const USE_DISPLAY_NAME = true;
@@ -13,6 +14,13 @@ const COOLDOWN_PERIOD = 0; // The period in ms that no animations can be played 
 
 var isPlaying = false;
 var isPlayable = true;
+
+var stopRecording = function() {
+    Recording.stopRecording();
+    isPlayable = true;
+    isPlaying = false;
+    Agent.isAvatar = false;
+}
 
 var playRecording = function() {
     if (!isPlayable || isPlaying) {
@@ -41,27 +49,15 @@ var playRecording = function() {
     isPlayable = false; // Set this true again after the cooldown period
 };
 
-Script.update.connect(function(deltaTime) {
-    if (isPlaying && !Recording.isPlaying()) {
-        print('Reached the end of the recording. Resetting.');
-        isPlaying = false;
-        // Agent.isAvatar = false;
-        if (COOLDOWN_PERIOD === 0) {
-            isPlayable = true;
-            return;
-        }
-        Script.setTimeout(function() {
-            isPlayable;
-        }, COOLDOWN_PERIOD);
-    }
-});
 
 Messages.subscribe(RECORDING_CHANNEL);
 
 Messages.messageReceived.connect(function(channel, message, senderID) {
     print('channel: ' + channel);
     print('message: ' + message);
-    if (channel === RECORDING_CHANNEL && message === RECORDING_CHANNEL_MESSAGE) {
+    if (channel === RECORDING_CHANNEL && message === RECORDING_CHANNEL_PLAY_MESSAGE) {
         playRecording();
+    } else if (channel === RECORDING_CHANNEL && message === RECORDING_CHANNEL_STOP_MESSAGE) {
+        stopRecording();
     }
 });

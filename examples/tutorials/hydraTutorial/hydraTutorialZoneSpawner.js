@@ -1,3 +1,15 @@
+
+//  hydraTutorialZoneSpawner.js
+//  examples/tutorials/hydraTutorial/hydraTutorialZoneSpawner.js
+//
+//  Created by Eric Levin on 1/29/16.
+//  Copyright 2016 High Fidelity, Inc.
+//
+
+//  Distributed under the Apache License, Version 2.0.
+//  See the accompanying file LICENSE or http://www.apache.org/licenses/LICENSE-2.0.html
+
+
   var orientation = Camera.getOrientation();
   orientation = Quat.safeEulerAngles(orientation);
   orientation.x = 0;
@@ -26,7 +38,7 @@
       z: 5.1
     },
     rotation: PLATFORM_ROTATION,
-    // locked: true
+    locked: true
   });
 
 
@@ -45,15 +57,15 @@
       z: 1
     }),
     dimensions: {
-      x: 3.5,
+      x: 4.5,
       y: 0.8,
-      z: 1.8
+      z: 3.8
     },
     rotation: Quat.fromPitchYawRollDegrees(0, 180, 0),
     collisionless: true,
     script: SCRIPT_URL,
     visible: false,
-    // locked: true
+    locked: true
   });
 
 
@@ -93,4 +105,4 @@
   }
 
 
-  Script.scriptEnding.connect(cleanup);
+  // Script.scriptEnding.connect(cleanup);

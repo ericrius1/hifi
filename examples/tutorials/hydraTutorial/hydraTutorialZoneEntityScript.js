@@ -21,16 +21,16 @@
         this.RIGHT_HAND_JOINT_INDEX = MyAvatar.getJointIndex("RightHand");
         this.LEFT_HAND_JOINT_INDEX = MyAvatar.getJointIndex("LeftHand");
 
-        this.TRIGGER_MESSAGE = "PlayBackOnAssignment";
+        this.TRIGGER_PLAY_MESSAGE = "PlayBackOnAssignment";
+        this.TRIGGER_STOP_MESSAGE = "StopPlayBackOnAssignment";
         this.TRIGGER_CHANNEL = "HydraTutorialChannel";
     };
 
     HydraTutorialZone.prototype = {
 
         enterEntity: function() {
-            print("EBL ENTITY ENTERED");
             this.placeControllersInHand();
-            Messages.sendMessage(this.TRIGGER_CHANNEL, this.TRIGGER_MESSAGE);
+            Messages.sendMessage(this.TRIGGER_CHANNEL, this.TRIGGER_PLAY_MESSAGE);
         },
 
         placeControllersInHand: function() {
@@ -79,7 +79,7 @@
         },
 
         leaveEntity: function() {
-            print("EBL LEAVE ENTITY");
+            Messages.sendMessage(this.TRIGGER_CHANNEL, this.TRIGGER_STOP_MESSAGE);
             this.cleanup();
         },
 
