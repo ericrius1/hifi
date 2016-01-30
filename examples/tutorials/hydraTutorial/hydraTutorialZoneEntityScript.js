@@ -30,7 +30,7 @@
         enterEntity: function() {
             print("EBL ENTITY ENTERED");
             this.placeControllersInHand();
-            Messages.sendMessage(this.TRIGGER_MESSAGE, this.TRIGGER_CHANNEL);
+            Messages.sendMessage(this.TRIGGER_CHANNEL, this.TRIGGER_MESSAGE);
         },
 
         placeControllersInHand: function() {

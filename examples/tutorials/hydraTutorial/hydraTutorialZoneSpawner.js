@@ -3,8 +3,9 @@
   orientation.x = 0;
   orientation = Quat.fromVec3Degrees(orientation);
   var center = Vec3.sum(MyAvatar.position, Vec3.multiply(3, Quat.getFront(orientation)));
+  var lights = [];
 
-  var SCRIPT_URL = Script.resolvePath("hydraTutorialZoneEntityScript.js");
+  var SCRIPT_URL = Script.resolvePath("hydraTutorialZoneEntityScript.js?v1" + Math.random());
 
   var MODEL_URL = "https://hifi-content.s3.amazonaws.com/alan/dev/Holographic-Stage-no-roof.fbx"
   var PLATFORM_POSITION = {
@@ -25,7 +26,7 @@
       z: 5.1
     },
     rotation: PLATFORM_ROTATION,
-    locked: true
+    // locked: true
   });
 
 
@@ -52,14 +53,44 @@
     collisionless: true,
     script: SCRIPT_URL,
     visible: false,
-    locked: true
+    // locked: true
   });
+
+
+  // var createLights = function() {
+  //   var light = Entities.addEntity({
+  //     type: "Light",
+  //     name: "Tutorial Platform Light",
+  //     positiom: {
+  //       x: 553.56,
+  //       y: 494.7,
+  //       z: 472.38
+  //     },
+  //     color: {
+  //       red: 100,
+  //       green: 232,
+  //       blue: 255
+  //     },
+  //     dimensions: {
+  //       x: 3,
+  //       y: 3,
+  //       z: 3
+  //     },
+  //     intensity: 3
+  //   });
+  //   lights.push(light);
+  // }
+
+  // createLights();
 
 
   function cleanup() {
     Entities.deleteEntity(triggerBox);
     Entities.deleteEntity(tutorialZone);
+    lights.forEach(function(light) {
+      Entities.deleteEntity(light);
+    });
   }
 
 
-  // Script.scriptEnding.connect(cleanup);
+  Script.scriptEnding.connect(cleanup);

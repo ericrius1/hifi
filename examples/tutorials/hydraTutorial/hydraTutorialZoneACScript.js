@@ -1,8 +1,8 @@
 const CLIP_URL = "atp:6a4866aed4f717933bb5ac6e4824e56f49fedf635550ac7baa84b6ccb1bb6ab4.hfr";
 
 
-const RECORDING_CHANNEL = 'PlayBackOnAssignment';
-const RECORDING_CHANNEL_MESSAGE = 'HydraTutorialChannel'; // For each different assignment add a different message here.
+const RECORDING_CHANNEL_MESSAGE = 'PlayBackOnAssignment';
+const RECORDING_CHANNEL = 'HydraTutorialChannel'; // For each different assignment add a different message here.
 const PLAY_FROM_CURRENT_LOCATION = false;
 const USE_DISPLAY_NAME = true;
 const USE_ATTACHMENTS = true;
