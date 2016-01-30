@@ -37,7 +37,7 @@ var tutorialZone = Entities.addEntity({
     z: 5.1
   },
   rotation: PLATFORM_ROTATION,
-  //    locked: true
+     locked: true
 });
 
 
@@ -64,7 +64,7 @@ var triggerBox = Entities.addEntity({
   collisionless: true,
   script: SCRIPT_URL,
   visible: false,
-  // locked: true
+  locked: true
 });
 
 
@@ -82,7 +82,8 @@ var createLights = function() {
       y: 3,
       z: 3
     },
-    intensity: 3
+    intensity: 3,
+    locked: true
   };
   var positions = [{
     x: 553.91,
@@ -142,4 +143,4 @@ function cleanup() {
 }
 
 
-Script.scriptEnding.connect(cleanup);
+// Script.scriptEnding.connect(cleanup);
