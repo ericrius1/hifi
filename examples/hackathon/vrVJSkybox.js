@@ -1,6 +1,6 @@
 var zone = Entities.addEntity({
     type: "Zone",
-    name: "Epic SkyBox",
+    name: "VRVJ SkyBox",
     position: MyAvatar.position,
     dimensions: {
         x: 10,
@@ -16,7 +16,7 @@ var zone = Entities.addEntity({
 
         "ProceduralEntity": {
             "version": 2,
-            "shaderUrl": "file:///C:/Users/Eric/hifi/examples/hackathon/skybox.fs?v1" + Math.random(),
+            "shaderUrl": "file:///C:/Users/Eric/hifi/examples/hackathon/skybox.fs",
             "channels": [
                 "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg",
             ],
