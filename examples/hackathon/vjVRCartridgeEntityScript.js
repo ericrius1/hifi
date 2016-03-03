@@ -18,14 +18,27 @@
             blue: 0
         };
         _this.SEARCH_RADIUS = 5000;
+
+
         _this.VRVJ_LIGHT_NAME = "VR_VJ_LIGHT";
+        _this.VRVJ_PARTICLE_STORM_NAME = "VR_VJ_PARTICLE_STORM";
+
         _this.active = false;
         _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD = 0.7;
-        _this.LOUDNESS_RANGE = {min: 0.05, max: 0.3};
-        _this.INTENSITY_RANGE = {min: 20, max: 200};
-        _this.MIN_VOLUME_FOR_LIGHT_TWEAKING = 0.1;
+        _this.LOUDNESS_RANGE = {
+            min: 0.05,
+            max: 0.3
+        };
+        _this.INTENSITY_RANGE = {
+            min: 50,
+            max: 400
+        };
+        _this.MIN_VOLUME_FOR_VISUAL_TWEAKING = 0.1;
 
-        _this.volumeRange = {min: 0, max: 0.6};
+        _this.volumeRange = {
+            min: 0,
+            max: 0.6
+        };
 
     }
 
@@ -60,13 +73,12 @@
             }
             Entities.editEntity(_this.entityID, {
                 color: _this.playingColor
-                // type: "Sphere"
+                    // type: "Sphere"
             });
         },
 
         setDistanceToClosestHand: function(entityID, data) {
-            if (!_this.active) {
-            }
+            if (!_this.active) {}
 
             if (!_this.injector) {
                 return;
@@ -76,15 +88,17 @@
 
             var distanceToClosestHand = JSON.parse(data[0]).distanceToClosestHand;
 
-            _this.setSoundVolume(distanceToClosestHand);
+            _this.updateSoundProperties(distanceToClosestHand);
             if (_this.userData.visualComponent === "light_intensity") {
-              _this.updateLightIntensity();  
+                _this.updateLightIntensity();
+            } else if (_this.userData.visualComponent === "particle_storm") {
+                _this.updateParticleStorm();
             }
 
         },
 
 
-        setSoundVolume: function(distanceToClosestHand) {
+        updateSoundProperties: function(distanceToClosestHand) {
             var newVolume;
             if (distanceToClosestHand > _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD) {
                 newVolume = 0;
@@ -97,6 +111,9 @@
             }
             _this.audioOptions.volume = newVolume;
             _this.injector.setOptions(_this.audioOptions);
+            if (_this.audioOptions.volume > _this.MIN_VOLUME_FOR_VISUAL_TWEAKING) {
+                _this.loudness = _this.injector.loudness;
+            }
         },
 
 
@@ -108,6 +125,23 @@
 
         },
 
+        updateParticleStorm: function() {
+            if (!_this.particleStorm) {
+                print("NO PARTICLE STORM FOUND");
+                return;
+            }
+
+            var newParticleRadius = 0.005;
+            if(_this.audioOptions.volume > _this.MIN_VOLUME_FOR_VISUAL_TWEAKING) {
+                newParticleRadius = map(_this.loudness, _this.LOUDNESS_RANGE.min, _this.LOUDNESS_RANGE.max, 0.2, 0.4);
+                newParticleRadius = clamp(newParticleRadius, 0.2, 0.4);
+            }
+
+            Entities.editEntity(_this.particleStorm, {particleRadius: newParticleRadius});
+
+
+        },
+
         updateLightIntensity: function() {
             if (!_this.light) {
                 print("NO LIGHT! Returning")
@@ -115,16 +149,17 @@
             }
 
             var newIntensity = 1;
-            if (_this.audioOptions.volume > _this.MIN_VOLUME_FOR_LIGHT_TWEAKING) {
-                var loudness = _this.injector.loudness;
-                newIntensity = map(loudness, _this.LOUDNESS_RANGE.min, _this.LOUDNESS_RANGE.max, _this.INTENSITY_RANGE.min, _this.INTENSITY_RANGE.max) * Math.pow(_this.audioOptions.volume, 3);
+            if (_this.audioOptions.volume > _this.MIN_VOLUME_FOR_VISUAL_TWEAKING) {
+                newIntensity = map(_this.loudness, _this.LOUDNESS_RANGE.min, _this.LOUDNESS_RANGE.max, _this.INTENSITY_RANGE.min, _this.INTENSITY_RANGE.max) * Math.pow(_this.audioOptions.volume, 3);
             }
-            Entities.editEntity(_this.light, {intensity: newIntensity});
+            Entities.editEntity(_this.light, {
+                intensity: newIntensity
+            });
 
         },
 
 
-        getLight: function() {
+        getVisualComponents: function() {
             // Search for the nearest VRVJ light 
             var entities = Entities.findEntities(_this.position, _this.SEARCH_RADIUS);
             for (var i = 0; i < entities.length; i++) {
@@ -132,15 +167,19 @@
                 var name = Entities.getEntityProperties(entity, "name").name;
                 if (name === _this.VRVJ_LIGHT_NAME) {
                     _this.light = entity;
+                } else if (name === _this.VRVJ_PARTICLE_STORM_NAME) {
+                    _this.particleStorm = entity;
                 }
             }
 
         },
 
+
+
         release: function() {
             _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
             _this.updateSoundPosition();
-            _this.getLight();
+            _this.getVisualComponents();
         },
 
 
@@ -158,7 +197,7 @@
             if (!userData.soundURL) {
                 print("WARNING: NO SOUND URL ON USER DATA!!!!!");
             }
-            _this.getLight();
+            _this.getVisualComponents();
             _this.clip = SoundCache.getSound(userData.soundURL);
         },
 

@@ -52,7 +52,7 @@ function spawnCartridges() {
             userData.maxVolume = 1.0;
             cartridgeProps.color = {red: 200, green: 10, blue: 200};
         } else if (i === 4) {
-            cartridgeProps.color = {red: 200, green: 10, blue: 200};
+            cartridgeProps.color = {red: 0, green: 0, blue: 200};
             userData.visualComponent = "particle_storm";
         }
         else {

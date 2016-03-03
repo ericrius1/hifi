@@ -208,9 +208,9 @@ function addParticleStorm() {
             y: .00,
             z: 2
         },
-        particleRadius: 0.3,
+        particleRadius: 0.001,
         radiusSpread: 0,
-        radiusStart: 0.7,
+        radiusStart: 0.05,
         radiusFinish: 0.1,
         alpha: 0.7,
         alphaSpread: .1,
