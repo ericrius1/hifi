@@ -17,9 +17,11 @@
             green: 0,
             blue: 0
         };
+        _this.SKYBOX_SEARCH_RADIUS = 30;
+        _this.VRVJ_SKYBOX_NAME = "VRVJ SkyBox";
         _this.active = false;
 
-    };
+    }
 
     SoundCartridge.prototype = {
 
@@ -69,20 +71,36 @@
 
         updateSoundPosition: function() {
             if (_this.injector) {
-                _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
                 _this.audioOptions.position = _this.position;
                 _this.injector.setOptions(_this.audioOptions);
             }
 
         },
+        updateSkybox: function() {
+            // Search for the nearest epic skybox and save that
+            var entities = Entities.findEntities(_this.position, _this.SKYBOX_SEARCH_RADIUS);
+            for (var i = 0; i < entities.length; i++) {
+                var entity = entities[i];
+                var name = Entities.getEntityProperties(entity, "name").name;
+                if (name === _this.VRVJ_SKYBOX_NAME) {
+
+                }
+            }
+        },
+
+        release: function() {
+            _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
+            _this.updateSoundPosition();
+            _this.updateSkybox();
+        },
+
 
         releaseGrab: function() {
-            _this.updateSoundPosition();
-
+            _this.release();
         },
 
         releaseEquip: function() {
-            _this.updateSoundPosition();
+            _this.release();
         },
 
         preload: function(entityID) {
@@ -100,8 +118,6 @@
                 delete _this.injector;
             }
         }
-
-
     };
 
     // entity scripts always need to return a newly constructed object of our type

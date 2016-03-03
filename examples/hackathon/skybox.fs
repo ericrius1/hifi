@@ -34,6 +34,7 @@ vec3 stars3(in vec3 d) {
     vec2 uv = directionToUv(dir);
     vec3 starColor = texture2D( iChannel0, uv).xyz;
     starColor = pow(starColor, vec3(0.75));
+    starColor.r = red; 
     return starColor;
 }
 

@@ -1,11 +1,13 @@
+var VRVJ_SKYBOX_NAME = "VRVJ SkyBox";
+
 var zone = Entities.addEntity({
     type: "Zone",
-    name: "VRVJ SkyBox",
+    name: VRVJ_SKYBOX_NAME,
     position: MyAvatar.position,
     dimensions: {
-        x: 10,
-        y: 10,
-        z: 10
+        x: 20,
+        y: 20,
+        z: 20
     },
     shapeType: "sphere",
     backgroundMode: "skybox",
@@ -21,7 +23,7 @@ var zone = Entities.addEntity({
                 "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg",
             ],
             "uniforms": {
-                "red": 0.9
+                "red": 0.1
             }
         }
     })

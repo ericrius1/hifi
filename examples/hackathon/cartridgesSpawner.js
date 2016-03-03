@@ -16,7 +16,8 @@ var clipURLS = ["https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hac
 ];
 
 function spawnCartridges() {
-    var SCRIPT_URL = Script.resolvePath("soundCartridgeEntityScript.js?v1" + Math.random());
+    // When spawning 
+    var SCRIPT_URL = Script.resolvePath("vjVRCartridgeEntityScript.js?v1" + Math.random());
     var cartridgeProps = {
         type: "Box",
         name: "Sound Cartridge",
@@ -33,7 +34,7 @@ function spawnCartridges() {
     };
 
     for (var i = 0; i < clipURLS.length; i++) {
-        cartridgeProps.position.x = cartridgeBasePosition.x + randFloat(-0.7, 0.7);
+        cartridgeProps.position.y = cartridgeBasePosition.y+ randFloat(-0.7, 0.7);
         cartridgeProps.userData = JSON.stringify({
             soundURL: clipURLS[i]
         });
