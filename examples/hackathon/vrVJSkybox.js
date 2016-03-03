@@ -20,8 +20,8 @@ var zone = Entities.addEntity({
 
         ProceduralEntity: {
             version: 2,
-            shaderUrl: "file:///C:/Users/Eric/hifi/examples/hackathon/skybox.fs",
-            channels: [
+            shaderUrl: "https: //s3-us-west-1.amazonaws.com/hifi-content/eric/shaders/skybox.fs",
+                channels: [
                 "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg",
             ]
         }
