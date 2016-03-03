@@ -23,7 +23,6 @@ function spawnCartridges() {
     var cartridgeProps = {
         type: "Box",
         name: CARTRIDGE_NAME,
-        position: cartridgeBasePosition,
         script: SCRIPT_URL,
         dynamic: true,
         dimensions: {
@@ -36,10 +35,14 @@ function spawnCartridges() {
     };
 
     for (var i = 0; i < clipURLS.length; i++) {
-        cartridgeProps.position.y = cartridgeBasePosition.y+ randFloat(-0.7, 0.7);
         var userData = {soundURL: clipURLS[i]}
       if (i === 0) {
         userData.visualComponent = "light_intensity";
+        cartridgeProps.position = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(0.4, Quat.getFront(orientation)));
+      } else {
+        cartridgeProps.position = cartridgeBasePosition;
+        cartridgeProps.position.y = cartridgeBasePosition.y+ randFloat(-0.7, 0.7);
+        
       }
         cartridgeProps.userData = JSON.stringify(userData);
         cartridgeProps.color = {
