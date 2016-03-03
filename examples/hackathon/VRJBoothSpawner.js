@@ -30,7 +30,7 @@ var sphereOverlay = Overlays.addOverlay('sphere', {
     visible: true
 });
 
-var handToCartridgeDistanceThreshold = 0.7;
+
 
 
 function updateCartridgeParams() {
@@ -41,14 +41,7 @@ function updateCartridgeParams() {
         var distanceToLeftHand = Vec3.distance(MyAvatar.getLeftPalmPosition(), cartridgePosition);
         var distanceToClosestHand = Math.min(distanceToLeftHand, distanceToRightHand);
         // The closer the hand, the louder the sound should be...
-        var newVolume;
-        if (distanceToClosestHand > handToCartridgeDistanceThreshold) {
-            newVolume = 0;
-        } else {
-          newVolume = map(distanceToClosestHand, 0, handToCartridgeDistanceThreshold, 1, 0);
-        }
-
-        Entities.callEntityMethod(activeCartridge, "setSoundVolume", [JSON.stringify({newVolume: newVolume})]);
+        Entities.callEntityMethod(activeCartridge, "setDistanceToClosestHand", [JSON.stringify({distanceToClosestHand: distanceToClosestHand})])
     });
 }
 
@@ -69,8 +62,6 @@ function cartridgeSearch() {
             if (!cartridgeInActiveList(entity)) {
                 Entities.callEntityMethod(entity, "activate");
                 activeCartridges.push(entity);
-            } else {
-                // cartridge is 
             }
         }
 

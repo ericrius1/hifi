@@ -20,6 +20,7 @@
         _this.SKYBOX_SEARCH_RADIUS = 30;
         _this.VRVJ_SKYBOX_NAME = "VRVJ SkyBox";
         _this.active = false;
+        _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD = 0.7;
 
     }
 
@@ -54,7 +55,23 @@
             });
         },
 
-        setSoundVolume: function(entityID, data) {
+        setDistanceToClosestHand: function(entityID, data) {
+            if (!_this.active) {
+                print("CARTRIDGE IS NOT ACTIVE");
+            }
+            var distanceToClosestHand = JSON.parse(data[0]).distanceToClosestHand;
+            var newVolume;
+            if (distanceToClosestHand > _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD) {
+                newVolume = 0;
+            } else {
+                newVolume = map(distanceToClosestHand, 0, _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD, 1, 0);
+            }
+
+            _this.setSoundVolume(newVolume)
+
+        },
+
+        setSoundVolume: function(newVolume) {
             if (!_this.injector) {
                 print("NO INJECTOR!");
                 return;
@@ -64,10 +81,10 @@
                 print(" Not active!!");
                 return;
             }
-            var newVolume = JSON.parse(data[0]).newVolume;
             _this.audioOptions.volume = newVolume;
             _this.injector.setOptions(_this.audioOptions);
         },
+
 
         updateSoundPosition: function() {
             if (_this.injector) {
@@ -83,7 +100,7 @@
                 var entity = entities[i];
                 var name = Entities.getEntityProperties(entity, "name").name;
                 if (name === _this.VRVJ_SKYBOX_NAME) {
-
+                    _this.skybox = entity;
                 }
             }
         },
