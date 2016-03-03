@@ -25,7 +25,7 @@
         _this.INTENSITY_RANGE = {min: 20, max: 200};
         _this.MIN_VOLUME_FOR_LIGHT_TWEAKING = 0.1;
 
-        _this.volumeRange = {min: 0, max: 0.5};
+        _this.volumeRange = {min: 0, max: 0.6};
 
     }
 
@@ -60,16 +60,15 @@
             }
             Entities.editEntity(_this.entityID, {
                 color: _this.playingColor
+                // type: "Sphere"
             });
         },
 
         setDistanceToClosestHand: function(entityID, data) {
             if (!_this.active) {
-                print("CARTRIDGE IS NOT ACTIVE");
             }
 
             if (!_this.injector) {
-                print("NO INJECTOR!");
                 return;
             }
 
@@ -132,7 +131,6 @@
             for (var i = 0; i < entities.length; i++) {
                 var entity = entities[i];
                 var name = Entities.getEntityProperties(entity, "name").name;
-                print("NAME " + name)
                 if (name === _this.VRVJ_LIGHT_NAME) {
                     _this.light = entity;
                 }

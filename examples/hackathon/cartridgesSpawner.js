@@ -14,7 +14,8 @@ var clipURLS = ["https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hac
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/build.wav?v3",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/piano.wav?v1",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/voice.wav",
-    "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/beat.wav"
+    "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/beat.wav",
+    "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/drop.wav"
 ];
 
 function spawnCartridges() {
@@ -47,7 +48,7 @@ function spawnCartridges() {
             cartridgeProps.position.y = cartridgeBasePosition.y + randFloat(-0.7, 0.7);
         }
 
-        if (i === 1) {
+        if (i === 1 || i === 5) {
             userData.maxVolume = 1.0;
             cartridgeProps.color = {red: 200, green: 10, blue: 200};
         } else {
