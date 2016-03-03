@@ -11,7 +11,7 @@ var cartridges = [];
 var CARTRIDGE_NAME = "VR_VJ_CARTRIDGE";
 
 var clipURLS = ["https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/chords.wav",
-    "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/bells.wav",
+    "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/build.wav?v3",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/piano.wav?v1",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/voice.wav",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/beat.wav"
@@ -35,15 +35,17 @@ function spawnCartridges() {
     };
 
     for (var i = 0; i < clipURLS.length; i++) {
-        var userData = {soundURL: clipURLS[i]}
-      if (i === 0) {
-        userData.visualComponent = "light_intensity";
-        cartridgeProps.position = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(0.4, Quat.getFront(orientation)));
-      } else {
-        cartridgeProps.position = cartridgeBasePosition;
-        cartridgeProps.position.y = cartridgeBasePosition.y+ randFloat(-0.7, 0.7);
-        
-      }
+        var userData = {
+            soundURL: clipURLS[i]
+        }
+        if (i === 0) {
+            userData.visualComponent = "light_intensity";
+            cartridgeProps.position = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(0.4, Quat.getFront(orientation)));
+        } else {
+            cartridgeProps.position = cartridgeBasePosition;
+            cartridgeProps.position.y = cartridgeBasePosition.y + randFloat(-0.7, 0.7);
+
+        }
         cartridgeProps.userData = JSON.stringify(userData);
         cartridgeProps.color = {
             red: 200,
