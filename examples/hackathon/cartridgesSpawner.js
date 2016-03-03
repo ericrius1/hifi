@@ -37,10 +37,11 @@ function spawnCartridges() {
 
     for (var i = 0; i < clipURLS.length; i++) {
         cartridgeProps.position.y = cartridgeBasePosition.y+ randFloat(-0.7, 0.7);
-        cartridgeProps.userData = JSON.stringify({
-            soundURL: clipURLS[i],
-            uniform: "red"
-        });
+        var userData = {soundURL: clipURLS[i]}
+      if (i === 0) {
+        userData.visualComponent = "light_intensity";
+      }
+        cartridgeProps.userData = JSON.stringify(userData);
         cartridgeProps.color = {
             red: 200,
             green: 10,

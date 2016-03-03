@@ -1,4 +1,4 @@
-var VRVJ_SKYBOX_NAME = "VRVJ SkyBox";
+var VRVJ_SKYBOX_NAME = "VR_VJ_SkyBox";
 
 var zone = Entities.addEntity({
     type: "Zone",

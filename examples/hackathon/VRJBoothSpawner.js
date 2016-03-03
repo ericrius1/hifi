@@ -40,7 +40,7 @@ var vrVJLight = Entities.addEntity({
     falloffRadius: 20,
     dimensions: {x: 1000, y: 1000, z: 1000},
     position: LIGHT_POSITION,
-    intensity: 20,
+    intensity: 1,
     color: {red: 150, green: 100, blue: 170}
 });
 

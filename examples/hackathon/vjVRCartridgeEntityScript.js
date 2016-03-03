@@ -17,10 +17,13 @@
             green: 0,
             blue: 0
         };
-        _this.SKYBOX_SEARCH_RADIUS = 30;
-        _this.VRVJ_SKYBOX_NAME = "VRVJ SkyBox";
+        _this.SEARCH_RADIUS = 5000;
+        _this.VRVJ_LIGHT_NAME = "VR_VJ_LIGHT";
         _this.active = false;
         _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD = 0.7;
+        _this.LOUDNESS_RANGE = {min: 0.05, max: 0.3};
+        _this.INTENSITY_RANGE = {min: 20, max: 120};
+        _this.MIN_VOLUME_FOR_LIGHT_TWEAKING = 0.1;
 
     }
 
@@ -65,9 +68,14 @@
                 return;
             }
 
+            _this.userData = getEntityUserData(_this.entityID);
+
             var distanceToClosestHand = JSON.parse(data[0]).distanceToClosestHand;
 
-            _this.setSoundVolume(distanceToClosestHand)
+            _this.setSoundVolume(distanceToClosestHand);
+            if (_this.userData.visualComponent === "light_intensity") {
+              _this.updateLightIntensity();  
+            }
 
         },
 
@@ -96,24 +104,30 @@
             }
 
         },
-        getSkybox: function() {
-            // Search for the nearest epic skybox and save that
-            var entities = Entities.findEntities(_this.position, _this.SKYBOX_SEARCH_RADIUS);
-            for (var i = 0; i < entities.length; i++) {
-                var entity = entities[i];
-                var name = Entities.getEntityProperties(entity, "name").name;
-                if (name === _this.VRVJ_SKYBOX_NAME) {
-                    _this.skybox = entity;
-                }
+
+        updateLightIntensity: function() {
+            if (!_this.light) {
+                print("NO LIGHT! Returning")
+                return;
             }
+
+            var newIntensity = 1;
+            if (_this.audioOptions.volume > _this.MIN_VOLUME_FOR_LIGHT_TWEAKING) {
+                var loudness = _this.injector.loudness;
+                newIntensity = map(loudness, _this.LOUDNESS_RANGE.min, _this.LOUDNESS_RANGE.max, _this.INTENSITY_RANGE.min, _this.INTENSITY_RANGE.max) * Math.pow(_this.audioOptions.volume, 3);
+            }
+            Entities.editEntity(_this.light, {intensity: newIntensity});
+
         },
+
 
         getLight: function() {
             // Search for the nearest VRVJ light 
-            var entities = Entities.findEntities(_this.position, _this.SKYBOX_SEARCH_RADIUS);
+            var entities = Entities.findEntities(_this.position, _this.SEARCH_RADIUS);
             for (var i = 0; i < entities.length; i++) {
                 var entity = entities[i];
                 var name = Entities.getEntityProperties(entity, "name").name;
+                print("NAME " + name)
                 if (name === _this.VRVJ_LIGHT_NAME) {
                     _this.light = entity;
                 }
@@ -124,7 +138,7 @@
         release: function() {
             _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
             _this.updateSoundPosition();
-            _this.getSkybox();
+            _this.getLight();
         },
 
 
