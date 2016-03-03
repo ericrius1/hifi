@@ -7,7 +7,7 @@ orientation = Quat.safeEulerAngles(orientation);
 orientation.x = 0;
 orientation = Quat.fromVec3Degrees(orientation);
 
-var SPHERE_RADIUS = 3;
+var SPHERE_RADIUS = 2;
 var CARTRIDGE_SEARCH_HZ = 100;
 var CARTRIDGE_PARAM_UPDATE_HZ = 100;
 
@@ -65,7 +65,7 @@ function cartridgeSearch() {
         if (name === "Sound Cartridge" && userData.soundURL) {
             //We have a cartridge- play it
             if (!cartridgeInActiveList(entity)) {
-                Entities.callEntityMethod(entity, "playSound");
+                Entities.callEntityMethod(entity, "activateSound");
                 activeCartridges.push(entity);
             } else {
                 // cartridge is 
@@ -105,7 +105,7 @@ function removeOutOfRangeCartridgesFromActiveList() {
         var activeCartridge = activeCartridges[i];
         if (!cartridgeIsInRange(activeCartridge)) {
             cartridgeIndicesToRemove.push(i);
-            Entities.callEntityMethod(activeCartridge, "stopSound");
+            Entities.callEntityMethod(activeCartridge, "deactivateSound");
         }
     }
 

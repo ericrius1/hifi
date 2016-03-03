@@ -4,7 +4,8 @@
     SoundCartridge = function() {
         _this = this;
         _this.audioOptions = {
-            loop: true
+            loop: true,
+            volume: 0
         };
         _this.playingColor = {
             red: 0,
@@ -16,6 +17,7 @@
             green: 0,
             blue: 0
         };
+        _this.active = false;
 
     };
 
@@ -26,29 +28,38 @@
             if (!_this.injector) {
                 _this.audioOptions.position = position;
                 _this.injector = Audio.playSound(_this.clip, _this.audioOptions);
-            } else {
-                //We already have injector so just restart
-                _this.injector.restart();
             }
+        },
+
+        // Sound will still be playing, it will just be at 0 volume
+        deactivateSound: function() {
+            print("EBL STOP SOUND!!!!!!!!!!!!!!")
+            if (_this.injector) {
+                Entities.editEntity(_this.entityID, {
+                    color: _this.notPlayingColor
+                });
+                _this.audioOptions.volume = 0;
+                _this.injector.setOptions(_this.audioOptions)
+            }
+        },
+
+        activateSound: function() {
+            print("Activate Sound");
+            _this.active = true;
 
             Entities.editEntity(_this.entityID, {
                 color: _this.playingColor
             });
         },
 
-        stopSound: function() {
-            print("EBL STOP SOUND!!!!!!!!!!!!!!")
-            if (_this.injector) {
-                _this.injector.stop();
-                Entities.editEntity(_this.entityID, {
-                    color: _this.notPlayingColor
-                });
-            }
-        },
-
         setSoundVolume: function(entityID, data) {
             if (!_this.injector) {
-                print ("NO INJECTOR!");
+                print("NO INJECTOR!");
+                return;
+            }
+
+            if (!_this.active) {
+                print(" Not active!!");
                 return;
             }
             var newVolume = JSON.parse(data[0]).newVolume;
@@ -57,10 +68,10 @@
         },
 
         updateSoundPosition: function() {
-            if (_this.injector) {  
-              _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
-              _this.audioOptions.position = _this.position;
-              _this.injector.setOptions(_this.audioOptions);
+            if (_this.injector) {
+                _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
+                _this.audioOptions.position = _this.position;
+                _this.injector.setOptions(_this.audioOptions);
             }
 
         },
@@ -71,7 +82,7 @@
         },
 
         releaseEquip: function() {
-                _this.updateSoundPosition();
+            _this.updateSoundPosition();
         },
 
         preload: function(entityID) {
