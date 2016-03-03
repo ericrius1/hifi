@@ -14,6 +14,7 @@ var CARTRIDGE_PARAM_UPDATE_HZ = 20;
 
 var CARTRIDGE_NAME = "VR_VJ_CARTRIDGE";
 var LIGHT_NAME = "VR_VJ_LIGHT";
+var VJ_PARTICLE_STORM_NAME = "VR_VJ_PARTICLE_STORM";
 
 var activeCartridges = [];
 var rightHandPosition, leftHandPosition;
@@ -33,18 +34,31 @@ var sphereOverlay = Overlays.addOverlay('sphere', {
 });
 
 
-var LIGHT_POSITION = {x: 136, y: 48.5, z: 553};
+var LIGHT_POSITION = {
+    x: 136,
+    y: 48.5,
+    z: 553
+};
 var LIGHT_SIZE = 3000;
 var vrVJLight = Entities.addEntity({
     type: "Light",
     name: LIGHT_NAME,
     falloffRadius: 20,
-    dimensions: {x: LIGHT_SIZE, y: LIGHT_SIZE, z: LIGHT_SIZE},
+    dimensions: {
+        x: LIGHT_SIZE,
+        y: LIGHT_SIZE,
+        z: LIGHT_SIZE
+    },
     position: LIGHT_POSITION,
     intensity: 1,
-    color: {red: 190, green: 100, blue: 220}
+    color: {
+        red: 190,
+        green: 100,
+        blue: 220
+    }
 });
 
+addParticleStorm();
 
 
 
@@ -56,7 +70,9 @@ function updateCartridgeParams() {
         var distanceToLeftHand = Vec3.distance(MyAvatar.getLeftPalmPosition(), cartridgePosition);
         var distanceToClosestHand = Math.min(distanceToLeftHand, distanceToRightHand);
         // The closer the hand, the louder the sound should be...
-        Entities.callEntityMethod(activeCartridge, "setDistanceToClosestHand", [JSON.stringify({distanceToClosestHand: distanceToClosestHand})])
+        Entities.callEntityMethod(activeCartridge, "setDistanceToClosestHand", [JSON.stringify({
+            distanceToClosestHand: distanceToClosestHand
+        })])
     });
 }
 
@@ -118,8 +134,8 @@ function removeOutOfRangeCartridgesFromActiveList() {
     }
 
     cartridgeIndicesToRemove.forEach(function(cartridgeIndex) {
-           activeCartridges.splice(cartridgeIndex, 1);
-            print("EBL SPLICE OUT OF RANGE CLIP!")
+        activeCartridges.splice(cartridgeIndex, 1);
+        print("EBL SPLICE OUT OF RANGE CLIP!")
     });
 
 }
@@ -136,6 +152,73 @@ function entitiesEqual(entityA, entityB) {
 function cleanup() {
     Overlays.deleteOverlay(sphereOverlay);
     Entities.deleteEntity(vrVJLight);
+    Entities.deleteEntity(particleStorm);
+}
+
+var particleStorm;
+
+
+function addParticleStorm() {
+    var STORM_POSITION = {
+        x: 136,
+        y: -10,
+        z: 553
+    };
+    particleStorm = Entities.addEntity({
+        type: "ParticleEffect",
+        isEmitting: true,
+        position: STORM_POSITION,
+        name: VJ_PARTICLE_STORM_NAME,
+        colorStart: {
+            red: 158,
+            green: 30,
+            blue: 200
+        },
+        color: {
+            red: 200,
+            green: 40,
+            blue: 10
+        },
+        colorFinish: {
+            red: 100,
+            green: 80,
+            blue: 0
+        },
+        maxParticles: 100000,
+        lifespan: 5,
+        emitRate: 1000,
+        emitSpeed: 1,
+        speedSpread: 0.0,
+        emitDimensions: {
+            x: 100,
+            y: 100,
+            z: 100
+        },
+        polarStart: 0,
+        polarFinish: Math.PI / 2,
+        azimuthStart: -Math.PI,
+        azimuthFinish: Math.PI,
+        emitAcceleration: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        accelerationSpread: {
+            x: 2,
+            y: .00,
+            z: 2
+        },
+        particleRadius: 0.3,
+        radiusSpread: 0,
+        radiusStart: 0.7,
+        radiusFinish: 0.1,
+        alpha: 0.7,
+        alphaSpread: .1,
+        alphaStart: 0,
+        alphaFinish: 0,
+        textures: "https://hifi-public.s3.amazonaws.com/alan/Particles/Particle-Sprite-Smoke-1.png",
+        emitterShouldTrail: true
+    });
 }
 
 

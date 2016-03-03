@@ -93,7 +93,6 @@
             }
 
             if (!_this.active) {
-                print(" Not active!!");
                 return;
             }
             _this.audioOptions.volume = newVolume;

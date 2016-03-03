@@ -51,9 +51,16 @@ function spawnCartridges() {
         if (i === 1 || i === 5) {
             userData.maxVolume = 1.0;
             cartridgeProps.color = {red: 200, green: 10, blue: 200};
-        } else {
+        } else if (i === 4) {
+            cartridgeProps.color = {red: 200, green: 10, blue: 200};
+            userData.visualComponent = "particle_storm";
+        }
+        else {
             cartridgeProps.color = defaultColor;
         }
+
+
+
         cartridgeProps.userData = JSON.stringify(userData);
         var cartridge = Entities.addEntity(cartridgeProps);
         cartridges.push(cartridge);
