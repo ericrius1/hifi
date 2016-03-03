@@ -20,6 +20,7 @@ var clipURLS = ["https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hac
 function spawnCartridges() {
     // When spawning 
     var SCRIPT_URL = Script.resolvePath("vjVRCartridgeEntityScript.js?v1" + Math.random());
+    var defaultColor = {red: 200, green: 10, blue: 10};
     var cartridgeProps = {
         type: "Box",
         name: CARTRIDGE_NAME,
@@ -44,14 +45,15 @@ function spawnCartridges() {
         } else {
             cartridgeProps.position = cartridgeBasePosition;
             cartridgeProps.position.y = cartridgeBasePosition.y + randFloat(-0.7, 0.7);
+        }
 
+        if (i === 1) {
+            userData.maxVolume = 1.0;
+            cartridgeProps.color = {red: 200, green: 10, blue: 200};
+        } else {
+            cartridgeProps.color = defaultColor;
         }
         cartridgeProps.userData = JSON.stringify(userData);
-        cartridgeProps.color = {
-            red: 200,
-            green: 10,
-            blue: 10
-        };
         var cartridge = Entities.addEntity(cartridgeProps);
         cartridges.push(cartridge);
 

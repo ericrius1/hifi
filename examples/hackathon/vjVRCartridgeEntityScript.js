@@ -25,6 +25,8 @@
         _this.INTENSITY_RANGE = {min: 20, max: 200};
         _this.MIN_VOLUME_FOR_LIGHT_TWEAKING = 0.1;
 
+        _this.volumeRange = {min: 0, max: 0.5};
+
     }
 
     SoundCartridge.prototype = {
@@ -52,7 +54,10 @@
         activate: function() {
             print("Activate Sound");
             _this.active = true;
-
+            _this.userData = getEntityUserData(_this.entityID);
+            if (_this.userData.maxVolume) {
+                _this.volumeRange.max = _this.userData.maxVolume;
+            }
             Entities.editEntity(_this.entityID, {
                 color: _this.playingColor
             });
@@ -85,7 +90,7 @@
             if (distanceToClosestHand > _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD) {
                 newVolume = 0;
             } else {
-                newVolume = map(distanceToClosestHand, 0, _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD, 1, 0);
+                newVolume = map(distanceToClosestHand, 0, _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD, _this.volumeRange.max, _this.volumeRange.min);
             }
 
             if (!_this.active) {
