@@ -32,7 +32,7 @@
         },
 
         // Sound will still be playing, it will just be at 0 volume
-        deactivateSound: function() {
+        deactivate: function() {
             print("EBL STOP SOUND!!!!!!!!!!!!!!")
             if (_this.injector) {
                 Entities.editEntity(_this.entityID, {
@@ -43,7 +43,7 @@
             }
         },
 
-        activateSound: function() {
+        activate: function() {
             print("Activate Sound");
             _this.active = true;
 

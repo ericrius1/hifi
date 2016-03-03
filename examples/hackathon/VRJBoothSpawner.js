@@ -11,6 +11,8 @@ var SPHERE_RADIUS = 2;
 var CARTRIDGE_SEARCH_HZ = 100;
 var CARTRIDGE_PARAM_UPDATE_HZ = 100;
 
+var CARTRIDE_NAME = "AV Cartridge"
+
 var activeCartridges = [];
 var rightHandPosition, leftHandPosition;
 
@@ -28,7 +30,7 @@ var sphereOverlay = Overlays.addOverlay('sphere', {
     visible: true
 });
 
-var handToCartridgeDistanceThreshold = 0.4;
+var handToCartridgeDistanceThreshold = 0.7;
 
 
 function updateCartridgeParams() {
@@ -65,7 +67,7 @@ function cartridgeSearch() {
         if (name === "Sound Cartridge" && userData.soundURL) {
             //We have a cartridge- play it
             if (!cartridgeInActiveList(entity)) {
-                Entities.callEntityMethod(entity, "activateSound");
+                Entities.callEntityMethod(entity, "activate");
                 activeCartridges.push(entity);
             } else {
                 // cartridge is 
@@ -105,7 +107,7 @@ function removeOutOfRangeCartridgesFromActiveList() {
         var activeCartridge = activeCartridges[i];
         if (!cartridgeIsInRange(activeCartridge)) {
             cartridgeIndicesToRemove.push(i);
-            Entities.callEntityMethod(activeCartridge, "deactivateSound");
+            Entities.callEntityMethod(activeCartridge, "deactivate");
         }
     }
 
