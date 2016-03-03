@@ -194,7 +194,7 @@ function addParticleStorm() {
             y: 100,
             z: 100
         },
-        polarStart: 0,
+        polarStart: Math.PI / 4,
         polarFinish: Math.PI / 2,
         azimuthStart: -Math.PI,
         azimuthFinish: Math.PI,

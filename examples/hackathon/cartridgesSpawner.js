@@ -71,7 +71,7 @@ function spawnCartridges() {
         cartridges.forEach(function(cartridge) {
             Entities.callEntityMethod(cartridge, "playSound");
         });
-    }, 2000)
+    }, 1000)
 }
 
 spawnCartridges();

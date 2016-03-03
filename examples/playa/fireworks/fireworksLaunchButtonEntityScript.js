@@ -218,7 +218,6 @@
       preload: function(entityID) {
         _this.entityID = entityID;
         _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
-        print("EBL RELOAD ENTITY SCRIPT!!!");
 
       }
 
