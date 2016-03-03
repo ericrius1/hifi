@@ -156,6 +156,7 @@
             if (!userData.soundURL) {
                 print("WARNING: NO SOUND URL ON USER DATA!!!!!");
             }
+            _this.getLight();
             _this.clip = SoundCache.getSound(userData.soundURL);
         },
 
