@@ -22,7 +22,7 @@
         _this.active = false;
         _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD = 0.7;
         _this.LOUDNESS_RANGE = {min: 0.05, max: 0.3};
-        _this.INTENSITY_RANGE = {min: 20, max: 120};
+        _this.INTENSITY_RANGE = {min: 20, max: 200};
         _this.MIN_VOLUME_FOR_LIGHT_TWEAKING = 0.1;
 
     }

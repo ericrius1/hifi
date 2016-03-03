@@ -8,8 +8,8 @@ orientation.x = 0;
 orientation = Quat.fromVec3Degrees(orientation);
 
 var SPHERE_RADIUS = 2;
-var CARTRIDGE_SEARCH_HZ = 100;
-var CARTRIDGE_PARAM_UPDATE_HZ = 100;
+var CARTRIDGE_SEARCH_HZ = 20;
+var CARTRIDGE_PARAM_UPDATE_HZ = 20;
 
 
 var CARTRIDGE_NAME = "VR_VJ_CARTRIDGE";
@@ -34,14 +34,15 @@ var sphereOverlay = Overlays.addOverlay('sphere', {
 
 
 var LIGHT_POSITION = {x: 136, y: 48.5, z: 553};
+var LIGHT_SIZE = 3000;
 var vrVJLight = Entities.addEntity({
     type: "Light",
     name: LIGHT_NAME,
     falloffRadius: 20,
-    dimensions: {x: 1000, y: 1000, z: 1000},
+    dimensions: {x: LIGHT_SIZE, y: LIGHT_SIZE, z: LIGHT_SIZE},
     position: LIGHT_POSITION,
     intensity: 1,
-    color: {red: 150, green: 100, blue: 170}
+    color: {red: 190, green: 100, blue: 220}
 });
 
 
