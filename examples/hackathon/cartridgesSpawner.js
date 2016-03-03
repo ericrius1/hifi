@@ -8,6 +8,8 @@ var SPHERE_RADIUS = 2;
 var cartridgeBasePosition = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(SPHERE_RADIUS + 0.15, Quat.getFront(orientation)));
 var cartridges = [];
 
+var CARTRIDGE_NAME = "VR_VJ_CARTRIDGE";
+
 var clipURLS = ["https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/chords.wav",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/bells.wav",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/piano.wav?v1",
@@ -20,7 +22,7 @@ function spawnCartridges() {
     var SCRIPT_URL = Script.resolvePath("vjVRCartridgeEntityScript.js?v1" + Math.random());
     var cartridgeProps = {
         type: "Box",
-        name: "Sound Cartridge",
+        name: CARTRIDGE_NAME,
         position: cartridgeBasePosition,
         script: SCRIPT_URL,
         dynamic: true,

@@ -11,7 +11,9 @@ var SPHERE_RADIUS = 2;
 var CARTRIDGE_SEARCH_HZ = 100;
 var CARTRIDGE_PARAM_UPDATE_HZ = 100;
 
-var CARTRIDE_NAME = "AV Cartridge"
+
+var CARTRIDGE_NAME = "VR_VJ_CARTRIDGE";
+var LIGHT_NAME = "VR_VJ_LIGHT";
 
 var activeCartridges = [];
 var rightHandPosition, leftHandPosition;
@@ -28,6 +30,18 @@ var sphereOverlay = Overlays.addOverlay('sphere', {
     alpha: 0.2,
     solid: true,
     visible: true
+});
+
+
+var LIGHT_POSITION = {x: 136, y: 48.5, z: 553};
+var vrVJLight = Entities.addEntity({
+    type: "Light",
+    name: LIGHT_NAME,
+    falloffRadius: 20,
+    dimensions: {x: 1000, y: 1000, z: 1000},
+    position: LIGHT_POSITION,
+    intensity: 20,
+    color: {red: 150, green: 100, blue: 170}
 });
 
 
@@ -57,7 +71,7 @@ function cartridgeSearch() {
         var name = Entities.getEntityProperties(entity, "name").name;
         var userData = getEntityUserData(entity);
 
-        if (name === "Sound Cartridge" && userData.soundURL) {
+        if (name === CARTRIDGE_NAME && userData.soundURL) {
             //We have a cartridge- play it
             if (!cartridgeInActiveList(entity)) {
                 Entities.callEntityMethod(entity, "activate");
@@ -120,6 +134,7 @@ function entitiesEqual(entityA, entityB) {
 
 function cleanup() {
     Overlays.deleteOverlay(sphereOverlay);
+    Entities.deleteEntity(vrVJLight);
 }
 
 

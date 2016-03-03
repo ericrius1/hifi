@@ -5,10 +5,12 @@ var zone = Entities.addEntity({
     name: VRVJ_SKYBOX_NAME,
     position: MyAvatar.position,
     dimensions: {
-        x: 20,
-        y: 20,
-        z: 20
+        x: 5000,
+        y: 5000,
+        z: 5000
     },
+    keyLightIntensity: 0.001,
+    keyLightAmbientIntensity: 0.02,
     shapeType: "sphere",
     backgroundMode: "skybox",
     skybox: {
@@ -16,15 +18,12 @@ var zone = Entities.addEntity({
     },
     userData: JSON.stringify({
 
-        "ProceduralEntity": {
-            "version": 2,
-            "shaderUrl": "file:///C:/Users/Eric/hifi/examples/hackathon/skybox.fs",
-            "channels": [
+        ProceduralEntity: {
+            version: 2,
+            shaderUrl: "file:///C:/Users/Eric/hifi/examples/hackathon/skybox.fs",
+            channels: [
                 "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg",
-            ],
-            "uniforms": {
-                "red": 0.1
-            }
+            ]
         }
     })
 });

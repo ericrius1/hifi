@@ -1,7 +1,8 @@
 
 #line 5
 const float PI = 3.14159;
-uniform float red = 0.5;
+
+
 const float axialTilt = 0.408407;
 const vec2 atsc = vec2(sin(axialTilt), cos(axialTilt));
 const mat3 axialTiltMatrix = mat3(
@@ -25,7 +26,7 @@ vec3 stars3(in vec3 d) {
     //return rd;
     vec3 dir = d * axialTiltMatrix;
     
-    float theta =   0;
+    float theta = iGlobalTime * 0.01;
     vec2 sc = vec2(sin(theta), cos(theta));
     dir = dir * mat3( vec3(sc.y, 0.0, sc.x),
                     vec3(0.0, 1.0, 0.0),
@@ -34,7 +35,6 @@ vec3 stars3(in vec3 d) {
     vec2 uv = directionToUv(dir);
     vec3 starColor = texture2D( iChannel0, uv).xyz;
     starColor = pow(starColor, vec3(0.75));
-    starColor.r = red; 
     return starColor;
 }
 

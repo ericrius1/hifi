@@ -59,22 +59,25 @@
             if (!_this.active) {
                 print("CARTRIDGE IS NOT ACTIVE");
             }
+
+            if (!_this.injector) {
+                print("NO INJECTOR!");
+                return;
+            }
+
             var distanceToClosestHand = JSON.parse(data[0]).distanceToClosestHand;
+
+            _this.setSoundVolume(distanceToClosestHand)
+
+        },
+
+
+        setSoundVolume: function(distanceToClosestHand) {
             var newVolume;
             if (distanceToClosestHand > _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD) {
                 newVolume = 0;
             } else {
                 newVolume = map(distanceToClosestHand, 0, _this.HAND_TO_CARTRIDGE_DISTANCE_THRESHOLD, 1, 0);
-            }
-
-            _this.setSoundVolume(newVolume)
-
-        },
-
-        setSoundVolume: function(newVolume) {
-            if (!_this.injector) {
-                print("NO INJECTOR!");
-                return;
             }
 
             if (!_this.active) {
@@ -93,7 +96,7 @@
             }
 
         },
-        updateSkybox: function() {
+        getSkybox: function() {
             // Search for the nearest epic skybox and save that
             var entities = Entities.findEntities(_this.position, _this.SKYBOX_SEARCH_RADIUS);
             for (var i = 0; i < entities.length; i++) {
@@ -105,10 +108,23 @@
             }
         },
 
+        getLight: function() {
+            // Search for the nearest VRVJ light 
+            var entities = Entities.findEntities(_this.position, _this.SKYBOX_SEARCH_RADIUS);
+            for (var i = 0; i < entities.length; i++) {
+                var entity = entities[i];
+                var name = Entities.getEntityProperties(entity, "name").name;
+                if (name === _this.VRVJ_LIGHT_NAME) {
+                    _this.light = entity;
+                }
+            }
+
+        },
+
         release: function() {
             _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
             _this.updateSoundPosition();
-            _this.updateSkybox();
+            _this.getSkybox();
         },
 
 
