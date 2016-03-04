@@ -134,7 +134,7 @@
 
             var newParticleRadius = 0.005;
             if (_this.audioOptions.volume > _this.MIN_VOLUME_FOR_VISUAL_TWEAKING) {
-                newParticleRadius = map(_this.loudness, _this.LOUDNESS_RANGE.min, _this.LOUDNESS_RANGE.max, 0.2, 0.4);
+                newParticleRadius = map(_this.loudness, _this.LOUDNESS_RANGE.min, _this.LOUDNESS_RANGE.max, 0.02, 0.4);
                 newParticleRadius = clamp(newParticleRadius, 0.02, 0.4);
             }
 

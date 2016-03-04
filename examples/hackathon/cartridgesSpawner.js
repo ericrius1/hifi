@@ -11,11 +11,9 @@ var cartridges = [];
 var CARTRIDGE_NAME = "VR_VJ_CARTRIDGE";
 
 var clipURLS = ["https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/chords.wav",
-    "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/build.wav?v3",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/piano.wav?v1",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/voice.wav",
     "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/beat.wav",
-    "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/hackathonSounds/drop.wav"
 ];
 
 function spawnCartridges() {
@@ -25,6 +23,8 @@ function spawnCartridges() {
     var cartridgeProps = {
         type: "Box",
         name: CARTRIDGE_NAME,
+        color: defaultColor,
+        position: cartridgeBasePosition,
         script: SCRIPT_URL,
         dynamic: true,
         dimensions: {
@@ -40,26 +40,14 @@ function spawnCartridges() {
         var userData = {
             soundURL: clipURLS[i]
         }
+        cartridgeProps.position.y = cartridgeBasePosition.y + randFloat(-0.7, 0.7);
         if (i === 0) {
             userData.visualComponent = "light_intensity";
-            cartridgeProps.position = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(0.4, Quat.getFront(orientation)));
-        } else {
-            cartridgeProps.position = cartridgeBasePosition;
-            cartridgeProps.position.y = cartridgeBasePosition.y + randFloat(-0.7, 0.7);
-        }
-
-        if (i === 1 || i === 5) {
-            userData.maxVolume = 1.0;
             cartridgeProps.color = {red: 200, green: 10, blue: 200};
-        } else if (i === 4) {
-            cartridgeProps.color = {red: 0, green: 0, blue: 200};
+        } else if (i === 3){            
             userData.visualComponent = "particle_storm";
+            cartridgeProps.color = {red: 10, green: 10, blue: 200};
         }
-        else {
-            cartridgeProps.color = defaultColor;
-        }
-
-
 
         cartridgeProps.userData = JSON.stringify(userData);
         var cartridge = Entities.addEntity(cartridgeProps);
