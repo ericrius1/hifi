@@ -8,7 +8,7 @@
             volume: 0
         };
         _this.playingColor = {
-            randFloat(0, 250),
+            red: randFloat(0, 250),
             green: randFloat(0, 250),
             blue: randFloat(0, 250)
         };
