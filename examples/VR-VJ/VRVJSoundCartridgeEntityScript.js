@@ -15,7 +15,10 @@
         },
 
         setVolume: function(entityID, data) {
-            this.soundOptions.volume = JSON.parse(data[0]).volume;
+            if (!_this.soundInjector) {
+                return;
+            }
+             _this.soundOptions.volume = JSON.parse(data[0]).volume;
             _this.soundInjector.setOptions(_this.soundOptions);
         },
 

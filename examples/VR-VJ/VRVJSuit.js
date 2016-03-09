@@ -5,6 +5,8 @@ Script.include("../libraries/utils.js");
 var CARTRIDGE_SEARCH_TIME = 2000;
 var CARTRIDGE_SEARCH_RANGE = 5;
 
+
+
 var CARTRIDGE_PLAY_RANGE = 0.5;
 var SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
 var activeCartridges = [];
@@ -16,7 +18,14 @@ Script.setInterval(updateCartridgeVolumes, CARTRIDGE_VOLUME_UPDATE_TIME);
 
 var volumeData;
 
+var isEditing = false;
+
+
 function updateCartridgeVolumes() {
+    // Only do this if we're in play mode (not in edit mode)
+    if (isEditing) {
+        return;
+    }
     activeCartridges.forEach(function(cartridge) {
         var cartridgePosition = Entities.getEntityProperties(cartridge, "position").position;
         var rightHandToCartridgeDistance = Vec3.distance(cartridgePosition, MyAvatar.getRightPalmPosition());
@@ -29,7 +38,6 @@ function updateCartridgeVolumes() {
         } else {
             newVolume = map(closestHandToCartridgeDistance, 0, CARTRIDGE_PLAY_RANGE, 1, 0);
             newVolume = clamp(newVolume, 0, 1);
-
         }
         volumeData = {volume: newVolume};
         Entities.callEntityMethod(cartridge, "setVolume", [JSON.stringify(volumeData)]);
@@ -47,20 +55,27 @@ function searchForSoundCartridges() {
             activeCartridges.push(entity);
         }
     }
-    print("ACTIVE CARTRIDGES " + activeCartridges.length)
+}
+
+function toggleMode() {
+  isEditing = !isEditing;    
+  print("is editing " + isEditing)
+}
+
+function rightTriggerPress(value) {
+    print("BUMPER PRESS")
+    if (value === 1) {
+        toggleMode();
+    }
+
 }
 
 var MAPPING_NAME = "com.highfidelity.VRVJ";
 
 var mapping = Controller.newMapping(MAPPING_NAME);
-mapping.from(Controller.Standard.RB).peek().to(rightBumperPress)
+mapping.from(Controller.Standard.RT).peek().to(rightTriggerPress)
 Controller.enableMapping(MAPPING_NAME);
-var rawTriggerValue;
-function rightBumperPress(value) {
-    if (value === 1) {
-        print("BUMPER PRESS");
-    }
-}
+
 
 
 
