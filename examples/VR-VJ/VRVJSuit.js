@@ -5,10 +5,19 @@
 
 var CARTRIDGE_SEARCH_TIME = 1000;
 var CARTRIDGE_SEARCH_RANGE = 2;
-
 var SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
 var activeCartridges = [];
 Script.setInterval(searchForSoundCartridges, CARTRIDGE_SEARCH_TIME);
+
+var CARTRIDGE_VOLUME_UPDATE_TIME = 100;
+Script.setInterval(updateCartridgeVolumes, CARTRIDGE_VOLUME_UPDATE_TIME);
+
+function updateCartridgeVolumes() {
+    activeCartridges.forEach(function(cartridge) {
+        var volumeData = {volume: Math.random()};
+        Entities.callEntityMethod(cartridge, "setVolume", [JSON.stringify(volumeData)]);
+    });
+}
 
 
 function searchForSoundCartridges() {
