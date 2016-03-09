@@ -10,12 +10,11 @@
     VRVJSoundEntity.prototype = {
         playSound: function() {
             _this.position = Entities.getEntityProperties(_this.entityID, "position").position;
-            _this.soundOptions = {position: _this.position, volume: 0.0};
+            _this.soundOptions = {position: _this.position, volume: 0.0, loop: true};
             _this.soundInjector = Audio.playSound(_this.clip, _this.soundOptions);
         },
 
         setVolume: function(entityID, data) {
-            print("SET VOLUME")
             this.soundOptions.volume = JSON.parse(data[0]).volume;
             _this.soundInjector.setOptions(_this.soundOptions);
         },
@@ -24,7 +23,6 @@
             _this.entityID = entityID;
             _this.userData  = getEntityUserData(_this.entityID);
             _this.clip = SoundCache.getSound(_this.userData.soundURL);
-
         },
 
         unload: function() {
