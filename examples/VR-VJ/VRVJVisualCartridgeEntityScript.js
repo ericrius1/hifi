@@ -5,7 +5,7 @@
     var ZERO_VEC = {x: 0, y: 0, z: 0};
     VRVJVisualEntity = function() {
         _this = this;
-        _this.SOUND_LOOP_NAME = "VRVJ-Sound-Cartridge";
+        _this.SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
         _this.SOUND_CARTRIDGE_SEARCH_RANGE = 0.1;
 
     };
@@ -26,7 +26,7 @@
             for (var i = 0; i < entities.length; i++) {
                 var entity = entities[i];
                 var props = Entities.getEntityProperties(entity, ["name", "color"]);
-                if (props.name.indexOf(_this.SOUND_LOOP_NAME) !== -1) {
+                if (props.name.indexOf(_this.SOUND_CARTRIDGE_NAME) !== -1) {
                     // Need to set a timeout to wait for grab script to stop messing with entity
                     Entities.editEntity(_this.entityID, {
                         parentID: entity,
