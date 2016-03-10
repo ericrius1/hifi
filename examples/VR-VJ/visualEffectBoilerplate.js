@@ -1,15 +1,17 @@
 print("YAHAHAHAHAH")
 VisualEffect = function() {
     var poiStick, flame;
+    var _this = this;
+
     this.initialize = function(position) {
 
         poiStick = Entities.addEntity({
             type: "Box",
             name: "Poi Stick",
             dimensions: {
-                x: 0.1,
+                x: 0.02,
                 y: 0.3,
-                z: 0.1
+                z: 0.02
             },
             position: position,
             dynamic: true,
@@ -22,7 +24,8 @@ VisualEffect = function() {
         });
 
         var color = {red: 150, green: 50, blue: 10};
-        flame = Entities.addEntity({
+        var poiParticleRadius = 0.01;
+        poiFlame = Entities.addEntity({
             type: "ParticleEffect",
             name: "Poi Flame",
             parentID: poiStick,
@@ -33,9 +36,9 @@ VisualEffect = function() {
             color: color,
             colorFinish: color,
             maxParticles: 100000,
-            lifespan: 1,
+            lifespan: 1.0,
             emitRate: 1000,
-            emitSpeed: 1,
+            emitSpeed: 0.0,
             speedSpread: 0.02,
             emitDimensions: {
                 x: .01,
@@ -56,14 +59,15 @@ VisualEffect = function() {
                 y: 0,
                 z: 0
             },
-            radiusStart: 0.01,
-            radiusFinish: 0.005,
-            radiusSpread: 0.005,
-            alpha: 0.5,
+            radiusStart: poiParticleRadius,
+            particleRadius: poiParticleRadius,
+            radiusFinish: poiParticleRadius,
+            radiusSpread: poiParticleRadius,
+            alpha: 1,
             alphaSpread: 0.1,
             alphaStart: 0.5,
-            alphaFinish: 0.5,
-            textures: "https://s3.amazonaws.com/hifi-public/eric/textures/particleSprites/beamParticle.png",
+            alphaFinish: 0.0,
+            textures: "https://hifi-public.s3.amazonaws.com/alan/Particles/Particle-Sprite-Smoke-1.png",
             emitterShouldTrail: true
         })
 
@@ -76,6 +80,7 @@ VisualEffect = function() {
 
     this.destroy = function() {
         Entities.deleteEntity(poiStick);
+        Entities.deleteEntity(poiFlame)
     }
 
 }
