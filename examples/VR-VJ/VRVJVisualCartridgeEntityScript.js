@@ -54,6 +54,9 @@
 
             Script.clearInterval(_this.visualEffectUpdateInterval);
             _this.visualEffectUpdateInterval = null;
+            if (_this.visualEffect) {
+                _this.visualEffect.destroy();
+            }
         },
 
         parentToSoundCartridge: function(parent) {
@@ -73,7 +76,7 @@
             }, 100);
 
             //set up our interval where we will update our visual effect (if we have one)
-            _this.visualEffectUpdateInterval = Script.setInterval(_this.updateVisualEffect, _this.UPDATE_VISUAL_EFFECT_TIME);
+            _this.initializeVisualEffect()
 
         },
 
@@ -108,6 +111,7 @@
                 z: 0
             });
             _this.visualEffect.initialize(position);
+            _this.visualEffectUpdateInterval = Script.setInterval(_this.updateVisualEffect, _this.UPDATE_VISUAL_EFFECT_TIME);
         },
 
         preload: function(entityID) {
@@ -115,16 +119,16 @@
             _this.entityID = entityID;
             _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 
-            Script.setTimeout(function() {
                 // Wait for userData to be loaded
-                _this.initializeVisualEffect()
-            }, 100);
+        
 
         },
 
         unload: function() {
             print("EBL DESTROY VISUAL EFFECT");
-            _this.visualEffect.destroy();
+            if (_this.visualEffect) {
+              _this.visualEffect.destroy();  
+            }
             if (_this.visualEffectUpdateInterval) {
                 Script.clearInterval(_this.visualEffectUpdateInterval);
             }
