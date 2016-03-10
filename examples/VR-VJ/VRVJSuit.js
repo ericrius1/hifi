@@ -21,6 +21,19 @@ var volumeData;
 var isEditing = false;
 
 
+var PLAY_COLOR = {red: 10, green: 200, blue: 10};
+var EDIT_COLOR = {red: 200, green: 10, blue: 10}; 
+
+var vjHat = Entities.addEntity({
+    type: "Sphere",
+    dimensions: {x: 0.1, y: 0.05, z: 0.1},
+    position: Vec3.sum(MyAvatar.getHeadPosition(), {x: 0, y: 0.1, z: 0}),
+    color: PLAY_COLOR,
+    parentID: MyAvatar.sessionUUID
+});
+
+
+
 function updateCartridgeVolumes() {
     // Only do this if we're in play mode (not in edit mode)
     if (isEditing) {
@@ -59,10 +72,15 @@ function searchForSoundCartridges() {
 
 function toggleMode() {
   isEditing = !isEditing;    
-  print("is editing " + isEditing)
+  if (isEditing) {
+    Entities.editEntity(vjHat, {color: EDIT_COLOR})    
+  } else {
+    
+    Entities.editEntity(vjHat, {color: PLAY_COLOR})    
+  }
 }
 
-function rightTriggerPress(value) {
+function rightBumperPress(value) {
     print("BUMPER PRESS")
     if (value === 1) {
         toggleMode();
@@ -73,8 +91,15 @@ function rightTriggerPress(value) {
 var MAPPING_NAME = "com.highfidelity.VRVJ";
 
 var mapping = Controller.newMapping(MAPPING_NAME);
-mapping.from(Controller.Standard.RT).peek().to(rightTriggerPress)
+mapping.from(Controller.Standard.RB).peek().to(rightBumperPress)
 Controller.enableMapping(MAPPING_NAME);
+
+
+function cleanup() {
+    Entities.deleteEntity(vjHat);
+}
+
+Script.scriptEnding.connect(cleanup);
 
 
 
