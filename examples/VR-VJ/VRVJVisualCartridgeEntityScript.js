@@ -54,12 +54,7 @@
         parentToSoundCartridge: function(parent) {
             // Need to set a timeout to wait for grab script to stop messing with entity
             var parentColor = Entities.getEntityProperties(parent, "color").color;
-            var visualEffectScriptURL = getEntityUserData(_this.entityID).visualEffectScriptURL;
-            if (visualEffectScriptURL) {
-                Script.include(visualEffectScriptURL);
-               _this.visualEffect = new VisualEffect();
-               _this.visualEffect.initialize();
-            }
+
             Entities.editEntity(_this.entityID, {
                 parentID: parent,
                 dynamic: false,
@@ -73,11 +68,31 @@
             }, 100);
 
         },
+
+        getPositionInFrontOfAvatar: function() {
+            var orientation = MyAvatar.orientation;
+            orientation = Quat.safeEulerAngles(orientation);
+            orientation.x = 0;
+            orientation = Quat.fromVec3Degrees(orientation);
+            return Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(2, Quat.getFront(orientation)));
+        },
         preload: function(entityID) {
             _this.entityID = entityID;
             _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 
+            var visualEffectScriptURL = getEntityUserData(_this.entityID).visualEffectScriptURL;
+            if (visualEffectScriptURL) {
+                Script.include(visualEffectScriptURL);
+                _this.visualEffect = new VisualEffect();
+                var position = Vec3.sum(_this.getPositionInFrontOfAvatar(), {x: 0, y: 0.2, z: 0});
+                _this.visualEffect.initialize(position);
+            }
+
         },
+
+        unload: function() {
+            _this.visualEffect.destroy();
+        }
     };
 
     // entity scripts always need to return a newly constructed object of our type

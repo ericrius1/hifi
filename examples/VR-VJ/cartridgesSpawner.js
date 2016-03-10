@@ -26,7 +26,7 @@ var soundEntity = Entities.addEntity({
 });
 
 var VISUAL_CARTRIDGE_SCRIPT_URL = Script.resolvePath("VRVJVisualCartridgeEntityScript.js?v1" + Math.random());
-var VISUAL_EFFECT_SCRIPT_URL = Script.resolvePath("visualEffectBoilerplate.js");
+var VISUAL_EFFECT_SCRIPT_URL = Script.resolvePath("visualEffectBoilerplate.js?v1" + Math.random());
 var visualEntity = Entities.addEntity({
     type: "Sphere",
     name: "VRVJ-Visual-Cartridge",
