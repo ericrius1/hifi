@@ -17,6 +17,7 @@ var soundEntity = Entities.addEntity({
       position: center,
       damping: 1,
       angularDamping: 1,
+      collidesWith: "",
       dynamic: true,
       script: SOUND_SCRIPT_URL,
       userData: JSON.stringify({
@@ -24,18 +25,24 @@ var soundEntity = Entities.addEntity({
       })
 });
 
-var VISUAL_SCRIPT_URL = Script.resolvePath("VRVJVisualCartridgeEntityScript.js?v1" + Math.random());
+var VISUAL_CARTRIDGE_SCRIPT_URL = Script.resolvePath("VRVJVisualCartridgeEntityScript.js?v1" + Math.random());
+var VISUAL_EFFECT_SCRIPT_URL = Script.resolvePath("visualEffectBoilerplate.js");
 var visualEntity = Entities.addEntity({
     type: "Sphere",
     name: "VRVJ-Visual-Cartridge",
     dimensions: {x: 0.1, y: 0.1, z: 0.1},
     damping: 1,
+    collidesWith: "",
     angularDamping: 1,
     color: {red: 0, green: 200, blue: 10},
     dynamic: true,
     position: Vec3.subtract(center, {x: 0, y: 0.2, z: 0}),
-    script: VISUAL_SCRIPT_URL
+    script: VISUAL_CARTRIDGE_SCRIPT_URL,
+    userData: JSON.stringify({
+      visualEffectScriptURL: VISUAL_EFFECT_SCRIPT_URL
+    })
 });
+
 Script.setTimeout(function() {
     // Wait for sounds to load
     Entities.callEntityMethod(soundEntity, "playSound");
