@@ -11,7 +11,7 @@
         _this = this;
         _this.SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
         _this.SOUND_CARTRIDGE_SEARCH_RANGE = 0.1;
-        _this.UPDATE_VISUAL_EFFECT_TIME = 20;
+        _this.UPDATE_VISUAL_EFFECT_TIME = 16;
         _this.CARTRIDGE_VOLUME_KEY = "VRVJ-Cartridge-Volume";
 
     };
@@ -54,9 +54,6 @@
 
             Script.clearInterval(_this.visualEffectUpdateInterval);
             _this.visualEffectUpdateInterval = null;
-            if (_this.visualEffect) {
-                _this.visualEffect.destroy();
-            }
         },
 
         parentToSoundCartridge: function(parent) {
@@ -74,22 +71,15 @@
                     velocity: ZERO_VEC,
                 });
             }, 100);
+            _this.visualEffectUpdateInterval = Script.setInterval(_this.updateVisualEffect, _this.UPDATE_VISUAL_EFFECT_TIME);
 
-            //set up our interval where we will update our visual effect (if we have one)
-            _this.initializeVisualEffect()
 
         },
 
         updateVisualEffect: function() {
             var volumeData = getEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.currentParent);
             if(volumeData) {
-
               _this.visualEffect.update(volumeData.volume, volumeData.loudness);  
-            }
-            if (!volumeData) {
-                // We shouldnt be updating
-                Script.clearInterval(_this.visualEffectUpdateInterval);
-                _this.visualEffectUpdateInterval = null;
             }
         },
 
@@ -111,7 +101,6 @@
                 z: 0
             });
             _this.visualEffect.initialize(position);
-            _this.visualEffectUpdateInterval = Script.setInterval(_this.updateVisualEffect, _this.UPDATE_VISUAL_EFFECT_TIME);
         },
 
         preload: function(entityID) {
@@ -120,8 +109,6 @@
             _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 
                 // Wait for userData to be loaded
-        
-
         },
 
         unload: function() {

@@ -44,8 +44,9 @@ var visualEntity = Entities.addEntity({
 });
 
 Script.setTimeout(function() {
-    // Wait for sounds to load
+    // Wait for sounds and userdata to load
     Entities.callEntityMethod(soundEntity, "playSound");
+    Entities.callEntityMethod(visualEntity, "initializeVisualEffect");
 }, 1000)
 
 function cleanup() {
