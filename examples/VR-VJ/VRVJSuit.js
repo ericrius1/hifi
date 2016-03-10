@@ -26,10 +26,13 @@ var EDIT_COLOR = {red: 200, green: 10, blue: 10};
 
 var vjHat = Entities.addEntity({
     type: "Sphere",
+    name: "VRVJ hat",
     dimensions: {x: 0.1, y: 0.05, z: 0.1},
     position: Vec3.sum(MyAvatar.getHeadPosition(), {x: 0, y: 0.1, z: 0}),
     color: PLAY_COLOR,
-    parentID: MyAvatar.sessionUUID
+    collidesWith: "",
+    parentID: MyAvatar.sessionUUID,
+    dynamic: false
 });
 
 

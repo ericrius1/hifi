@@ -25,7 +25,7 @@ VisualEffect = function() {
 
         var color = {red: 150, green: 50, blue: 10};
         var poiParticleRadius = 0.01;
-        _this.particleRadiusRange = {min: 0.001, max: 0.01};
+        _this.particleRadiusRange = {min: 0.01, max: 0.1};
         _this.poiFlame = Entities.addEntity({
             type: "ParticleEffect",
             name: "Poi Flame",
@@ -39,12 +39,12 @@ VisualEffect = function() {
             maxParticles: 100000,
             lifespan: 1.0,
             emitRate: 1000,
-            emitSpeed: 0.0,
+            emitSpeed: 0.1,
             speedSpread: 0.02,
             emitDimensions: {
-                x: .01,
-                y: .01,
-                z: .01
+                x: .1,
+                y: 1,
+                z: .1
             },
             polarStart: 0,
             polarFinish: 0,
@@ -60,10 +60,9 @@ VisualEffect = function() {
                 y: 0,
                 z: 0
             },
-            radiusStart: poiParticleRadius,
-            particleRadius: poiParticleRadius,
-            radiusFinish: poiParticleRadius,
-            radiusSpread: poiParticleRadius,
+            radiusStart: 0.0001,
+            radiusFinish: 0.0001,
+            radiusSpread: 0,
             alpha: 1,
             alphaSpread: 0.1,
             alphaStart: 0.5,
@@ -74,8 +73,9 @@ VisualEffect = function() {
     }
 
     this.update = function(volume, loudness) {
-        print("Volume " + volume)
-        var newParticleRadius = map(volume, 0, 1, _this.particleRadiusRange.min, _this.particleRadiusRange.max);
+        print("loudness " + loudness)
+        var newParticleRadius = map(loudness, 0, 1, _this.particleRadiusRange.min, _this.particleRadiusRange.max);
+        newParticleRadius *= volume;
         print("particle radius " + newParticleRadius);
         Entities.editEntity(_this.poiFlame, {particleRadius: newParticleRadius});
 

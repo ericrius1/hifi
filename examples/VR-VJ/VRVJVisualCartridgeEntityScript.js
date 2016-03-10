@@ -11,7 +11,7 @@
         _this = this;
         _this.SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
         _this.SOUND_CARTRIDGE_SEARCH_RANGE = 0.1;
-        _this.UPDATE_VISUAL_EFFECT_TIME = 50;
+        _this.UPDATE_VISUAL_EFFECT_TIME = 20;
         _this.CARTRIDGE_VOLUME_KEY = "VRVJ-Cartridge-Volume";
 
     };
@@ -80,9 +80,9 @@
         updateVisualEffect: function() {
             var volumeData = getEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.currentParent);
             if(volumeData) {
-              _this.visualEffect.update(volumeData.volume);  
+
+              _this.visualEffect.update(volumeData.volume, volumeData.loudness);  
             }
-            print("Current Volume " + JSON.stringify(volumeData))
             if (!volumeData) {
                 // We shouldnt be updating
                 Script.clearInterval(_this.visualEffectUpdateInterval);

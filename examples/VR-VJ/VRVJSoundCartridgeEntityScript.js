@@ -34,7 +34,7 @@
             _this.soundInjector.setOptions(_this.soundOptions);
 
             // Add our latest volume to user data so any children (like visual components) can access it
-            setEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.entityID, {volume: _this.soundOptions.volume});
+            setEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.entityID, {volume: _this.soundOptions.volume, loudness: _this.soundInjector.loudness});
         },
 
         preload: function(entityID) {
