@@ -11,6 +11,7 @@
         _this = this;
         _this.SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
         _this.SOUND_CARTRIDGE_SEARCH_RANGE = 0.1;
+        _this.UPDATE_VISUAL_EFFECT_TIME = 50;
 
     };
 
@@ -51,6 +52,10 @@
             });
         },
 
+        setVolume: function() {
+
+        },
+
         parentToSoundCartridge: function(parent) {
             // Need to set a timeout to wait for grab script to stop messing with entity
             var parentColor = Entities.getEntityProperties(parent, "color").color;
@@ -67,6 +72,13 @@
                 });
             }, 100);
 
+            //set up our interval where we will update our visual effect (if we have one)
+            _this.visualEffectUpdateInterval = Script.setInterval(_this.updateVisualEffect, _this.UPDATE_VISUAL_EFFECT_TIME);
+
+        },
+
+        updateVisualEffect: function() {
+            _this.visualEffect.update()
         },
 
         getPositionInFrontOfAvatar: function() {
@@ -81,12 +93,14 @@
             _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 
             var visualEffectScriptURL = getEntityUserData(_this.entityID).visualEffectScriptURL;
-            if (visualEffectScriptURL) {
-                Script.include(visualEffectScriptURL);
-                _this.visualEffect = new VisualEffect();
-                var position = Vec3.sum(_this.getPositionInFrontOfAvatar(), {x: 0, y: 0.2, z: 0});
-                _this.visualEffect.initialize(position);
-            }
+            Script.include(visualEffectScriptURL);
+            _this.visualEffect = new VisualEffect();
+            var position = Vec3.sum(_this.getPositionInFrontOfAvatar(), {
+                x: 0,
+                y: 0.2,
+                z: 0
+            });
+            _this.visualEffect.initialize(position);
 
         },
 

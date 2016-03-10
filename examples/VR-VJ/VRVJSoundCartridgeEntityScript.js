@@ -31,6 +31,9 @@
             }
             _this.soundOptions.volume = JSON.parse(data[0]).volume;
             _this.soundInjector.setOptions(_this.soundOptions);
+
+            // We want to send a local message with this volume to any entities that may be listening (like child visual components)
+         
         },
 
         preload: function(entityID) {
