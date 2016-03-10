@@ -12,6 +12,7 @@
         _this.SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
         _this.SOUND_CARTRIDGE_SEARCH_RANGE = 0.1;
         _this.UPDATE_VISUAL_EFFECT_TIME = 50;
+        _this.CARTRIDGE_VOLUME_KEY = "VRVJ-Cartridge-Volume";
 
     };
 
@@ -50,16 +51,15 @@
                 parentID: NULL_UUID,
                 color: _this.originalColor
             });
-        },
 
-        setVolume: function() {
-
+            Script.clearInterval(_this.visualEffectUpdateInterval);
+            _this.visualEffectUpdateInterval = null;
         },
 
         parentToSoundCartridge: function(parent) {
             // Need to set a timeout to wait for grab script to stop messing with entity
             var parentColor = Entities.getEntityProperties(parent, "color").color;
-
+            _this.currentParent = parent;
             Entities.editEntity(_this.entityID, {
                 parentID: parent,
                 dynamic: false,
@@ -78,7 +78,16 @@
         },
 
         updateVisualEffect: function() {
-            _this.visualEffect.update()
+            var volumeData = getEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.currentParent);
+            if(volumeData) {
+              _this.visualEffect.update(volumeData.volume);  
+            }
+            print("Current Volume " + JSON.stringify(volumeData))
+            if (!volumeData) {
+                // We shouldnt be updating
+                Script.clearInterval(_this.visualEffectUpdateInterval);
+                _this.visualEffectUpdateInterval = null;
+            }
         },
 
         getPositionInFrontOfAvatar: function() {
@@ -88,10 +97,8 @@
             orientation = Quat.fromVec3Degrees(orientation);
             return Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(2, Quat.getFront(orientation)));
         },
-        preload: function(entityID) {
-            _this.entityID = entityID;
-            _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 
+        initializeVisualEffect: function() {
             var visualEffectScriptURL = getEntityUserData(_this.entityID).visualEffectScriptURL;
             Script.include(visualEffectScriptURL);
             _this.visualEffect = new VisualEffect();
@@ -101,11 +108,26 @@
                 z: 0
             });
             _this.visualEffect.initialize(position);
+        },
+
+        preload: function(entityID) {
+            print("EBL PRELOAD")
+            _this.entityID = entityID;
+            _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
+
+            Script.setTimeout(function() {
+                // Wait for userData to be loaded
+                _this.initializeVisualEffect()
+            }, 100);
 
         },
 
         unload: function() {
+            print("EBL DESTROY VISUAL EFFECT");
             _this.visualEffect.destroy();
+            if (_this.visualEffectUpdateInterval) {
+                Script.clearInterval(_this.visualEffectUpdateInterval);
+            }
         }
     };
 

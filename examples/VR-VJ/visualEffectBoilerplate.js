@@ -1,11 +1,11 @@
-print("YAHAHAHAHAH")
+
+Script.include("../libraries/utils.js");
 VisualEffect = function() {
-    var poiStick, flame;
     var _this = this;
 
     this.initialize = function(position) {
 
-        poiStick = Entities.addEntity({
+        _this.poiStick = Entities.addEntity({
             type: "Box",
             name: "Poi Stick",
             dimensions: {
@@ -25,10 +25,11 @@ VisualEffect = function() {
 
         var color = {red: 150, green: 50, blue: 10};
         var poiParticleRadius = 0.01;
-        poiFlame = Entities.addEntity({
+        _this.particleRadiusRange = {min: 0.001, max: 0.01};
+        _this.poiFlame = Entities.addEntity({
             type: "ParticleEffect",
             name: "Poi Flame",
-            parentID: poiStick,
+            parentID: _this.poiStick,
             parentJointIndex: -1,
             position: position,
             isEmitting: true,
@@ -70,17 +71,20 @@ VisualEffect = function() {
             textures: "https://hifi-public.s3.amazonaws.com/alan/Particles/Particle-Sprite-Smoke-1.png",
             emitterShouldTrail: true
         })
-
-
     }
 
-    this.update = function() {
+    this.update = function(volume, loudness) {
+        print("Volume " + volume)
+        var newParticleRadius = map(volume, 0, 1, _this.particleRadiusRange.min, _this.particleRadiusRange.max);
+        print("particle radius " + newParticleRadius);
+        Entities.editEntity(_this.poiFlame, {particleRadius: newParticleRadius});
 
     }
 
     this.destroy = function() {
-        Entities.deleteEntity(poiStick);
-        Entities.deleteEntity(poiFlame)
+        print("EBL DESTROY POI FLAME")
+        Entities.deleteEntity(_this.poiFlame)
+        Entities.deleteEntity(_this.poiStick);
     }
 
 }

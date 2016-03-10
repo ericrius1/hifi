@@ -3,6 +3,7 @@
     Script.include("../libraries/utils.js");
     VRVJSoundEntity = function() {
         _this = this;
+        _this.CARTRIDGE_VOLUME_KEY = "VRVJ-Cartridge-Volume";
     };
 
     VRVJSoundEntity.prototype = {
@@ -32,8 +33,8 @@
             _this.soundOptions.volume = JSON.parse(data[0]).volume;
             _this.soundInjector.setOptions(_this.soundOptions);
 
-            // We want to send a local message with this volume to any entities that may be listening (like child visual components)
-         
+            // Add our latest volume to user data so any children (like visual components) can access it
+            setEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.entityID, {volume: _this.soundOptions.volume});
         },
 
         preload: function(entityID) {
