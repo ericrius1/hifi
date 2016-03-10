@@ -54,10 +54,12 @@
         parentToSoundCartridge: function(parent) {
             // Need to set a timeout to wait for grab script to stop messing with entity
             var parentColor = Entities.getEntityProperties(parent, "color").color;
-
             var visualEffectScriptURL = getEntityUserData(_this.entityID).visualEffectScriptURL;
-            var visualEffect = new VisualEffect();
-            visualEffect.play(); 
+            if (visualEffectScriptURL) {
+                Script.include(visualEffectScriptURL);
+               _this.visualEffect = new VisualEffect();
+               _this.visualEffect.initialize();
+            }
             Entities.editEntity(_this.entityID, {
                 parentID: parent,
                 dynamic: false,
@@ -72,7 +74,6 @@
 
         },
         preload: function(entityID) {
-            print("YAAAA")
             _this.entityID = entityID;
             _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 
