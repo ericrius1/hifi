@@ -45,7 +45,7 @@
   }
 
   function spawnVisualCartridges() {
-    var visualCartridgeScriptURL = Script.resolvePath("visualEffectEntityScripts/firePoiVisualCartridgeEntityScript.js?v1" + Math.random());
+    var visualCartridgeScriptURL = Script.resolvePath("visualCartridgeEntityScripts/firePoiVisualCartridgeEntityScript.js?v1" + Math.random());
 
     var visualCartridgeProps = {
       type: "Sphere",
@@ -73,6 +73,7 @@
     }
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
+    visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxVisualCartridgeEntityScript.js?v1" + Math.random());
 
     visualCartridgeProps.position = Vec3.sum(center, {
       x: randFloat(-0.2, 0.2),
