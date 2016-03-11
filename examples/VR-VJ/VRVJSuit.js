@@ -21,20 +21,18 @@ var volumeData;
 var isEditing = false;
 
 
-var PLAY_COLOR = {red: 10, green: 200, blue: 10};
-var EDIT_COLOR = {red: 200, green: 10, blue: 10}; 
+var PLAY_COLOR = {
+    red: 10,
+    green: 200,
+    blue: 10
+};
+var EDIT_COLOR = {
+    red: 200,
+    green: 10,
+    blue: 10
+};
 
-var vjHat = Entities.addEntity({
-    type: "Sphere",
-    name: "VRVJ hat",
-    dimensions: {x: 0.1, y: 0.05, z: 0.1},
-    position: Vec3.sum(MyAvatar.getHeadPosition(), {x: 0, y: 0.1, z: 0}),
-    color: PLAY_COLOR,
-    collidesWith: "",
-    parentID: MyAvatar.sessionUUID,
-    dynamic: false
-});
-
+createHandParticles();
 
 
 function updateCartridgeVolumes() {
@@ -47,7 +45,7 @@ function updateCartridgeVolumes() {
         var rightHandToCartridgeDistance = Vec3.distance(cartridgePosition, MyAvatar.getRightPalmPosition());
         var leftHandToCartridgeDistance = Vec3.distance(cartridgePosition, MyAvatar.getLeftPalmPosition());
         var closestHandToCartridgeDistance = Math.min(rightHandToCartridgeDistance, leftHandToCartridgeDistance);
-        
+
         var newVolume;
         if (closestHandToCartridgeDistance > CARTRIDGE_PLAY_RANGE) {
             newVolume = 0;
@@ -55,7 +53,9 @@ function updateCartridgeVolumes() {
             newVolume = map(closestHandToCartridgeDistance, 0, CARTRIDGE_PLAY_RANGE, 1, 0);
             newVolume = clamp(newVolume, 0, 1);
         }
-        volumeData = {volume: newVolume};
+        volumeData = {
+            volume: newVolume
+        };
         Entities.callEntityMethod(cartridge, "setVolume", [JSON.stringify(volumeData)]);
     });
 }
@@ -64,7 +64,7 @@ function updateCartridgeVolumes() {
 function searchForSoundCartridges() {
     activeCartridges = [];
     var entities = Entities.findEntities(MyAvatar.position, CARTRIDGE_SEARCH_RANGE);
-    for(var i = 0; i < entities.length; i++) {
+    for (var i = 0; i < entities.length; i++) {
         var entity = entities[i];
         var name = Entities.getEntityProperties(entity, "name").name;
         if (name.indexOf(SOUND_CARTRIDGE_NAME) !== -1) {
@@ -74,13 +74,8 @@ function searchForSoundCartridges() {
 }
 
 function toggleMode() {
-  isEditing = !isEditing;    
-  if (isEditing) {
-    Entities.editEntity(vjHat, {color: EDIT_COLOR})    
-  } else {
-    
-    Entities.editEntity(vjHat, {color: PLAY_COLOR})    
-  }
+    isEditing = !isEditing;
+
 }
 
 function rightBumperPress(value) {
@@ -88,6 +83,67 @@ function rightBumperPress(value) {
     if (value === 1) {
         toggleMode();
     }
+    if (isEditing) {
+        Entities.editEntity(rightHandEmitter, {color: EDIT_COLOR});
+        Entities.editEntity(leftHandEmitter, {color: EDIT_COLOR});
+    } else {
+        Entities.editEntity(rightHandEmitter, {color: PLAY_COLOR});
+        Entities.editEntity(leftHandEmitter, {color: PLAY_COLOR});
+    }
+
+}
+
+var rightHandEmitter, leftHandEmitter;
+
+function createHandParticles() {
+    var color = {
+        red: 15,
+        green: 92,
+        blue: 12
+    };
+    var radius = 0.01;
+    var handParticleProps = {
+        type: "ParticleEffect",
+        name: "VRVJ Hand Emitter",
+        parentID: MyAvatar.sessionUUID,
+        parentJointIndex: MyAvatar.getJointIndex("RightHandMiddle1"),
+        position: MyAvatar.getRightPalmPosition(),
+        isEmitting: true,
+        colorStart: {red: 100, green: 20, blue: 150},
+        color: PLAY_COLOR,
+        colorFinish: PLAY_COLOR,
+        maxParticles: 100000,
+        lifespan: 2.0,
+        emitRate: 100,
+        emitSpeed: 0.0,
+        speedSpread: 0.00,
+        emitAcceleration: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
+        accelerationSpread: {
+            x: 0.01,
+            y: 0.01,
+            z: 0.01
+        },
+        radiusStart: radius,
+        particleRadius: radius,
+        radiusFinish: radius + 0.001,
+        alpha: 0.5,
+        alphaSpread: 0.0,
+        alphaStart: 1,
+        alphaFinish: 0,
+        textures: "https://s3.amazonaws.com/hifi-public/eric/textures/particleSprites/beamParticle.png",
+        emitterShouldTrail: true
+    };
+
+    rightHandEmitter = Entities.addEntity(handParticleProps);
+
+    handParticleProps.parentJointIndex = MyAvatar.getJointIndex("LeftHandMiddle1");
+    handParticleProps.position = MyAvatar.getLeftPalmPosition();
+
+    leftHandEmitter = Entities.addEntity(handParticleProps);
 
 }
 
@@ -99,11 +155,9 @@ Controller.enableMapping(MAPPING_NAME);
 
 
 function cleanup() {
-    Entities.deleteEntity(vjHat);
+    Entities.deleteEntity(rightHandEmitter);
+    Entities.deleteEntity(leftHandEmitter);
+
 }
 
 Script.scriptEnding.connect(cleanup);
-
-
-
-
