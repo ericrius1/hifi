@@ -24,8 +24,8 @@ print("ADD ZONE")
         shaderUrl: SKYBOX_SHADER_URL,
         channels: ["https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg", "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/celestial_grid.jpg", "https://s3.amazonaws.com/hifi-public/brad/rainstorm/noise.jpg", "https://s3.amazonaws.com/hifi-public/brad/noise.jpg"],
         uniforms: {
-          rotationSpeed: 0.0001,
-          uDayColor: [0.4, 0.3, 0.3],
+          rotationSpeed: 0.1,
+          uDayColor: [0.5, 0.1, 0.6],
           constellationLevel: 0.0,
           constellationBoundaryLevel: 0.0,
           gridLevel: 0

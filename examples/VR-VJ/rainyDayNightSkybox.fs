@@ -33,7 +33,7 @@ vec3 stars3(in vec3 d) {
     //return rd;
     vec3 dir = d * axialTiltMatrix;
     
-    float theta = rotationSpeed * iGlobalTime * 4.0;
+    float theta = 4.0;
     vec2 sc = vec2(sin(theta), cos(theta));
     dir = dir * mat3( vec3(sc.y, 0.0, sc.x),
                     vec3(0.0, 1.0, 0.0),
@@ -58,8 +58,8 @@ const vec3 vSunRimColor  = vec3(1.0,0.66,0.33);
 
 vec4 render( in vec3 ro, in vec3 rd )
 {
-    float fSunSpeed = (rotationSpeed * 10.0 * iGlobalTime) + PI / 2.0 * 3.0;
-    vec3 sundir = normalize( vec3(cos(fSunSpeed),sin(fSunSpeed),0.0) );
+
+    vec3 sundir = vec3(0.4,  1.0, 1.0);
     sundir  = sundir * axialTiltMatrix;
     float sun = clamp( dot(sundir,rd), 0.0, 1.0 );
     
