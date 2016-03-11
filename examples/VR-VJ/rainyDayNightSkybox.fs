@@ -4,13 +4,13 @@
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 #line 5
 const float PI = 3.14159;
-uniform float rotationSpeed = 0.005;
 uniform float gridLevel = 0.0;
 uniform float constellationLevel = 0.0;
 uniform float constellationBoundaryLevel = 0.0;
+uniform float uSunDirY = 0.0;
 
 // Axial tilt
-const float axialTilt = 0.408407;
+const float axialTilt = 0.108407;
 const vec2 atsc = vec2(sin(axialTilt), cos(axialTilt));
 const mat3 axialTiltMatrix = mat3(
         vec3(atsc.y, -atsc.x, 0.0),
@@ -54,12 +54,12 @@ uniform vec3 uDayColor     = vec3(0.9,0.7,0.7);
 const vec3 vNightColor   = vec3(1.0, 1.0, 1.0);
 const vec3 vHorizonColor = vec3(0.6, 0.3, 0.4);
 const vec3 vSunColor     = vec3(1.0,0.8,0.6);
-const vec3 vSunRimColor  = vec3(1.0,0.66,0.33);
+const vec3 vSunRimColor  = vec3(1.0,0.66,0.3);
 
 vec4 render( in vec3 ro, in vec3 rd )
 {
 
-    vec3 sundir = vec3(0.4,  1.0, 1.0);
+    vec3 sundir = vec3(0.2, uSunDirY, 0.89);
     sundir  = sundir * axialTiltMatrix;
     float sun = clamp( dot(sundir,rd), 0.0, 1.0 );
     
@@ -72,7 +72,7 @@ vec4 render( in vec3 ro, in vec3 rd )
     
     float fHorizonLength = fDayHeight - fNightHeight;
     float fInverseHL = 1.0 / fHorizonLength;
-    float fHalfHorizonLength = fHorizonLength / 2.0;
+    float fHalfHorizonLength = fHorizonLength / .0;
     float fInverseHHL = 1.0 / fHalfHorizonLength;
     float fMidPoint = fNightHeight + fHalfHorizonLength;
     
@@ -91,8 +91,8 @@ vec4 render( in vec3 ro, in vec3 rd )
     col -= clamp(rd.y, 0.0, 0.5);
     
     // draw sun
-    col += 0.4 * vSunRimColor * pow( sun,    4.0 );
-    col += 1.0 * vSunColor    * pow( sun, 2000.0 );
+    col += 0.2 * vSunRimColor * pow( sun,    4.0 );
+    col += 1.0 * vSunColor    * pow( sun, 50.0 );
     
     // stars
     float fStarContrib = clamp((fSunHeight - fDayHeight) * (-fInverseHL), 0.0, 1.0);
