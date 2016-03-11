@@ -35,7 +35,7 @@
           channels: ["https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg", "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/celestial_grid.jpg", "https://s3.amazonaws.com/hifi-public/brad/rainstorm/noise.jpg", "https://s3.amazonaws.com/hifi-public/brad/noise.jpg"],
           uniforms: {
             uDayColor: [0.5, 0.1, 0.6],
-            uSunDirY: 0.9,
+            uSunDirY: -0.5,
             constellationLevel: 0.0,
             constellationBoundaryLevel: 0.0,
             gridLevel: 0
@@ -78,7 +78,10 @@
 
   function spawnVisualCartridges() {
     var VISUAL_CARTRIDGE_SCRIPT_URL = Script.resolvePath("VRVJVisualCartridgeEntityScript.js?v1" + Math.random());
-    var VISUAL_EFFECT_SCRIPT_URL = Script.resolvePath("visualEffectBoilerplate.js?v1" + Math.random());
+    var visualEffectScriptURL = Script.resolvePath("visualEffects/firePoiVisualEffect.js?v1" + Math.random());
+    var userData = {
+      visualEffectScriptURL: visualEffectScriptURL
+    };
     var visualCartridgeProps = {
       type: "Sphere",
       name: "VRVJ-Visual-Cartridge",
@@ -97,18 +100,22 @@
       },
       dynamic: true,
       position: Vec3.sum(center, {
-        x: 0,
+        x: randFloat(-0.2, 0.2),
         y: 0.2,
         z: 0
       }),
       script: VISUAL_CARTRIDGE_SCRIPT_URL,
-      userData: JSON.stringify({
-        visualEffectScriptURL: VISUAL_EFFECT_SCRIPT_URL
-      })
+      userData: JSON.stringify(userData)
     }
-    var visualCartridge = Entities.addEntity(visualCartridgeProps);
+    visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
-    visualCartridges.push(visualCartridge);
+    visualCartridgeProps.userData.visualEffectScriptURL = Script.resolvePath("visualEffects/firePoiVisualEffect.js?v1" + Math.random());
+    visualCartridgeProps.position = Vec3.sum(center, {
+      x: randFloat(-0.2, 0.2),
+      y: 0.0,
+      z: 0
+    });
+    visualCartridges.push(Entities.addEntity(visualCartridgeProps));
   }
 
 
