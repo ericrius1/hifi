@@ -1,6 +1,7 @@
 (function() {
     var _this;
     Script.include("../libraries/utils.js");
+    var SKYBOX_SHADER_URL = Script.resolvePath("rainyDayNightSkybox.fs");
     var NULL_UUID = "{00000000-0000-0000-0000-000000000000}";
     var ZERO_VEC = {
         x: 0,
@@ -83,7 +84,7 @@
         },
 
         updateVisualEffect: function(volume, loudness) {
-       
+
 
         },
 
@@ -104,7 +105,38 @@
         },
 
         initializeVisualEffect: function() {
-           
+          
+            var position = MyAvatar.position;
+            _this.skyboxUserData = {
+                ProceduralEntity: {
+                    version: 2,
+                    shaderUrl: SKYBOX_SHADER_URL,
+                    channels: ["https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg", "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/celestial_grid.jpg", "https://s3.amazonaws.com/hifi-public/brad/rainstorm/noise.jpg", "https://s3.amazonaws.com/hifi-public/brad/noise.jpg"],
+                    uniforms: {
+                        uDayColor: [0.5, 0.1, 0.6],
+                        uSunDirY: 0.0,
+                        constellationLevel: 0.0,
+                        constellationBoundaryLevel: 0.0,
+                        gridLevel: 0
+                    }
+                }
+            };
+            _this.VRVJSkyBox = Entities.addEntity({
+                type: "Zone",
+                backgroundMode: "skybox",
+                name: "VRVJ Skybox",
+                position: position,
+                dimensions: {
+                    x: 100,
+                    y: 100,
+                    z: 100
+                },
+                userData: JSON.stringify(_this.skyboxUserData)
+            });
+
+            _this.visualEffectEntities.push(_this.VRVJSkyBox);
+
+
         },
 
         preload: function(entityID) {
