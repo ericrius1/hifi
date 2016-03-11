@@ -35,7 +35,6 @@
               _this.soundOptions.volume = newVolume
               _this.soundInjector.setOptions(_this.soundOptions);
             }
-            print("LOUDNESS " + _this.soundInjector.loudness)
             // Add our latest volume to user data so any children (like visual components) can access it
             setEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.entityID, {volume: _this.soundOptions.volume, loudness: _this.soundInjector.loudness});
         },

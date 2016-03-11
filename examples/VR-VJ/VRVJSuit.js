@@ -87,11 +87,11 @@ function rightBumperPress(value) {
         toggleMode();
     }
     if (isEditing) {
-        Entities.editEntity(rightHandEmitter, {color: EDIT_COLOR});
-        Entities.editEntity(leftHandEmitter, {color: EDIT_COLOR});
+        Entities.editEntity(rightHandEmitter, {color: EDIT_COLOR, colorFinish: EDIT_COLOR});
+        Entities.editEntity(leftHandEmitter, {color: EDIT_COLOR, colorFinish: EDIT_COLOR});
     } else {
-        Entities.editEntity(rightHandEmitter, {color: PLAY_COLOR});
-        Entities.editEntity(leftHandEmitter, {color: PLAY_COLOR});
+        Entities.editEntity(rightHandEmitter, {color: PLAY_COLOR, colorFinish: PLAY_COLOR});
+        Entities.editEntity(leftHandEmitter, {color: PLAY_COLOR, colorFinish: PLAY_COLOR});
     }
 
 }

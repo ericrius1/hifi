@@ -77,7 +77,6 @@ VisualEffect = function() {
         var newParticleRadius = map(loudness, 0, 1, _this.particleRadiusRange.min, _this.particleRadiusRange.max);
         newParticleRadius *= volume;
         
-        print("loudness" + loudness)
         Entities.editEntity(_this.poiFlame, {particleRadius: newParticleRadius});
 
     }

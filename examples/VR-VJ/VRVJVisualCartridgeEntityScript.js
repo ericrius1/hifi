@@ -112,7 +112,6 @@
         },
 
         unload: function() {
-            print("EBL DESTROY VISUAL EFFECT");
             if (_this.visualEffect) {
               _this.visualEffect.destroy();  
             }
