@@ -35,7 +35,7 @@
           channels: ["https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg", "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/celestial_grid.jpg", "https://s3.amazonaws.com/hifi-public/brad/rainstorm/noise.jpg", "https://s3.amazonaws.com/hifi-public/brad/noise.jpg"],
           uniforms: {
             uDayColor: [0.5, 0.1, 0.6],
-            uSunDirY: -1.0,
+            uSunDirY: 0.9,
             constellationLevel: 0.0,
             constellationBoundaryLevel: 0.0,
             gridLevel: 0
@@ -79,7 +79,7 @@
   function spawnVisualCartridges() {
     var VISUAL_CARTRIDGE_SCRIPT_URL = Script.resolvePath("VRVJVisualCartridgeEntityScript.js?v1" + Math.random());
     var VISUAL_EFFECT_SCRIPT_URL = Script.resolvePath("visualEffectBoilerplate.js?v1" + Math.random());
-    var visualCartridge = Entities.addEntity({
+    var visualCartridgeProps = {
       type: "Sphere",
       name: "VRVJ-Visual-Cartridge",
       dimensions: {
@@ -105,7 +105,8 @@
       userData: JSON.stringify({
         visualEffectScriptURL: VISUAL_EFFECT_SCRIPT_URL
       })
-    });
+    }
+    var visualCartridge = Entities.addEntity(visualCartridgeProps);
 
     visualCartridges.push(visualCartridge);
   }
@@ -119,7 +120,7 @@
     visualCartridges.forEach(function(cartridge) {
       Entities.callEntityMethod(cartridge, "initializeVisualEffect");
     });
-  }, 1000)
+  }, 1000);
 
   function cleanup() {
     visualCartridges.forEach(function(cartridge) {
