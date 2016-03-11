@@ -26,13 +26,16 @@
             _this.soundInjector.setOptions(_this.soundOptions);
         },
 
-        setVolume: function(entityID, data) {
+        setSoundData: function(entityID, data) {
             if (!_this.soundInjector) {
                 return;
             }
-            _this.soundOptions.volume = JSON.parse(data[0]).volume;
-            _this.soundInjector.setOptions(_this.soundOptions);
-
+            var newVolume = JSON.parse(data[0]).volume;
+            if (newVolume !== -1) {
+              _this.soundOptions.volume = newVolume
+              _this.soundInjector.setOptions(_this.soundOptions);
+            }
+            print("LOUDNESS " + _this.soundInjector.loudness)
             // Add our latest volume to user data so any children (like visual components) can access it
             setEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.entityID, {volume: _this.soundOptions.volume, loudness: _this.soundInjector.loudness});
         },

@@ -73,16 +73,16 @@ VisualEffect = function() {
     }
 
     this.update = function(volume, loudness) {
-        print("loudness " + loudness)
+
         var newParticleRadius = map(loudness, 0, 1, _this.particleRadiusRange.min, _this.particleRadiusRange.max);
         newParticleRadius *= volume;
-        print("particle radius " + newParticleRadius);
+        
+        print("loudness" + loudness)
         Entities.editEntity(_this.poiFlame, {particleRadius: newParticleRadius});
 
     }
 
     this.destroy = function() {
-        print("EBL DESTROY POI FLAME")
         Entities.deleteEntity(_this.poiFlame)
         Entities.deleteEntity(_this.poiStick);
     }

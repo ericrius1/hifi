@@ -37,26 +37,29 @@ createHandParticles();
 
 function updateCartridgeVolumes() {
     // Only do this if we're in play mode (not in edit mode)
-    if (isEditing) {
-        return;
-    }
+
     activeCartridges.forEach(function(cartridge) {
         var cartridgePosition = Entities.getEntityProperties(cartridge, "position").position;
         var rightHandToCartridgeDistance = Vec3.distance(cartridgePosition, MyAvatar.getRightPalmPosition());
         var leftHandToCartridgeDistance = Vec3.distance(cartridgePosition, MyAvatar.getLeftPalmPosition());
         var closestHandToCartridgeDistance = Math.min(rightHandToCartridgeDistance, leftHandToCartridgeDistance);
 
-        var newVolume;
-        if (closestHandToCartridgeDistance > CARTRIDGE_PLAY_RANGE) {
-            newVolume = 0;
+        var newVolume, volumeData;
+        if (!isEditing) {
+
+            if (closestHandToCartridgeDistance > CARTRIDGE_PLAY_RANGE) {
+                newVolume = 0;
+            } else {
+                newVolume = map(closestHandToCartridgeDistance, 0, CARTRIDGE_PLAY_RANGE, 1, 0);
+                newVolume = clamp(newVolume, 0, 1);
+            }
         } else {
-            newVolume = map(closestHandToCartridgeDistance, 0, CARTRIDGE_PLAY_RANGE, 1, 0);
-            newVolume = clamp(newVolume, 0, 1);
+            newVolume = -1;
         }
         volumeData = {
             volume: newVolume
         };
-        Entities.callEntityMethod(cartridge, "setVolume", [JSON.stringify(volumeData)]);
+        Entities.callEntityMethod(cartridge, "setSoundData", [JSON.stringify(volumeData)]);
     });
 }
 
