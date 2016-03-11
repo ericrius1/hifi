@@ -45,7 +45,7 @@
   }
 
   function spawnVisualCartridges() {
-    var visualCartridgeScriptURL = Script.resolvePath("VRVJVisualCartridgeEntityScript.js?v1" + Math.random());
+    var visualCartridgeScriptURL = Script.resolvePath("visualEffectEntityScripts/firePoiVisualEffectEntityScript.js?v1" + Math.random());
 
     var visualCartridgeProps = {
       type: "Sphere",
