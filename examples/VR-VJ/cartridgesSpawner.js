@@ -10,41 +10,9 @@
   var soundCartridges = [];
   var visualCartridges = [];
 
-  spawnSkybox();
   spawnSoundCartridges();
   spawnVisualCartridges();
-  var VRVJSkyBox;
 
-  function spawnSkybox() {
-    print("ADD ZONE")
-    var SKYBOX_SHADER_URL = Script.resolvePath("rainyDayNightSkybox.fs");
-    VRVJSkyBox = Entities.addEntity({
-      type: "Zone",
-      backgroundMode: "skybox",
-      name: "VRVJ Skybox",
-      position: center,
-      dimensions: {
-        x: 100,
-        y: 100,
-        z: 100
-      },
-      userData: JSON.stringify({
-        ProceduralEntity: {
-          version: 2,
-          shaderUrl: SKYBOX_SHADER_URL,
-          channels: ["https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg", "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/celestial_grid.jpg", "https://s3.amazonaws.com/hifi-public/brad/rainstorm/noise.jpg", "https://s3.amazonaws.com/hifi-public/brad/noise.jpg"],
-          uniforms: {
-            uDayColor: [0.5, 0.1, 0.6],
-            uSunDirY: -0.5,
-            constellationLevel: 0.0,
-            constellationBoundaryLevel: 0.0,
-            gridLevel: 0
-          }
-        }
-      })
-    });
-
-  }
 
   function spawnSoundCartridges() {
     var SOUND_SCRIPT_URL = Script.resolvePath("VRVJSoundCartridgeEntityScript.js");
@@ -79,7 +47,7 @@
   function spawnVisualCartridges() {
     var VISUAL_CARTRIDGE_SCRIPT_URL = Script.resolvePath("VRVJVisualCartridgeEntityScript.js?v1" + Math.random());
     var visualEffectScriptURL = Script.resolvePath("visualEffects/firePoiVisualEffect.js?v1" + Math.random());
-    var userData = {
+    var cartridgeUserData = {
       visualEffectScriptURL: visualEffectScriptURL
     };
     var visualCartridgeProps = {
@@ -105,11 +73,12 @@
         z: 0
       }),
       script: VISUAL_CARTRIDGE_SCRIPT_URL,
-      userData: JSON.stringify(userData)
+      userData: JSON.stringify(cartridgeUserData)
     }
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
-    visualCartridgeProps.userData.visualEffectScriptURL = Script.resolvePath("visualEffects/firePoiVisualEffect.js?v1" + Math.random());
+    cartridgeUserData.visualEffectScriptURL = Script.resolvePath("visualEffects/reactiveSkybox/reactiveSkyboxVisualEffect.js?v1" + Math.random());
+    visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
     visualCartridgeProps.position = Vec3.sum(center, {
       x: randFloat(-0.2, 0.2),
       y: 0.0,
@@ -136,7 +105,6 @@
     soundCartridges.forEach(function(cartridge) {
       Entities.deleteEntity(cartridge);
     });
-    Entities.deleteEntity(VRVJSkyBox)
   }
 
   Script.scriptEnding.connect(cleanup);

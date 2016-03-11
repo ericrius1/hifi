@@ -1,10 +1,10 @@
 
-Script.include("../libraries/utils.js");
-VisualEffect = function() {
+function() {
+    Script.include("../libraries/utils.js");
     var _this = this;
 
     this.initialize = function(position) {
-
+        print("EBL INIT POI STICK")
         _this.poiStick = Entities.addEntity({
             type: "Box",
             name: "Poi Stick",

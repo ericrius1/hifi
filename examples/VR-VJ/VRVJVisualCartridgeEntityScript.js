@@ -93,7 +93,7 @@
 
         initializeVisualEffect: function() {
             var visualEffectScriptURL = getEntityUserData(_this.entityID).visualEffectScriptURL;
-            Script.include(visualEffectScriptURL);
+            var  VisualEffect = Script.include(visualEffectScriptURL);
             _this.visualEffect = new VisualEffect();
             var position = Vec3.sum(_this.getPositionInFrontOfAvatar(), {
                 x: 0,
