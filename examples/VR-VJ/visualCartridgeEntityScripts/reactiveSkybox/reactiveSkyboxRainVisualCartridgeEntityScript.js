@@ -122,9 +122,9 @@
 
 
         updateVisualEffect: function(volume, loudness) {
-            var sunDirY = 2 * Math.pow(volume, 0.5) - 1;
-            // print("SUNDIR " + sunDirY)
-            _this.skyboxUserData.ProceduralEntity.uniforms.uSunDirY = sunDirY;
+            var rainBrightness = Math.pow(volume, 0.5)
+            _this.skyboxUserData = getEntityUserData(_this.VRVJSkybox);
+            _this.skyboxUserData.ProceduralEntity.uniforms.uRainBrightness = rainBrightness;
             setEntityUserData(_this.VRVJSkybox, _this.skyboxUserData);
         },
 

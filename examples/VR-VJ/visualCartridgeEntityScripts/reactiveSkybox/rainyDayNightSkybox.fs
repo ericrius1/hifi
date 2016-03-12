@@ -8,6 +8,7 @@ uniform float gridLevel = 0.0;
 uniform float constellationLevel = 0.0;
 uniform float constellationBoundaryLevel = 0.0;
 uniform float uSunDirY = 0.0;
+uniform float uRainBrightness = 0.0;
 
 // Axial tilt
 const float axialTilt = 0.108407;
@@ -103,7 +104,7 @@ vec4 render( in vec3 ro, in vec3 rd )
     col += stars3(vStarDir) * fStarContrib;
 
     // Ten layers of rain sheets...
-    float rainBrightness = 0.2;
+    float rainBrightness = uRainBrightness;
     vec2 q = vec2(atan(rd.x, -rd.z), asin(rd.y));
     float dis = 1;
     int sheets = 13;

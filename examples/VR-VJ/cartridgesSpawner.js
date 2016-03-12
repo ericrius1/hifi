@@ -25,6 +25,7 @@
         uniforms: {
           uDayColor: [0.5, 0.1, 0.6],
           uSunDirY: -1.0,
+          uRainBrightness: 0,
           constellationLevel: 0.0,
           constellationBoundaryLevel: 0.0,
           gridLevel: 0
@@ -129,6 +130,7 @@
       z: 0
     });
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
+
 
   }
 
