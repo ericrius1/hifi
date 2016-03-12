@@ -49,7 +49,8 @@
   function spawnSoundCartridges() {
     var SOUND_SCRIPT_URL = Script.resolvePath("VRVJSoundCartridgeEntityScript.js");
     var SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
-    var soundCartridge = Entities.addEntity({
+
+    var soundCartridgeProps = {
       type: "Box",
       name: SOUND_CARTRIDGE_NAME,
       dimensions: {
@@ -71,7 +72,8 @@
       userData: JSON.stringify({
         soundURL: "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/ambient_dream.wav",
       })
-    });
+    }
+    var soundCartridge = Entities.addEntity(soundCartridgeProps);
 
     soundCartridges.push(soundCartridge);
   }

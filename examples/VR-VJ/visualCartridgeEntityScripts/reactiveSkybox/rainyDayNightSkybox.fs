@@ -103,10 +103,10 @@ vec4 render( in vec3 ro, in vec3 rd )
     col += stars3(vStarDir) * fStarContrib;
 
     // Ten layers of rain sheets...
-    float rainBrightness = 0.15;
+    float rainBrightness = 0.2;
     vec2 q = vec2(atan(rd.x, -rd.z), asin(rd.y));
     float dis = 1;
-    int sheets = 12;
+    int sheets = 13;
     for (int i = 0; i < sheets; i++) {
         float f = pow(dis, .45) + 0.25;
         vec2 st =  f * (q * vec2(2.0, .05) + vec2(-iGlobalTime*.01 + q.y * .05, iGlobalTime * 0.12));
