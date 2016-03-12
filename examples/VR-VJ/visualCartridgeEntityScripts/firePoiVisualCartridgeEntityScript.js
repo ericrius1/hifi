@@ -91,8 +91,6 @@
 
         },
 
-
-
         destroy: function() {
             _this.visualEffectEntities.forEach(function(visualEffectEntity) {
                 Entities.deleteEntity(visualEffectEntity);
