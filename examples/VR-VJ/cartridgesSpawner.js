@@ -9,10 +9,42 @@
 
   var soundCartridges = [];
   var visualCartridges = [];
-
+  var VRVJSkybox;
+  spawnSkybox();
   spawnSoundCartridges();
   spawnVisualCartridges();
 
+  function spawnSkybox() {
+    var SKYBOX_SHADER_URL = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/rainyDayNightSkybox.fs");
+    var position = MyAvatar.position;
+    var skyboxUserData = {
+      ProceduralEntity: {
+        version: 2,
+        shaderUrl: SKYBOX_SHADER_URL,
+        channels: ["https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg", "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/celestial_grid.jpg", "https://s3.amazonaws.com/hifi-public/brad/rainstorm/noise.jpg", "https://s3.amazonaws.com/hifi-public/brad/noise.jpg"],
+        uniforms: {
+          uDayColor: [0.5, 0.1, 0.6],
+          uSunDirY: -1.0,
+          constellationLevel: 0.0,
+          constellationBoundaryLevel: 0.0,
+          gridLevel: 0
+        }
+      }
+    };
+    VRVJSkybox = Entities.addEntity({
+      type: "Zone",
+      backgroundMode: "skybox",
+      name: "VRVJ Skybox",
+      position: position,
+      dimensions: {
+        x: 100,
+        y: 100,
+        z: 100
+      },
+      userData: JSON.stringify(skyboxUserData)
+    });
+
+  }
 
   function spawnSoundCartridges() {
     var SOUND_SCRIPT_URL = Script.resolvePath("VRVJSoundCartridgeEntityScript.js");
@@ -69,12 +101,14 @@
         y: 0.2,
         z: 0
       }),
-      script: visualCartridgeScriptURL
+      script: visualCartridgeScriptURL,
     }
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxVisualCartridgeEntityScript.js?v1" + Math.random());
-
+    var cartridgeUserData = {};
+    cartridgeUserData.reactiveSkybox = VRVJSkybox;
+    visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
     visualCartridgeProps.position = Vec3.sum(center, {
       x: randFloat(-0.2, 0.2),
       y: 0.0,

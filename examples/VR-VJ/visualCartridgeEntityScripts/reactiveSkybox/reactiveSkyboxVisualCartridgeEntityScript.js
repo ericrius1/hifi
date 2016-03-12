@@ -110,40 +110,19 @@
         initializeVisualEffect: function() {
 
             var position = MyAvatar.position;
-            _this.skyboxUserData = {
-                ProceduralEntity: {
-                    version: 2,
-                    shaderUrl: SKYBOX_SHADER_URL,
-                    channels: ["https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg", "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/celestial_grid.jpg", "https://s3.amazonaws.com/hifi-public/brad/rainstorm/noise.jpg", "https://s3.amazonaws.com/hifi-public/brad/noise.jpg"],
-                    uniforms: {
-                        uDayColor: [0.5, 0.1, 0.6],
-                        uSunDirY: -1.0,
-                        constellationLevel: 0.0,
-                        constellationBoundaryLevel: 0.0,
-                        gridLevel: 0
-                    }
-                }
-            };
-            _this.VRVJSkybox = Entities.addEntity({
-                type: "Zone",
-                backgroundMode: "skybox",
-                name: "VRVJ Skybox",
-                position: position,
-                dimensions: {
-                    x: 100,
-                    y: 100,
-                    z: 100
-                },
-                userData: JSON.stringify(_this.skyboxUserData)
-            });
+       
+            _this.VRVJSkybox = getEntityUserData(_this.entityID).reactiveSkybox;
+            _this.skyboxUserData = getEntityUserData(_this.VRVJSkybox);
+            print("USER DATA " + JSON.stringify(_this.skyboxUserData));
+            if(_this.VRVJSkybox) {
+              _this.visualEffectEntities.push(_this.VRVJSkybox);  
+            }
 
-            _this.visualEffectEntities.push(_this.VRVJSkyBox);
         },
 
 
         updateVisualEffect: function(volume, loudness) {
-            var sunDirY = map(volume, 0, 1, -1, 1);
-            print("NEW SUNDIRY " + sunDirY)
+            var sunDirY = Math.pow(volume, 2) - 1;
             _this.skyboxUserData.ProceduralEntity.uniforms.uSunDirY = sunDirY;
             setEntityUserData(_this.VRVJSkybox, _this.skyboxUserData);
         },
