@@ -105,7 +105,7 @@
     }
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
-    visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxVisualCartridgeEntityScript.js?v1" + Math.random());
+    visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxSunVisualCartridgeEntityScript.js?v1" + Math.random());
     var cartridgeUserData = {};
     cartridgeUserData.reactiveSkybox = VRVJSkybox;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
@@ -115,6 +115,16 @@
       z: 0
     });
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
+
+
+    visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxRainVisualCartridgeEntityScript.js?v1" + Math.random());
+    visualCartridgeProps.position = Vec3.sum(center, {
+      x: randFloat(-0.2, 0.2),
+      y: 0.0,
+      z: 0
+    });
+    visualCartridges.push(Entities.addEntity(visualCartridgeProps));
+
   }
 
 
