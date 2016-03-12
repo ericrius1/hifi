@@ -49,7 +49,9 @@
   function spawnSoundCartridges() {
     var SOUND_SCRIPT_URL = Script.resolvePath("VRVJSoundCartridgeEntityScript.js");
     var SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
-
+    var soundCartridgeUserData = {
+      soundURL: "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/ambient_dream.wav",
+    };
     var soundCartridgeProps = {
       type: "Box",
       name: SOUND_CARTRIDGE_NAME,
@@ -69,13 +71,14 @@
       collidesWith: "",
       dynamic: true,
       script: SOUND_SCRIPT_URL,
-      userData: JSON.stringify({
-        soundURL: "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/ambient_dream.wav",
-      })
+      userData: JSON.stringify(soundCartridgeUserData)
     }
-    var soundCartridge = Entities.addEntity(soundCartridgeProps);
+    
+    soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
-    soundCartridges.push(soundCartridge);
+    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/ambient_rain.wav";
+    soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
+    soundCartridges.push(Entities.addEntity(soundCartridgeProps));
   }
 
   function spawnVisualCartridges() {
@@ -131,7 +134,7 @@
 
 
   Script.setTimeout(function() {
-    // Wait for sounds and userdata to load
+    // Wait for sounds and userData to load
     soundCartridges.forEach(function(cartridge) {
       Entities.callEntityMethod(cartridge, "playSound");
     });
