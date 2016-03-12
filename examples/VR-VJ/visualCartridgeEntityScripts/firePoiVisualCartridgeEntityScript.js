@@ -20,7 +20,6 @@
     VRVJVisualEntity.prototype = {
 
         releaseGrab: function() {
-            print("RELEASE GRAB")
                 // search for nearby sound loop entities and if found, add it as a parent.
             Script.setTimeout(function() {
                 _this.searchForNearbySoundLoops();
@@ -115,7 +114,6 @@
                 z: 0
             });
 
-            print("EBL INIT POI STICK")
             _this.poiStick = Entities.addEntity({
                 type: "Box",
                 name: "Poi Stick",
@@ -194,7 +192,6 @@
         },
 
         preload: function(entityID) {
-            print("EBL PRELOAD")
             _this.entityID = entityID;
             _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 

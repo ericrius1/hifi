@@ -20,8 +20,7 @@
     VRVJVisualEntity.prototype = {
 
         releaseGrab: function() {
-            print("RELEASE GRAB")
-                // search for nearby sound loop entities and if found, add it as a parent.
+            // search for nearby sound loop entities and if found, add it as a parent.
             Script.setTimeout(function() {
                 _this.searchForNearbySoundLoops();
             }, 100);
@@ -75,26 +74,6 @@
             _this.visualEffectUpdateInterval = Script.setInterval(_this.update, _this.UPDATE_VISUAL_EFFECT_TIME);
         },
 
-        update: function() {
-            var volumeData = getEntityCustomData(_this.CARTRIDGE_VOLUME_KEY, _this.currentParent);
-            if (volumeData) {
-                _this.updateVisualEffect(volumeData.volume, volumeData.loudness);
-            }
-        },
-
-        updateVisualEffect: function(volume, loudness) {
-       
-
-        },
-
-
-
-        destroy: function() {
-            _this.visualEffectEntities.forEach(function(visualEffectEntity) {
-                Entities.deleteEntity(visualEffectEntity);
-            });
-        },
-
         getPositionInFrontOfAvatar: function() {
             var orientation = MyAvatar.orientation;
             orientation = Quat.safeEulerAngles(orientation);
@@ -103,12 +82,9 @@
             return Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(2, Quat.getFront(orientation)));
         },
 
-        initializeVisualEffect: function() {
-           
-        },
+
 
         preload: function(entityID) {
-            print("EBL PRELOAD")
             _this.entityID = entityID;
             _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 
@@ -120,7 +96,25 @@
             if (_this.visualEffectUpdateInterval) {
                 Script.clearInterval(_this.visualEffectUpdateInterval);
             }
-        }
+        },
+        
+        initializeVisualEffect: function() {
+
+        },
+
+        updateVisualEffect: function(volume, loudness) {
+
+
+        },
+
+        destroy: function() {
+            _this.visualEffectEntities.forEach(function(visualEffectEntity) {
+                Entities.deleteEntity(visualEffectEntity);
+            });
+        },
+
+
+
     };
 
     // entity scripts always need to return a newly constructed object of our type

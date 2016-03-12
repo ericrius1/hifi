@@ -21,8 +21,7 @@
     VRVJVisualEntity.prototype = {
 
         releaseGrab: function() {
-            print("RELEASE GRAB")
-                // search for nearby sound loop entities and if found, add it as a parent.
+            // search for nearby sound loop entities and if found, add it as a parent.
             Script.setTimeout(function() {
                 _this.searchForNearbySoundLoops();
             }, 100);
@@ -83,18 +82,6 @@
             }
         },
 
-        updateVisualEffect: function(volume, loudness) {
-
-
-        },
-
-
-
-        destroy: function() {
-            _this.visualEffectEntities.forEach(function(visualEffectEntity) {
-                Entities.deleteEntity(visualEffectEntity);
-            });
-        },
 
         getPositionInFrontOfAvatar: function() {
             var orientation = MyAvatar.orientation;
@@ -104,8 +91,24 @@
             return Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(2, Quat.getFront(orientation)));
         },
 
+
+        preload: function(entityID) {
+            _this.entityID = entityID;
+            _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
+
+            // Wait for userData to be loaded
+        },
+
+        unload: function() {
+            _this.destroy();
+            if (_this.visualEffectUpdateInterval) {
+                Script.clearInterval(_this.visualEffectUpdateInterval);
+            }
+        },
+
+
         initializeVisualEffect: function() {
-          
+
             var position = MyAvatar.position;
             _this.skyboxUserData = {
                 ProceduralEntity: {
@@ -114,14 +117,14 @@
                     channels: ["https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/starmap_8k.jpg", "https://hifi-public.s3.amazonaws.com/austin/assets/images/skybox/celestial_grid.jpg", "https://s3.amazonaws.com/hifi-public/brad/rainstorm/noise.jpg", "https://s3.amazonaws.com/hifi-public/brad/noise.jpg"],
                     uniforms: {
                         uDayColor: [0.5, 0.1, 0.6],
-                        uSunDirY: 0.0,
+                        uSunDirY: -1.0,
                         constellationLevel: 0.0,
                         constellationBoundaryLevel: 0.0,
                         gridLevel: 0
                     }
                 }
             };
-            _this.VRVJSkyBox = Entities.addEntity({
+            _this.VRVJSkybox = Entities.addEntity({
                 type: "Zone",
                 backgroundMode: "skybox",
                 name: "VRVJ Skybox",
@@ -135,24 +138,22 @@
             });
 
             _this.visualEffectEntities.push(_this.VRVJSkyBox);
-
-
         },
 
-        preload: function(entityID) {
-            print("EBL PRELOAD")
-            _this.entityID = entityID;
-            _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
 
-            // Wait for userData to be loaded
+        updateVisualEffect: function(volume, loudness) {
+            var sunDirY = map(volume, 0, 1, -1, 1);
+            print("NEW SUNDIRY " + sunDirY)
+            _this.skyboxUserData.ProceduralEntity.uniforms.uSunDirY = sunDirY;
+            setEntityUserData(_this.VRVJSkybox, _this.skyboxUserData);
         },
 
-        unload: function() {
-            _this.destroy();
-            if (_this.visualEffectUpdateInterval) {
-                Script.clearInterval(_this.visualEffectUpdateInterval);
-            }
-        }
+        destroy: function() {
+            _this.visualEffectEntities.forEach(function(visualEffectEntity) {
+                Entities.deleteEntity(visualEffectEntity);
+            });
+        },
+
     };
 
     // entity scripts always need to return a newly constructed object of our type
