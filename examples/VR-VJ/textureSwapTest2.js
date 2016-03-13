@@ -125,7 +125,7 @@ function update(deltaTime) {
         if (sinceLastUpdate > throttleRate) {
             sinceLastUpdate = 0;
             if (SWAP_TEXTURES == true) {
-                // swapTextures();
+                swapTextures();
             } else {
                 swapVisibility();
             }

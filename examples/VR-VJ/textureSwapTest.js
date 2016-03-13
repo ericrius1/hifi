@@ -1,5 +1,5 @@
-var MODEL_URL = "file:///Users/ericlevin1/Desktop/box1.fbx?v1 " + Math.random();
-// var MODEL_URL = "http://hifi-public.s3.amazonaws.com/eric/models/box1.fbx?v1" + Math.random();
+// var MODEL_URL = "file:///Users/ericlevin1/Desktop/box1.fbx?v1 " + Math.random();
+var MODEL_URL = "http://hifi-public.s3.amazonaws.com/eric/models/box1.fbx?v1" + Math.random();
 var center = Vec3.sum(MyAvatar.position, Vec3.multiply(2, Quat.getFront(Camera.getOrientation())));
 
 
@@ -21,7 +21,7 @@ var box = Entities.addEntity({
 
 Script.setTimeout(function() {
     Entities.editEntity(box, {
-        textures: 'emissive:"http://localhost:3002/boxtestemissive.png", \ndiffuse:"http://localhost:3002/boxtestdiffuse.png"'
+        textures: 'diffuse:"http://hifi-public.s3.amazonaws.com/boxtestdiffuse.png",\nemissive:""'
     })
 }, 2000)
 

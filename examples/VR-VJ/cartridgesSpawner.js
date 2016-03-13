@@ -74,10 +74,14 @@
       script: SOUND_SCRIPT_URL,
       userData: JSON.stringify(soundCartridgeUserData)
     }
-    
+
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
     soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/ambient_rain.wav";
+    soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
+    soundCartridges.push(Entities.addEntity(soundCartridgeProps));
+
+    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/tribaldrums.wav";
     soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
   }
