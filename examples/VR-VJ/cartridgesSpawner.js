@@ -110,7 +110,7 @@
 
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxSunVisualCartridgeEntityScript.js?v1" + Math.random());
     cartridgeUserData.reactiveSkybox = VRVJSkybox;
-    startingTextures = 'file20:"https://s3-us-west-1.amazonaws.com/sun_emissive.png",\nfile5:"https://s3-us-west-1.amazonaws.com/sun_diffuse",\nfile11:"https://s3-us-west-1.amazonaws.com/sun_normal.png",\nfile13:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile12:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
+    startingTextures = 'file1:"https://s3-us-west-1.amazonaws.com/sun_emissive.png",\nfile113:"https://s3-us-west-1.amazonaws.com/sun_diffuse",\nfile3:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile2:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
     visualCartridgeProps.textures = startingTextures;
     cartridgeUserData.startingTextures = startingTextures;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
@@ -120,8 +120,8 @@
       z: 351.3485
     };
     // https://s3-us-west-1.amazonaws.com/sun_diffuse
-    visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/sun_cartridge.fbx";
-    visualCartridges.push(Entities.addEntity(visualCartridgeProps));
+    visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/cartridge_sun.fbx";
+      visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
     //https://s3-us-west-1.amazonaws.com/rain_diffuse.png
     startingTextures = 'file113:"",\nfile112:"https://s3-us-west-1.amazonaws.com/rain_diffuse.png",\nfile115:"https://s3-us-west-1.amazonaws.com/rain_roughness.png",\nfile114:"https://s3-us-west-1.amazonaws.com/rain_metallic.png"';

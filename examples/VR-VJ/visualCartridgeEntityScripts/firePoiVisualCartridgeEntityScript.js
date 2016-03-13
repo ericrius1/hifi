@@ -209,6 +209,11 @@
             _this.torchFlames.push(flame);
             _this.visualEffectEntities.push(flame);
 
+            // var flameLightProps = Entities.addEntity({
+            //     type: "Light",
+            //     intensity
+            // })
+
 
         },
 
