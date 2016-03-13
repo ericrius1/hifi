@@ -163,6 +163,7 @@
                 shapeType: "box",
                 position: staffPosition,
                 dimensions: staffDimensions,
+                collidesWith: "static",
                 dynamic: true
             };
 
@@ -266,6 +267,7 @@
                 position: torchPosition,
                 dimensions: torchDimensions,
                 dynamic: true,
+                collidesWith: "static",
                 gravity: {
                     x: 0,
                     y: -3,
