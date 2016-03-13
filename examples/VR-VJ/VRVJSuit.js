@@ -7,7 +7,7 @@ var CARTRIDGE_SEARCH_RANGE = 5;
 
 
 
-var CARTRIDGE_PLAY_RANGE = 0.5;
+var CARTRIDGE_PLAY_RANGE = 0.7;
 var SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
 var activeCartridges = [];
 searchForSoundCartridges();
