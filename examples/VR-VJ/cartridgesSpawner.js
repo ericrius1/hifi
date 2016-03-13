@@ -136,18 +136,14 @@
       script: SOUND_SCRIPT_URL,
       userData: JSON.stringify(soundCartridgeUserData)
     }
-
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
-    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/ambient_rain.wav";
-    soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
-    soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
     soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/tribaldrums.wav";
     soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
-    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/banjo.wav";
+    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/rain.wav?v3";
     soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
   }
@@ -185,7 +181,7 @@
     var cartridgeUserData = {};
     cartridgeUserData.reactiveSkybox = VRVJSkybox;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
-    visualCartridgeProps.position = Vec3.sum(center, {
+    visualCartridgeProps.position = Vec3.sum(cartridgeSpawnPosition, {
       x: randFloat(-0.2, 0.2),
       y: 0.0,
       z: 0
@@ -194,7 +190,7 @@
 
 
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxRainVisualCartridgeEntityScript.js?v1" + Math.random());
-    visualCartridgeProps.position = Vec3.sum(center, {
+    visualCartridgeProps.position = Vec3.sum(cartridgeSpawnPosition, {
       x: randFloat(-0.2, 0.2),
       y: 0.0,
       z: 0
