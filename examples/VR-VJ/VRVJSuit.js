@@ -133,9 +133,9 @@ function createHandParticles() {
         radiusStart: radius,
         particleRadius: radius,
         radiusFinish: radius + 0.001,
-        alpha: 0.5,
+        alpha: 0.1,
         alphaSpread: 0.0,
-        alphaStart: 1,
+        alphaStart: 0.2,
         alphaFinish: 0,
         textures: "https://s3.amazonaws.com/hifi-public/eric/textures/particleSprites/beamParticle.png",
         emitterShouldTrail: true

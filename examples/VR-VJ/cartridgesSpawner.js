@@ -76,7 +76,7 @@
 
     var visualCartridgeProps = {
       type: "Model",
-      modelURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/torch_cartridge.fbx",
+      modelURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/cartridge_torch.fbx?v3",
       shapeType: "sphere",
       name: "VRVJ-Visual-Cartridge",
       dimensions: {
@@ -102,7 +102,7 @@
       script: visualCartridgeScriptURL,
     }
     var cartridgeUserData = {};
-    var startingTextures = 'file21:"https://s3-us-west-1.amazonaws.com/torch_emissive.png",\nfile14:"https://s3-us-west-1.amazonaws.com/torch_diffuse.png",\nfile15:"https://s3-us-west-1.amazonaws.com/torch_normal.png",\nfile17:"",\nfile16:"https://s3-us-west-1.amazonaws.com/torch_metallic.png"'
+    var startingTextures = 'file1:"",\nfile111:"https://s3-us-west-1.amazonaws.com/torch_diffuse.png",\nfile3:"https://s3-us-west-1.amazonaws.com/torch_roughness.png",\nfile2:"https://s3-us-west-1.amazonaws.com/torch_metallic.png"'
     visualCartridgeProps.textures = startingTextures;
     cartridgeUserData.startingTextures = startingTextures;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
@@ -110,7 +110,7 @@
 
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxSunVisualCartridgeEntityScript.js?v1" + Math.random());
     cartridgeUserData.reactiveSkybox = VRVJSkybox;
-    startingTextures = 'file20:"https://s3-us-west-1.amazonaws.com/sun_emissive.png",\nfile5:"",\nfile11:"https://s3-us-west-1.amazonaws.com/sun_normal.png",\nfile13:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile12:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
+    startingTextures = 'file20:"https://s3-us-west-1.amazonaws.com/sun_emissive.png",\nfile5:"https://s3-us-west-1.amazonaws.com/sun_diffuse",\nfile11:"https://s3-us-west-1.amazonaws.com/sun_normal.png",\nfile13:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile12:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
     visualCartridgeProps.textures = startingTextures;
     cartridgeUserData.startingTextures = startingTextures;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
@@ -124,12 +124,12 @@
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
     //https://s3-us-west-1.amazonaws.com/rain_diffuse.png
-    startingTextures = 'file19:"https://s3-us-west-1.amazonaws.com/rain_emissive.png",\nfile3:"",\nfile8:"https://s3-us-west-1.amazonaws.com/rain_normal.png",\nfile10:"https://s3-us-west-1.amazonaws.com/rain_roughness.png",\nfile9:"https://s3-us-west-1.amazonaws.com/rain_metallic.png"';
+    startingTextures = 'file113:"",\nfile112:"https://s3-us-west-1.amazonaws.com/rain_diffuse.png",\nfile115:"https://s3-us-west-1.amazonaws.com/rain_roughness.png",\nfile114:"https://s3-us-west-1.amazonaws.com/rain_metallic.png"';
     visualCartridgeProps.textures = startingTextures;
     cartridgeUserData.startingTextures = startingTextures;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxRainVisualCartridgeEntityScript.js?v1" + Math.random());
-    visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/rain_cartridge.fbx";
+    visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/cartridge_rain.fbx";
     visualCartridgeProps.position = {
       x: 205.4914,
       y: 0.67,
@@ -142,7 +142,11 @@
 
   function spawnSkybox() {
     var SKYBOX_SHADER_URL = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/rainyDayNightSkybox.fs");
-    var position = MyAvatar.position;
+    var position = {
+      x: 207.1613,
+      y: 0.057,
+      z: 351.3485
+    };
     var skyboxUserData = {
       ProceduralEntity: {
         version: 2,
@@ -167,13 +171,13 @@
         green: 0,
         blue: 20
       },
-      keyLightAmbientIntensity: .05,
+      keyLightAmbientIntensity: .03,
       name: "VRVJ Skybox",
       position: position,
       dimensions: {
-        x: 100,
-        y: 100,
-        z: 100
+        x: 1000,
+        y: 1000,
+        z: 1000
       },
       userData: JSON.stringify(skyboxUserData)
     });
