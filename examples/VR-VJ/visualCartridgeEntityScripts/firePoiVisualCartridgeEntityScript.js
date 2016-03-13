@@ -1,6 +1,6 @@
 (function() {
     var _this;
-    Script.include("../libraries/utils.js");
+    Script.include("../..'libraries/utils.js");
     var NULL_UUID = "{00000000-0000-0000-0000-000000000000}";
     var ZERO_VEC = {
         x: 0,
