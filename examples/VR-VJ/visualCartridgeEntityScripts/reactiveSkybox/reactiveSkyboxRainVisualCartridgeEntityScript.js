@@ -95,6 +95,7 @@
         preload: function(entityID) {
             _this.entityID = entityID;
             _this.originalColor = Entities.getEntityProperties(_this.entityID, "color").color;
+            _this.initializeVisualEffect();
 
             // Wait for userData to be loaded
         },
@@ -122,7 +123,10 @@
 
 
         updateVisualEffect: function(volume, loudness) {
-            var rainBrightness = Math.pow(volume, 0.5)
+            var rainBrightness = Math.pow(volume, 0.5);
+            if(!_this.VRVJSkybox) {
+                _this.initializeVisualEffect();
+            }
             _this.skyboxUserData = getEntityUserData(_this.VRVJSkybox);
             _this.skyboxUserData.ProceduralEntity.uniforms.uRainBrightness = rainBrightness;
             setEntityUserData(_this.VRVJSkybox, _this.skyboxUserData);

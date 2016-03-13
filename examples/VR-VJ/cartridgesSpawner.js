@@ -51,7 +51,7 @@
     var SOUND_SCRIPT_URL = Script.resolvePath("VRVJSoundCartridgeEntityScript.js");
     var SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
     var soundCartridgeUserData = {
-      soundURL: "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/ambient_dream.wav",
+      soundURL: "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/sunrise_ambient.wav",
     };
     var soundCartridgeProps = {
       type: "Box",
