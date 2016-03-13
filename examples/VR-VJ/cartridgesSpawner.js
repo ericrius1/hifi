@@ -69,13 +69,23 @@
         y: -4.6,
         z: 349.7
       },
-      modelURL: MODEL_URL,
+      modelURL: MODEL_URL
+        // shapeType: "compound",
+        // compoundShapeURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/platform_colhull.obj?v1"
     });
 
     pyramidPlatform = Entities.addEntity({
       type: "Box",
-      dimensions: {x: 8.476, y: 0.001, z: 8.497},
-      position: {x: 206.1541, y: -1.0113, z: 349.7083},
+      dimensions: {
+        x: 8.476,
+        y: 0.001,
+        z: 8.497
+      },
+      position: {
+        x: 206.1541,
+        y: -1.0113,
+        z: 349.7083
+      },
       visible: false
     });
 
@@ -159,13 +169,16 @@
     var visualCartridgeScriptURL = Script.resolvePath("visualCartridgeEntityScripts/firePoiVisualCartridgeEntityScript.js?v1" + Math.random());
 
     var visualCartridgeProps = {
-      type: "Sphere",
+      type: "Model",
+      modelURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/torch_disk.fbx",
+      shapeType: "sphere",
       name: "VRVJ-Visual-Cartridge",
       dimensions: {
-        x: 0.1,
-        y: 0.1,
-        z: 0.1
+        x: 0.2355,
+        y: 0.2355,
+        z: 0.0187
       },
+      rotation: Quat.fromPitchYawRollDegrees(0, -17, 0),
       damping: 1,
       collidesWith: "",
       angularDamping: 1,
@@ -175,11 +188,7 @@
         blue: 10
       },
       dynamic: true,
-      position: Vec3.sum(cartridgeSpawnPosition, {
-        x: randFloat(-0.2, 0.2),
-        y: 0.2,
-        z: 0
-      }),
+      position: {x:204.1109, y: 0.6746, z: 352.4536},
       script: visualCartridgeScriptURL,
     }
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
@@ -188,20 +197,18 @@
     var cartridgeUserData = {};
     cartridgeUserData.reactiveSkybox = VRVJSkybox;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
-    visualCartridgeProps.position = Vec3.sum(cartridgeSpawnPosition, {
-      x: randFloat(-0.2, 0.2),
-      y: 0.0,
-      z: 0
-    });
+    visualCartridgeProps.position = {x: 205.9184, y: 0.68, z: 352.3227};
+    visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/sun_disk.fbx";
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
 
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxRainVisualCartridgeEntityScript.js?v1" + Math.random());
-    visualCartridgeProps.position = Vec3.sum(cartridgeSpawnPosition, {
-      x: randFloat(-0.2, 0.2),
-      y: 0.0,
-      z: 0
-    });
+    visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/rain_disk.fbx";
+    visualCartridgeProps.position = {
+      x: 205.0273,
+      y: 0.67,
+      z: 352.27
+    };
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
 

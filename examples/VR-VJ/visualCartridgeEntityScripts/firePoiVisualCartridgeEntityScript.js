@@ -134,12 +134,12 @@
         initializeTorches: function() {
             var torchPosition = {
                 x: 209.5,
-                y: -0.2602,
+                y: -0.3052,
                 z: 353.0
             };
             var torchDimensions = {
                 x: .1430,
-                y: 1,
+                y: 1.37,
                 z: 0.1430
             };
             var torchProps = {
