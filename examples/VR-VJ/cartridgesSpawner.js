@@ -4,14 +4,20 @@
   orientation = Quat.fromVec3Degrees(orientation);
   var center = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(2, Quat.getFront(orientation)));
 
+  var cartridgeSpawnPosition = {
+    x: 203.4,
+    y: 1,
+    z: 351.3
+  };
+
 
   Script.include("../libraries/utils.js");
 
   var soundCartridges = [];
   var visualCartridges = [];
-  var VRVJSkybox, VRVJPyramid;
+  var VRVJSkybox, VRVJPyramid, backgroundPyramid1, backgroundPyramid2;
   spawnSkybox();
-  spawnPyramid();
+  spawnPyramids();
   spawnSoundCartridges();
   spawnVisualCartridges();
 
@@ -48,13 +54,58 @@
 
   }
 
-  function spawnPyramid() {
-    var MODEL_URL = "file:///C:/Users/Eric/Desktop/pyramid.fbx"
+  function spawnPyramids() {
+    var MODEL_URL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/pyramid1.fbx"
     VRVJPyramid = Entities.addEntity({
       type: "Model",
+      name: "VRVJ-Pyramid",
+      dimensions: {
+        x: 34.49,
+        y: 9.1,
+        z: 34.49
+      },
+      position: {
+        x: 206.17,
+        y: -4.6,
+        z: 349.7
+      },
       modelURL: MODEL_URL,
-      position: center,
     });
+
+    backgroundPyramid1 = Entities.addEntity({
+      type: "Model",
+      modelURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/pyramid3.fbx",
+      name: "background pyramid",
+      dimensions: {
+        x: 34.49,
+        y: 9.1,
+        z: 34.49
+      },
+      position: {
+        x: 110,
+        y: -4.5,
+        z: 339
+      },
+      rotation: Quat.fromPitchYawRollDegrees(0, 16, 0)
+    });
+
+    backgroundPyramid2 = Entities.addEntity({
+      type: "Model",
+      modelURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/pyramid2.fbx",
+      name: "background pyramid",
+      dimensions: {
+        x: 34.49,
+        y: 9.1,
+        z: 34.49
+      },
+      position: {
+        x: 253,
+        y: -4.7,
+        z: 443.4
+      },
+      rotation: Quat.fromPitchYawRollDegrees(0, -22.5, 0)
+    });
+
 
   }
 
@@ -77,7 +128,7 @@
         green: 10,
         blue: 200
       },
-      position: center,
+      position: cartridgeSpawnPosition,
       damping: 1,
       angularDamping: 1,
       collidesWith: "",
@@ -121,7 +172,7 @@
         blue: 10
       },
       dynamic: true,
-      position: Vec3.sum(center, {
+      position: Vec3.sum(cartridgeSpawnPosition, {
         x: randFloat(-0.2, 0.2),
         y: 0.2,
         z: 0
@@ -166,7 +217,9 @@
 
   function cleanup() {
     Entities.deleteEntity(VRVJSkybox);
-    Entities.deleteEntity(VRVJPyramid)
+    Entities.deleteEntity(VRVJPyramid);
+    Entities.deleteEntity(backgroundPyramid1);
+    Entities.deleteEntity(backgroundPyramid2);
     visualCartridges.forEach(function(cartridge) {
       Entities.deleteEntity(cartridge);
     });

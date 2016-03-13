@@ -14,6 +14,7 @@
         _this.UPDATE_VISUAL_EFFECT_TIME = 16;
         _this.CARTRIDGE_VOLUME_KEY = "VRVJ-Cartridge-Volume";
         _this.visualEffectEntities = [];
+        _this.pillarFlames = [];
 
     };
 
@@ -89,6 +90,11 @@
                 particleRadius: newParticleRadius
             });
 
+            _this.pillarFlames.forEach(function(pillarFlame) {
+                newParticleRadius = map(loudness, 0, 1, 0.1, 1);
+                Entities.editEntity(pillarFlame, {particleRadius: newParticleRadius})
+            })
+
         },
 
         destroy: function() {
@@ -140,9 +146,10 @@
                 min: 0.01,
                 max: 0.1
             };
-            _this.poiFlame = Entities.addEntity({
+
+            var flameProps = {
                 type: "ParticleEffect",
-                name: "Poi Flame",
+                name: "Flame Emitter",
                 parentID: _this.poiStick,
                 parentJointIndex: -1,
                 position: position,
@@ -183,10 +190,24 @@
                 alphaFinish: 0.0,
                 textures: "https://hifi-public.s3.amazonaws.com/alan/Particles/Particle-Sprite-Smoke-1.png",
                 emitterShouldTrail: true
-            });
+            }
+            _this.poiFlame = Entities.addEntity(flameProps);
 
             _this.visualEffectEntities.push(_this.poiFlame);
             _this.visualEffectEntities.push(_this.poiStick);
+
+            flameProps.particleRadius = 0.1;
+            flameProps.position = {x: 249.9, y: -4.3, z: 363.6};
+            _this.pillarFlames.push(Entities.addEntity(flameProps));
+
+            flameProps.position = {x: 232.7, y: -4.3, z: 363.9};
+            _this.pillarFlames.push(Entities.addEntity(flameProps));
+
+            flameProps.position = {x: 232.7, y: -4.3, z: 380.1};
+            _this.pillarFlames.push(Entities.addEntity(flameProps));
+
+            flameProps.position = {x: 249.9, y: -4.3, z: 380.1};
+            _this.pillarFlames.push(Entities.addEntity(flameProps));
         },
 
         preload: function(entityID) {
@@ -201,6 +222,9 @@
             if (_this.visualEffectUpdateInterval) {
                 Script.clearInterval(_this.visualEffectUpdateInterval);
             }
+            _this.pillarFlames.forEach(function(flame) {
+                Entities.deleteEntity(flame);
+            })
         }
     };
 

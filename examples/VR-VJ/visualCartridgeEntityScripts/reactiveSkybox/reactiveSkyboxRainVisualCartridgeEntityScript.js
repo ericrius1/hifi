@@ -114,7 +114,6 @@
        
             _this.VRVJSkybox = getEntityUserData(_this.entityID).reactiveSkybox;
             _this.skyboxUserData = getEntityUserData(_this.VRVJSkybox);
-            print("USER DATA " + JSON.stringify(_this.skyboxUserData));
             if(_this.VRVJSkybox) {
               _this.visualEffectEntities.push(_this.VRVJSkybox);  
             }
