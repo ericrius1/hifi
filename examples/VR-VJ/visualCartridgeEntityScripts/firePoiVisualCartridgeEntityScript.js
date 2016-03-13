@@ -91,7 +91,6 @@
             var green = map(loudness, 0, 1, 40, 200);
             var red = map(volume, 0, 1, 40, 200);
             _this.torchFlames.forEach(function(flame) {
-                print("UPDATE FLAME " + particleRadius)
                 Entities.editEntity(flame, {
                     particleRadius: particleRadius
                 });
