@@ -128,6 +128,9 @@
             // print("SUNDIR " + sunDirY)
             _this.skyboxUserData = getEntityUserData(_this.VRVJSkybox);
             _this.skyboxUserData.ProceduralEntity.uniforms.uSunDirY = sunDirY;
+
+            var brightness = map(volume, 0, 1, 0.03, 0.1);
+            Entities.editEntity(_this.VRVJSkybox, {keyLightAmbientIntensity: brightness, keyLightIntensity: brightness});
             setEntityUserData(_this.VRVJSkybox, _this.skyboxUserData);
         },
 

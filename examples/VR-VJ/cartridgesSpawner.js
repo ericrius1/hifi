@@ -51,7 +51,7 @@
 
 
     soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/tribaldrums.wav";
-    soundCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/musiccartridge_teal.fbx";
+    soundCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/music_teal.fbx";
     soundCartridgeProps.position = {
       x: 203.9634,
       y: 0.057,
@@ -102,7 +102,7 @@
       script: visualCartridgeScriptURL,
     }
     var cartridgeUserData = {};
-    var startingTextures = 'file1:"",\nfile111:"https://s3-us-west-1.amazonaws.com/torch_diffuse.png",\nfile3:"https://s3-us-west-1.amazonaws.com/torch_roughness.png",\nfile2:"https://s3-us-west-1.amazonaws.com/torch_metallic.png"'
+    var startingTextures = 'file1:"",\nfile111:"https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/cartridge_torch.fbm/torch_diffuse.png",\nfile3:"https://s3-us-west-1.amazonaws.com/torch_roughness.png",\nfile2:"https://s3-us-west-1.amazonaws.com/torch_metallic.png"'
     visualCartridgeProps.textures = startingTextures;
     cartridgeUserData.startingTextures = startingTextures;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
@@ -110,7 +110,7 @@
 
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxSunVisualCartridgeEntityScript.js?v1" + Math.random());
     cartridgeUserData.reactiveSkybox = VRVJSkybox;
-    startingTextures = 'file1:"https://s3-us-west-1.amazonaws.com/sun_emissive.png",\nfile113:"https://s3-us-west-1.amazonaws.com/sun_diffuse",\nfile3:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile2:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
+    startingTextures = 'file1:"",\nfile113:"https://s3-us-west-1.amazonaws.com/sun_diffuse.png",\nfile3:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile2:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
     visualCartridgeProps.textures = startingTextures;
     cartridgeUserData.startingTextures = startingTextures;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
