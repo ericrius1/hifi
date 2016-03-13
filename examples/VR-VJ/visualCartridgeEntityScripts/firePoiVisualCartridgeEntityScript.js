@@ -14,7 +14,8 @@
         _this.UPDATE_VISUAL_EFFECT_TIME = 16;
         _this.CARTRIDGE_VOLUME_KEY = "VRVJ-Cartridge-Volume";
         _this.visualEffectEntities = [];
-        _this.pillarFlames = [];
+        _this.torchFlames = [];
+
 
     };
 
@@ -83,6 +84,11 @@
         },
 
         updateVisualEffect: function(volume, loudness) {
+            var particleRadius = map(loudness, 0, 1, 0.0001, 0.1);
+            _this.torchFlames.forEach(function(flame) {
+                print("UPDATE FLAME " + particleRadius)
+                    Entities.editEntity(flame, {particleRadius: particleRadius});
+            });
 
 
         },
@@ -128,13 +134,13 @@
         initializeTorches: function() {
             var torchPosition = {
                 x: 209.5,
-                y: 0.0,
+                y: -0.2602,
                 z: 353.0
             };
             var torchDimensions = {
-                x: .2383,
-                y: 2.0156,
-                z: 0.2383
+                x: .1430,
+                y: 1,
+                z: 0.1430
             };
             var torchProps = {
                 type: "Model",
@@ -149,12 +155,55 @@
             var torch = Entities.addEntity(torchProps);
             _this.visualEffectEntities.push(torch);
 
-            var flamePosition = Vec3.sum(torchPosition, {x: 0, y: torchDimensions.y/2, z: 0});
+            var flamePosition = Vec3.sum(torchPosition, {
+                x: 0,
+                y: torchDimensions.y / 2,
+                z: 0
+            });
             var flameProps = {
-                type: "Box",
-                position: flamePosition
+                type: "ParticleEffect",
+                name: "Torch Flame",
+                color: {
+                    red: 10,
+                    green: 10,
+                    blue: 200
+                },
+                colorStart: {
+                    red: 57,
+                    green: 237,
+                    blue: 231
+                },
+                parentID: torch,
+                position: flamePosition,
+                maxParticles: 10000,
+                emitRate: 100,
+                lifespan: 1.1,
+                isEmitting: true,
+                emitSpeed: 0.1,
+                emitAcceleration: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                accelerationSpread: {
+                    x: 0.02,
+                    y: 0.2,
+                    z: 0.02
+                },
+                radiusStart: 0.001,
+                particleRadius: 0.1,
+                radiusFinish: 0.001,
+                radiusSpread: 0,
+                alpha: 0.5,
+                alphaSpread: 0.1,
+                alphaStart: 1.0,
+                alphaFinish: 0.0,
+                textures: "https://hifi-public.s3.amazonaws.com/alan/Particles/Particle-Sprite-Smoke-1.png",
+                emitterShouldTrail: true
             };
-            _this.visualEffectEntities.push(Entities.addEntity(flameProps));
+            var flame = Entities.addEntity(flameProps);
+            _this.torchFlames.push(flame);
+            _this.visualEffectEntities.push(flame);
 
 
         },

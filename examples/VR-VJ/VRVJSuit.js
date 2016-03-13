@@ -154,7 +154,7 @@ var MAPPING_NAME = "com.highfidelity.VRVJ";
 
 var mapping = Controller.newMapping(MAPPING_NAME);
 mapping.from(Controller.Standard.RB).peek().to(rightBumperPress)
-Controller.enableMapping(MAPPING_NAME);
+// Controller.enableMapping(MAPPING_NAME);
 
 
 function cleanup() {
