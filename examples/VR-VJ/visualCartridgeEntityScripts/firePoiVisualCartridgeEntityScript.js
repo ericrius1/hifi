@@ -105,6 +105,9 @@
                 });
             });
 
+             var templeLightBrightness = map(loudness * volume, 0, 1, 0.01, 5);
+             Entities.editEntity(_this.templeLight, {intensity: templeLightBrightness});
+
 
         },
 
@@ -119,6 +122,26 @@
         initializeVisualEffect: function() {
             _this.initializeStaves();
             _this.initializeTorches();
+
+
+           _this.templeLight =  Entities.addEntity({
+                type: "Light",
+                intensity: 0.01,
+                color: {
+                    red: 219,
+                    green: 108,
+                    blue: 64
+                },
+                falloffRadius: 100,
+                dimensions: {
+                    x: 500,
+                    y: 500,
+                    z: 500
+                },
+                position: {x: 136, y: 11.7, z: 548.6},
+            });
+
+           _this.visualEffectEntities.push(_this.templeLight);
         },
 
         initializeStaves: function() {
