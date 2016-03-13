@@ -15,7 +15,7 @@
 
   var soundCartridges = [];
   var visualCartridges = [];
-  var VRVJSkybox, VRVJPyramid, backgroundPyramid1, backgroundPyramid2;
+  var VRVJSkybox, VRVJPyramid, backgroundPyramid1, backgroundPyramid2, pyramidPlatform;
   spawnSkybox();
   spawnPyramids();
   spawnSoundCartridges();
@@ -70,6 +70,13 @@
         z: 349.7
       },
       modelURL: MODEL_URL,
+    });
+
+    pyramidPlatform = Entities.addEntity({
+      type: "Box",
+      dimensions: {x: 8.476, y: 0.001, z: 8.497},
+      position: {x: 206.1541, y: -1.0113, z: 349.7083},
+      visible: false
     });
 
     backgroundPyramid1 = Entities.addEntity({
@@ -214,6 +221,7 @@
   function cleanup() {
     Entities.deleteEntity(VRVJSkybox);
     Entities.deleteEntity(VRVJPyramid);
+    Entities.deleteEntity(pyramidPlatform);
     Entities.deleteEntity(backgroundPyramid1);
     Entities.deleteEntity(backgroundPyramid2);
     visualCartridges.forEach(function(cartridge) {

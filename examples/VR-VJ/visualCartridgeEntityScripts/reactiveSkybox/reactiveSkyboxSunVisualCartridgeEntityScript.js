@@ -11,7 +11,7 @@
     VRVJVisualEntity = function() {
         _this = this;
         _this.SOUND_CARTRIDGE_NAME = "VRVJ-Sound-Cartridge";
-        _this.SOUND_CARTRIDGE_SEARCH_RANGE = 0.2;
+        _this.SOUND_CARTRIDGE_SEARCH_RANGE = 0.15;
         _this.UPDATE_VISUAL_EFFECT_TIME = 16;
         _this.CARTRIDGE_VOLUME_KEY = "VRVJ-Cartridge-Volume";
         _this.visualEffectEntities = [];
@@ -113,7 +113,6 @@
        
             _this.VRVJSkybox = getEntityUserData(_this.entityID).reactiveSkybox;
             _this.skyboxUserData = getEntityUserData(_this.VRVJSkybox);
-            print("USER DATA " + JSON.stringify(_this.skyboxUserData));
             if(_this.VRVJSkybox) {
               _this.visualEffectEntities.push(_this.VRVJSkybox);  
             }
