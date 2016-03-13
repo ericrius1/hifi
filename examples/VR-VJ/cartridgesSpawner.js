@@ -101,12 +101,16 @@
       },
       script: visualCartridgeScriptURL,
     }
+    var cartridgeUserData = {};
+    var startingTextures = 'file21:"https://s3-us-west-1.amazonaws.com/torch_emissive.png",\nfile14:"https://s3-us-west-1.amazonaws.com/torch_diffuse.png",\nfile15:"https://s3-us-west-1.amazonaws.com/torch_normal.png",\nfile17:"",\nfile16:"https://s3-us-west-1.amazonaws.com/torch_metallic.png"'
+    visualCartridgeProps.textures = startingTextures;
+    cartridgeUserData.startingTextures = startingTextures;
+    visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxSunVisualCartridgeEntityScript.js?v1" + Math.random());
-    var cartridgeUserData = {};
     cartridgeUserData.reactiveSkybox = VRVJSkybox;
-    var startingTextures = 'file20:"https://s3-us-west-1.amazonaws.com/sun_emissive.png",\nfile5:"",\nfile11:"https://s3-us-west-1.amazonaws.com/sun_normal.png",\nfile13:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile12:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
+    startingTextures = 'file20:"https://s3-us-west-1.amazonaws.com/sun_emissive.png",\nfile5:"",\nfile11:"https://s3-us-west-1.amazonaws.com/sun_normal.png",\nfile13:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile12:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
     visualCartridgeProps.textures = startingTextures;
     cartridgeUserData.startingTextures = startingTextures;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
@@ -117,10 +121,13 @@
     };
     // https://s3-us-west-1.amazonaws.com/sun_diffuse
     visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/sun_cartridge.fbx";
-
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
-
+    //https://s3-us-west-1.amazonaws.com/rain_diffuse.png
+    startingTextures = 'file19:"https://s3-us-west-1.amazonaws.com/rain_emissive.png",\nfile3:"",\nfile8:"https://s3-us-west-1.amazonaws.com/rain_normal.png",\nfile10:"https://s3-us-west-1.amazonaws.com/rain_roughness.png",\nfile9:"https://s3-us-west-1.amazonaws.com/rain_metallic.png"';
+    visualCartridgeProps.textures = startingTextures;
+    cartridgeUserData.startingTextures = startingTextures;
+    visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxRainVisualCartridgeEntityScript.js?v1" + Math.random());
     visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/rain_cartridge.fbx";
     visualCartridgeProps.position = {

@@ -49,11 +49,11 @@
         },
 
         unParentFromSoundCartridge: function() {
+            var startingTextures = getEntityUserData(_this.entityID).startingTextures;
             Entities.editEntity(_this.entityID, {
                 parentID: NULL_UUID,
-                color: _this.originalColor
+                textures: startingTextures
             });
-
             Script.clearInterval(_this.visualEffectUpdateInterval);
             _this.visualEffectUpdateInterval = null;
         },
@@ -62,10 +62,12 @@
             // Need to set a timeout to wait for grab script to stop messing with entity
             var parentColor = Entities.getEntityProperties(parent, "color").color;
             _this.currentParent = parent;
+            var originalTextures = Entities.getEntityProperties(_this.entityID, "originalTextures").originalTextures;
+            print("EBL ORIGINAL TETXURES " + JSON.stringify(originalTextures))
             Entities.editEntity(_this.entityID, {
                 parentID: parent,
                 dynamic: false,
-                color: parentColor
+                textures: originalTextures
             });
             Script.setTimeout(function() {
                 Entities.editEntity(_this.entityID, {
@@ -87,7 +89,9 @@
             var particleRadius = map(loudness, 0, 1, 0.0001, 0.1);
             _this.torchFlames.forEach(function(flame) {
                 print("UPDATE FLAME " + particleRadius)
-                    Entities.editEntity(flame, {particleRadius: particleRadius});
+                Entities.editEntity(flame, {
+                    particleRadius: particleRadius
+                });
             });
 
 
