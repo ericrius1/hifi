@@ -161,6 +161,13 @@
     VRVJSkybox = Entities.addEntity({
       type: "Zone",
       backgroundMode: "skybox",
+      keyLightIntensity: 0.01,
+      keyLightColor: {
+        red: 20,
+        green: 0,
+        blue: 20
+      },
+      keyLightAmbientIntensity: .05,
       name: "VRVJ Skybox",
       position: position,
       dimensions: {
