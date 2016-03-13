@@ -1,6 +1,6 @@
 (function() {
     var _this;
-    Script.include("../libraries/utils.js");
+    Script.include("https://raw.githubusercontent.com/ericrius1/hifi/VR-VJ/examples/VR-VJ/VRVJInitializer.js");
     var SKYBOX_SHADER_URL = Script.resolvePath("rainyDayNightSkybox.fs");
     var NULL_UUID = "{00000000-0000-0000-0000-000000000000}";
     var ZERO_VEC = {
