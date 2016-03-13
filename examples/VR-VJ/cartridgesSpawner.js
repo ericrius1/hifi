@@ -32,9 +32,13 @@
       dimensions: {
         x: 0.3404,
         y: 0.3404,
-        z: 0.0833
+        z: 0.0433
       },
-      position:  {x: 207.1613, y: 0.057, z: 351.3485},
+      position: {
+        x: 207.1613,
+        y: 0.057,
+        z: 351.3485
+      },
       rotation: CARTRIDGE_ROTATION,
       damping: 1,
       angularDamping: 1,
@@ -48,7 +52,11 @@
 
     soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/tribaldrums.wav";
     soundCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/musiccartridge_teal.fbx";
-    soundCartridgeProps.position =  {x:203.9634, y: 0.057, z: 351.5041};
+    soundCartridgeProps.position = {
+      x: 203.9634,
+      y: 0.057,
+      z: 351.5041
+    };
     soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
@@ -76,7 +84,7 @@
         y: 0.2355,
         z: 0.0187
       },
-      rotation:CARTRIDGE_ROTATION,
+      rotation: CARTRIDGE_ROTATION,
       damping: 1,
       collidesWith: "",
       angularDamping: 1,
@@ -86,7 +94,11 @@
         blue: 10
       },
       dynamic: true,
-      position: {x:203.9634, y: 0.67, z: 351.5041},
+      position: {
+        x: 203.9634,
+        y: 0.67,
+        z: 351.5041
+      },
       script: visualCartridgeScriptURL,
     }
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
@@ -94,9 +106,18 @@
     visualCartridgeProps.script = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/reactiveSkyboxSunVisualCartridgeEntityScript.js?v1" + Math.random());
     var cartridgeUserData = {};
     cartridgeUserData.reactiveSkybox = VRVJSkybox;
+    var startingTextures = 'file20:"https://s3-us-west-1.amazonaws.com/sun_emissive.png",\nfile5:"",\nfile11:"https://s3-us-west-1.amazonaws.com/sun_normal.png",\nfile13:"https://s3-us-west-1.amazonaws.com/sun_roughness.png",\nfile12:"https://s3-us-west-1.amazonaws.com/sun_metallic.png"';
+    visualCartridgeProps.textures = startingTextures;
+    cartridgeUserData.startingTextures = startingTextures;
     visualCartridgeProps.userData = JSON.stringify(cartridgeUserData);
-    visualCartridgeProps.position = {x: 207.1613, y: 0.68, z: 351.3485};
+    visualCartridgeProps.position = {
+      x: 207.1613,
+      y: 0.68,
+      z: 351.3485
+    };
+    // https://s3-us-west-1.amazonaws.com/sun_diffuse
     visualCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/sun_cartridge.fbx";
+
     visualCartridges.push(Entities.addEntity(visualCartridgeProps));
 
 
@@ -112,7 +133,7 @@
 
   }
 
-    function spawnSkybox() {
+  function spawnSkybox() {
     var SKYBOX_SHADER_URL = Script.resolvePath("visualCartridgeEntityScripts/reactiveSkybox/rainyDayNightSkybox.fs");
     var position = MyAvatar.position;
     var skyboxUserData = {
