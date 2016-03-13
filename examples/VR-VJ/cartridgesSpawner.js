@@ -9,8 +9,9 @@
 
   var soundCartridges = [];
   var visualCartridges = [];
-  var VRVJSkybox;
+  var VRVJSkybox, VRVJPyramid;
   spawnSkybox();
+  spawnPyramid();
   spawnSoundCartridges();
   spawnVisualCartridges();
 
@@ -43,6 +44,16 @@
         z: 100
       },
       userData: JSON.stringify(skyboxUserData)
+    });
+
+  }
+
+  function spawnPyramid() {
+    var MODEL_URL = "file:///C:/Users/Eric/Desktop/pyramid.fbx"
+    VRVJPyramid = Entities.addEntity({
+      type: "Model",
+      modelURL: MODEL_URL,
+      position: center,
     });
 
   }
@@ -82,6 +93,10 @@
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
     soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/tribaldrums.wav";
+    soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
+    soundCartridges.push(Entities.addEntity(soundCartridgeProps));
+
+    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/banjo.wav";
     soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
   }
@@ -150,6 +165,8 @@
   }, 1000);
 
   function cleanup() {
+    Entities.deleteEntity(VRVJSkybox);
+    Entities.deleteEntity(VRVJPyramid)
     visualCartridges.forEach(function(cartridge) {
       Entities.deleteEntity(cartridge);
     });
