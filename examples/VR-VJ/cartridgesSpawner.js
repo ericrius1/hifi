@@ -208,12 +208,12 @@
       type: "Box",
       dimensions: {
         x: 8.476,
-        y: 0.001,
+        y: 0.01,
         z: 8.497
       },
       position: {
         x: 206.1541,
-        y: -1.0113,
+        y: -1.0513,
         z: 349.7083
       },
       visible: false

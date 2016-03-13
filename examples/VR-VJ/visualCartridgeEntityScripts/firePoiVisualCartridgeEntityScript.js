@@ -15,6 +15,7 @@
         _this.CARTRIDGE_VOLUME_KEY = "VRVJ-Cartridge-Volume";
         _this.visualEffectEntities = [];
         _this.torchFlames = [];
+        _this.staffFlames = [];
 
 
     };
@@ -87,10 +88,20 @@
 
         updateVisualEffect: function(volume, loudness) {
             var particleRadius = map(loudness, 0, 1, 0.05, 0.2);
+            var green = map(loudness, 0, 1, 40, 200);
+            var red = map(volume, 0, 1, 40, 200);
             _this.torchFlames.forEach(function(flame) {
                 print("UPDATE FLAME " + particleRadius)
                 Entities.editEntity(flame, {
                     particleRadius: particleRadius
+                });
+            });
+
+             _this.staffFlames.forEach(function(flame) {
+                print("UPDATE FLAME " + particleRadius)
+                Entities.editEntity(flame, {
+                    particleRadius: particleRadius,
+                    color: {red: red, green: green, blue: 100}
                 });
             });
 
@@ -111,27 +122,105 @@
         },
 
         initializeStaves: function() {
+            var staffDimensions = {
+                x: .2383,
+                y: 2.0156,
+                z: 0.2383
+            };
+
+            var staffPosition = {
+                x: 209.5,
+                y: -0.3052,
+                z: 353.0
+            };
             var staffProps = {
                 type: "Model",
                 name: "VRVJ-Staff",
                 modelURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/staff.fbx",
                 shapeType: "box",
-                position: {
-                    x: 209.5,
-                    y: -0.3052,
-                    z: 353.0
-                },
-                dimensions: {
-                    x: .2383,
-                    y: 2.0156,
-                    z: 0.2383
-                },
+                position: staffPosition,
+                dimensions: staffDimensions,
                 dynamic: true
             };
 
             var staff = Entities.addEntity(staffProps);
-
             _this.visualEffectEntities.push(staff);
+            var flamePosition = Vec3.sum(staffPosition, {
+                x: 0,
+                y: staffDimensions.y / 2 - 0.15,
+                z: 0
+            });
+            var flameProps = {
+                type: "ParticleEffect",
+                name: "Staff Flame",
+                color: {
+                    red: 100,
+                    green: 10,
+                    blue: 60
+                },
+                colorStart: {
+                    red: 57,
+                    green: 40,
+                    blue: 20
+                },
+                colorEnd: {
+                    red: 70,
+                    green: 30,
+                    blue: 10
+                },
+                parentID: staff,
+                position: flamePosition,
+                maxParticles: 10000,
+                emitRate: 100,
+                lifespan: 10,
+                isEmitting: true,
+                emitSpeed: 0.0,
+                speedSpread: 0,
+                emitAcceleration: {
+                    x: 0,
+                    y: 0.01,
+                    z: 0
+                },
+                accelerationSpread: {
+                    x: 0.0,
+                    y: 0.00,
+                    z: 0.0
+                },
+                radiusStart: 0.1,
+                particleRadius: 0.1,
+                radiusFinish: 0.01,
+                radiusSpread: 0,
+                alpha: 0.5,
+                alphaSpread: 0.1,
+                alphaStart: 1.0,
+                alphaFinish: 0.0,
+                textures: "https://hifi-public.s3.amazonaws.com/alan/Particles/Particle-Sprite-Smoke-1.png",
+                emitterShouldTrail: true
+            };
+
+            var flame = Entities.addEntity(flameProps);
+            _this.staffFlames.push(flame);
+            _this.visualEffectEntities.push(flame);
+
+            var flameLightProps = Entities.addEntity({
+                type: "Light",
+                intensity: 2,
+                color: {
+                    red: 100,
+                    green: 30,
+                    blue: 10
+                },
+                falloffRadius: 1,
+                dimensions: {
+                    x: 5,
+                    y: 5,
+                    z: 5
+                },
+                position: flamePosition,
+                parentID: staff
+            })
+
+            _this.visualEffectEntities.push(Entities.addEntity(flameLightProps));
 
         },
 
@@ -153,7 +242,12 @@
                 shapeType: "box",
                 position: torchPosition,
                 dimensions: torchDimensions,
-                dynamic: true
+                dynamic: true,
+                gravity: {
+                    x: 0,
+                    y: -3,
+                    z: 0
+                }
             };
 
             var torch = Entities.addEntity(torchProps);
@@ -209,10 +303,25 @@
             _this.torchFlames.push(flame);
             _this.visualEffectEntities.push(flame);
 
-            // var flameLightProps = Entities.addEntity({
-            //     type: "Light",
-            //     intensity
-            // })
+            var flameLightProps = Entities.addEntity({
+                type: "Light",
+                intensity: 2,
+                color: {
+                    red: 10,
+                    green: 10,
+                    blue: 200
+                },
+                falloffRadius: 1,
+                dimensions: {
+                    x: 5,
+                    y: 5,
+                    z: 5
+                },
+                position: flamePosition,
+                parentID: torch
+            })
+
+            _this.visualEffectEntities.push(Entities.addEntity(flameLightProps));
 
 
         },
