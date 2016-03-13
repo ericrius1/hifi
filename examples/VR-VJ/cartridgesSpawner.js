@@ -50,7 +50,7 @@
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
 
-    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/tribaldrums.wav";
+    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/bass-drum.wav";
     soundCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/music_teal.fbx";
     soundCartridgeProps.position = {
       x: 203.9634,
@@ -60,12 +60,22 @@
     soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
 
-    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/rain.wav?v3";
+    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/beautiful-lead.wav";
     soundCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/musiccartridge_pink.fbx";
     soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
     soundCartridgeProps.position = {
       x: 205.4914,
       y: 0.057,
+      z: 351.43
+    };
+    soundCartridges.push(Entities.addEntity(soundCartridgeProps));
+
+    soundCartridgeUserData.soundURL = "https://s3-us-west-1.amazonaws.com/hifi-content/eric/Sounds/VRVJ/lead-bass.wav";
+    soundCartridgeProps.modelURL = "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/musiccartridge_peach.fbx";
+    soundCartridgeProps.userData = JSON.stringify(soundCartridgeUserData)
+    soundCartridgeProps.position = {
+      x: 205.4914,
+      y: -0.4,
       z: 351.43
     };
     soundCartridges.push(Entities.addEntity(soundCartridgeProps));
