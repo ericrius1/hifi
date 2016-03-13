@@ -188,9 +188,9 @@
         y: -4.6,
         z: 349.7
       },
-      modelURL: MODEL_URL
-        // shapeType: "compound",
-        // compoundShapeURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/platform_colhull.obj?v1"
+      modelURL: MODEL_URL,
+      // shapeType: "compound",
+      // compoundShapeURL: " https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/platform_colhull.obj?v1"
     });
 
     pyramidPlatform = Entities.addEntity({

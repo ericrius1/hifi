@@ -86,7 +86,7 @@
         },
 
         updateVisualEffect: function(volume, loudness) {
-            var particleRadius = map(loudness, 0, 1, 0.0001, 0.1);
+            var particleRadius = map(loudness, 0, 1, 0.05, 0.2);
             _this.torchFlames.forEach(function(flame) {
                 print("UPDATE FLAME " + particleRadius)
                 Entities.editEntity(flame, {
@@ -117,8 +117,8 @@
                 modelURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/staff.fbx",
                 shapeType: "box",
                 position: {
-                    x: 202.8,
-                    y: 0.0,
+                    x: 209.5,
+                    y: -0.3052,
                     z: 353.0
                 },
                 dimensions: {
@@ -137,8 +137,8 @@
 
         initializeTorches: function() {
             var torchPosition = {
-                x: 209.5,
-                y: -0.3052,
+                x: 202.8,
+                y: -0.3,
                 z: 353.0
             };
             var torchDimensions = {
@@ -181,9 +181,9 @@
                 position: flamePosition,
                 maxParticles: 10000,
                 emitRate: 100,
-                lifespan: 1.1,
+                lifespan: 1.5,
                 isEmitting: true,
-                emitSpeed: 0.1,
+                emitSpeed: 0.01,
                 emitAcceleration: {
                     x: 0,
                     y: 0,
@@ -194,9 +194,9 @@
                     y: 0.2,
                     z: 0.02
                 },
-                radiusStart: 0.001,
+                radiusStart: 0.01,
                 particleRadius: 0.1,
-                radiusFinish: 0.001,
+                radiusFinish: 0.01,
                 radiusSpread: 0,
                 alpha: 0.5,
                 alphaSpread: 0.1,
