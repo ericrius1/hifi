@@ -120,33 +120,42 @@
             };
 
             var staff = Entities.addEntity(staffProps);
-  
+
             _this.visualEffectEntities.push(staff);
 
         },
 
         initializeTorches: function() {
+            var torchPosition = {
+                x: 209.5,
+                y: 0.0,
+                z: 353.0
+            };
+            var torchDimensions = {
+                x: .2383,
+                y: 2.0156,
+                z: 0.2383
+            };
             var torchProps = {
                 type: "Model",
                 name: "VRVJ-Staff",
                 modelURL: "https://s3-us-west-1.amazonaws.com/hifi-content/jazmin/dev/_vrhackathon/torch.fbx",
                 shapeType: "box",
-                position: {
-                    x: 209.5,
-                    y: 0.0,
-                    z: 353.0
-                },
-                dimensions: {
-                    x: .2383,
-                    y: 2.0156,
-                    z: 0.2383
-                },
+                position: torchPosition,
+                dimensions: torchDimensions,
                 dynamic: true
             };
 
-            var torch= Entities.addEntity(torchProps);
-               _this.visualEffectEntities.push(torch);
-            
+            var torch = Entities.addEntity(torchProps);
+            _this.visualEffectEntities.push(torch);
+
+            var flamePosition = Vec3.sum(torchPosition, {x: 0, y: torchDimensions.y/2, z: 0});
+            var flameProps = {
+                type: "Box",
+                position: flamePosition
+            };
+            _this.visualEffectEntities.push(Entities.addEntity(flameProps));
+
 
         },
 
