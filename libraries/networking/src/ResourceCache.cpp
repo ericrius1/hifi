@@ -56,6 +56,15 @@ void ResourceCache::refresh(const QUrl& url) {
     }
 }
 
+void ResourceCache::setRequestLimit(int limit) {
+    _requestLimit = limit;
+
+    // Now go fill any new request spots
+    while (attemptHighestPriorityRequest()) {
+        // just keep looping until we reach the new limit or no more pending requests
+    }
+}
+
 void ResourceCache::getResourceAsynchronously(const QUrl& url) {
     qCDebug(networking) << "ResourceCache::getResourceAsynchronously" << url.toString();
     _resourcesToBeGottenLock.lockForWrite();
@@ -150,31 +159,37 @@ void ResourceCache::clearUnusedResource() {
     }
 }
 
-void ResourceCache::attemptRequest(Resource* resource) {
+bool ResourceCache::attemptRequest(Resource* resource) {
     auto sharedItems = DependencyManager::get<ResourceCacheSharedItems>();
 
     // Disable request limiting for ATP
     if (resource->getURL().scheme() != URL_SCHEME_ATP) {
-        if (_requestLimit <= 0) {
+        if (_requestsActive >= _requestLimit) {
             // wait until a slot becomes available
             sharedItems->_pendingRequests.append(resource);
-            return;
+            return false;
         }
 
-        --_requestLimit;
-    }
+        ++_requestsActive;
+    }	
 
     sharedItems->_loadingRequests.append(resource);
     resource->makeRequest();
+    return true;
 }
 
 void ResourceCache::requestCompleted(Resource* resource) {
     auto sharedItems = DependencyManager::get<ResourceCacheSharedItems>();
     sharedItems->_loadingRequests.removeOne(resource);
     if (resource->getURL().scheme() != URL_SCHEME_ATP) {
-        ++_requestLimit;
+        --_requestsActive;
     }
-    
+
+    attemptHighestPriorityRequest();
+}
+
+bool ResourceCache::attemptHighestPriorityRequest() {
+    auto sharedItems = DependencyManager::get<ResourceCacheSharedItems>();
     // look for the highest priority pending request
     int highestIndex = -1;
     float highestPriority = -FLT_MAX;
@@ -191,13 +206,12 @@ void ResourceCache::requestCompleted(Resource* resource) {
         }
         i++;
     }
-    if (highestIndex >= 0) {
-        attemptRequest(sharedItems->_pendingRequests.takeAt(highestIndex));
-    }
+    return (highestIndex >= 0) && attemptRequest(sharedItems->_pendingRequests.takeAt(highestIndex));
 }
 
 const int DEFAULT_REQUEST_LIMIT = 10;
 int ResourceCache::_requestLimit = DEFAULT_REQUEST_LIMIT;
+int ResourceCache::_requestsActive = 0;
 
 Resource::Resource(const QUrl& url, bool delayLoad) :
     _url(url),
@@ -278,20 +292,20 @@ void Resource::refresh() {
 }
 
 void Resource::allReferencesCleared() {
-    if (_cache) {
+    if (_cache && isCacheable()) {
         if (QThread::currentThread() != thread()) {
             QMetaObject::invokeMethod(this, "allReferencesCleared");
             return;
         }
-        
+
         // create and reinsert new shared pointer 
         QSharedPointer<Resource> self(this, &Resource::allReferencesCleared);
         setSelf(self);
         reinsert();
-        
+
         // add to the unused list
         _cache->addUnusedResource(self);
-        
+
     } else {
         delete this;
     }
@@ -371,7 +385,6 @@ void Resource::handleReplyFinished() {
         auto extraInfo = _url == _activeUrl ? "" : QString(", %1").arg(_activeUrl.toDisplayString());
         qCDebug(networking).noquote() << QString("Request finished for %1%2").arg(_url.toDisplayString(), extraInfo);
         
-        finishedLoading(true);
         emit loaded(_data);
         downloadFinished(_data);
     } else {
@@ -407,10 +420,6 @@ void Resource::handleReplyFinished() {
     _request->disconnect(this);
     _request->deleteLater();
     _request = nullptr;
-}
-
-
-void Resource::downloadFinished(const QByteArray& data) {
 }
 
 uint qHash(const QPointer<QObject>& value, uint seed) {

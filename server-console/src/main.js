@@ -3,6 +3,7 @@
 const electron = require('electron');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;
+const nativeImage = electron.nativeImage;
 
 const notifier = require('node-notifier');
 const util = require('util');
@@ -133,7 +134,7 @@ function shutdownCallback(idx) {
             homeServer.stop();
         }
 
-        updateTrayMenu(null);
+        updateTrayMenu(homeServer.state);
 
         if (homeServer.state == ProcessGroupStates.STOPPED) {
             // if the home server is already down, take down the server console now
@@ -476,124 +477,137 @@ function performContentMigration() {
 
 var logWindow = null;
 
+var labels = {
+    serverState: {
+        label: 'Server - Stopped',
+        enabled: false
+    },
+    version: {
+        label: 'Version - ' + buildInfo.buildIdentifier,
+        enabled: false
+    },
+    restart: {
+        label: 'Start Server',
+        click: function() {
+            homeServer.restart();
+        }
+    },
+    stopServer: {
+        label: 'Stop Server',
+        visible: false,
+        click: function() {
+            homeServer.stop();
+        }
+    },
+    goHome: {
+        label: 'Go Home',
+        click: goHomeClicked,
+        enabled: false
+    },
+    quit: {
+        label: 'Quit',
+        accelerator: 'Command+Q',
+        click: function() {
+            shutdown();
+        }
+    },
+    settings: {
+        label: 'Settings',
+        click: function() {
+            shell.openExternal('http://localhost:40100/settings');
+        },
+        enabled: false
+    },
+    viewLogs: {
+        label: 'View Logs',
+        click: function() {
+            logWindow.open();
+        }
+    },
+    share: {
+        label: 'Share',
+        click: function() {
+            shell.openExternal('http://localhost:40100/settings/?action=share')
+        }
+    },
+    migrateContent: {
+        label: 'Migrate Stack Manager Content',
+        click: function() {
+            promptToMigrateContent();
+        }
+    },
+    shuttingDown: {
+        label: "Shutting down...",
+        enabled: false
+    },
+}
+
+var separator = {
+    type: 'separator'
+};
+
+
 function buildMenuArray(serverState) {
-    var menuArray = null;
+
+    updateLabels(serverState);
+
+    var menuArray = [];
 
     if (isShuttingDown) {
-        menuArray = [
-            {
-                label: "Shutting down...",
-                enabled: false
-            }
-        ];
+        menuArray.push(labels.shuttingDown);
     } else {
-        menuArray = [
-            {
-                label: 'Server - Stopped',
-                enabled: false
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Go Home',
-                click: goHomeClicked,
-                enabled: false
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Start Server',
-                click: function() { homeServer.restart(); }
-            },
-            {
-                label: 'Stop Server',
-                visible: false,
-                click: function() { homeServer.stop(); }
-            },
-            {
-                label: 'Settings',
-                click: function() { shell.openExternal('http://localhost:40100/settings'); },
-                enabled: false
-            },
-            {
-                label: 'View Logs',
-                click: function() { logWindow.open(); }
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Share',
-                click: function() { shell.openExternal('http://localhost:40100/settings/?action=share') }
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Quit',
-                accelerator: 'Command+Q',
-                click: function() { shutdown(); }
-            }
-        ];
+        menuArray.push(labels.serverState);
+        menuArray.push(labels.version);
+        menuArray.push(separator);
+        menuArray.push(labels.goHome);
+        menuArray.push(separator);
+        menuArray.push(labels.restart);
+        menuArray.push(labels.stopServer);
+        menuArray.push(labels.settings);
+        menuArray.push(labels.viewLogs);
+        menuArray.push(separator);
+        menuArray.push(labels.share);
+        menuArray.push(separator);
+        menuArray.push(labels.quit);
 
         var foundStackManagerContent = isStackManagerContentPresent();
         if (foundStackManagerContent) {
             // add a separator and the stack manager content migration option
-            menuArray.splice(menuArray.length - 1, 0, {
-                label: 'Migrate Stack Manager Content',
-                click: function() { promptToMigrateContent(); }
-            }, {
-                type: 'separator'
-            });
+            menuArray.splice(menuArray.length - 1, 0, labels.migrateContent, separator);
         }
 
-        updateMenuArray(menuArray, serverState);
     }
 
+
     return menuArray;
+
 }
 
-const GO_HOME_INDEX = 2;
-const SERVER_LABEL_INDEX = 0;
-const RESTART_INDEX = 4;
-const STOP_INDEX = 5;
-const SETTINGS_INDEX = 6;
+function updateLabels(serverState) {
 
-function updateMenuArray(menuArray, serverState) {
     // update the tray menu state
     var running = serverState == ProcessGroupStates.STARTED;
-
-    var serverLabelItem = menuArray[SERVER_LABEL_INDEX];
-    var restartItem = menuArray[RESTART_INDEX];
-
-    // Go Home is only enabled if running
-    menuArray[GO_HOME_INDEX].enabled = running;
-
-    // Stop is only visible if running
-    menuArray[STOP_INDEX].visible = running;
-
-    // Settings is only visible if running
-    menuArray[SETTINGS_INDEX].enabled = running;
-
+    labels.goHome.enabled = running;
+    labels.stopServer.visible = running;
+    labels.settings.enabled = running;
     if (serverState == ProcessGroupStates.STARTED) {
-        serverLabelItem.label = "Server - Started";
-        restartItem.label = "Restart Server";
+        labels.serverState.label = "Server - Started";
+        labels.restart.label = "Restart Server";
     } else if (serverState == ProcessGroupStates.STOPPED) {
-        serverLabelItem.label = "Server - Stopped";
-        restartItem.label = "Start Server";
+        labels.serverState.label = "Server - Stopped";
+        labels.restart.label = "Start Server";
+        labels.restart.enabled = true;
     } else if (serverState == ProcessGroupStates.STOPPING) {
-        serverLabelItem.label = "Server - Stopping";
-
-        restartItem.label = "Restart Server";
-        restartItem.enabled = false;
+        labels.serverState.label = "Server - Stopping";
+        labels.restart.label = "Restart Server";
+        labels.restart.enabled = false;
     }
 }
 
 function updateTrayMenu(serverState) {
     if (tray) {
-        var menuArray = buildMenuArray(serverState);
+        var menuArray = buildMenuArray(isShuttingDown ? null : serverState);
+        tray.setImage(trayIcons[serverState]);
         tray.setContextMenu(Menu.buildFromTemplate(menuArray));
         if (isShuttingDown) {
             tray.setToolTip('High Fidelity - Shutting Down');
@@ -730,8 +744,18 @@ function maybeShowSplash() {
     }
 }
 
-const trayFilename = (osType == "Darwin" ? "console-tray-Template.png" : "console-tray.png");
-const trayIcon = path.join(__dirname, '../resources/' + trayFilename);
+const trayIconOS = (osType == "Darwin") ? "osx" : "win";
+var trayIcons = {};
+trayIcons[ProcessGroupStates.STARTED] = "console-tray-" + trayIconOS + ".png";
+trayIcons[ProcessGroupStates.STOPPED] = "console-tray-" + trayIconOS + "-stopped.png";
+trayIcons[ProcessGroupStates.STOPPING] = "console-tray-" + trayIconOS + "-stopping.png";
+for (var key in trayIcons) {
+    var fullPath = path.join(__dirname, '../resources/' + trayIcons[key]);
+    var img = nativeImage.createFromPath(fullPath);
+    img.setTemplateImage(osType == 'Darwin');
+    trayIcons[key] = img;
+}
+
 
 const notificationIcon = path.join(__dirname, '../resources/console-notification.png');
 
@@ -745,7 +769,7 @@ app.on('ready', function() {
     }
 
     // Create tray icon
-    tray = new Tray(trayIcon);
+    tray = new Tray(trayIcons[ProcessGroupStates.STOPPED]);
     tray.setToolTip('High Fidelity Server Console');
 
     tray.on('click', function() {

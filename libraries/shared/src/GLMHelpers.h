@@ -212,10 +212,12 @@ glm::detail::tvec4<T, P> lerp(const glm::detail::tvec4<T, P>& x, const glm::deta
 }
 
 glm::mat4 createMatFromQuatAndPos(const glm::quat& q, const glm::vec3& p);
+glm::mat4 createMatFromScaleQuatAndPos(const glm::vec3& scale, const glm::quat& rot, const glm::vec3& trans);
 glm::quat cancelOutRollAndPitch(const glm::quat& q);
 glm::mat4 cancelOutRollAndPitch(const glm::mat4& m);
 glm::vec3 transformPoint(const glm::mat4& m, const glm::vec3& p);
-glm::vec3 transformVector(const glm::mat4& m, const glm::vec3& v);
+glm::vec3 transformVectorFast(const glm::mat4& m, const glm::vec3& v);
+glm::vec3 transformVectorFull(const glm::mat4& m, const glm::vec3& v);
 
 // Calculate an orthogonal basis from a primary and secondary axis.
 // The uAxis, vAxis & wAxis will form an orthognal basis.
@@ -229,5 +231,7 @@ glm::vec2 getFacingDir2D(const glm::mat4& m);
 
 bool isNaN(glm::vec3 value);
 bool isNaN(glm::quat value);
+
+glm::mat4 orthoInverse(const glm::mat4& m);
 
 #endif // hifi_GLMHelpers_h

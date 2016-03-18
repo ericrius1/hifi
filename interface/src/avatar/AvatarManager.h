@@ -39,7 +39,7 @@ public:
     void init();
 
     MyAvatar* getMyAvatar() { return _myAvatar.get(); }
-    AvatarSharedPointer getAvatarBySessionID(const QUuid& sessionID);
+    AvatarSharedPointer getAvatarBySessionID(const QUuid& sessionID) override;
 
     void updateMyAvatar(float deltaTime);
     void updateOtherAvatars(float deltaTime);
@@ -56,9 +56,6 @@ public:
 
     Q_INVOKABLE void setLocalLights(const QVector<AvatarManager::LocalLight>& localLights);
     Q_INVOKABLE QVector<AvatarManager::LocalLight> getLocalLights() const;
-    // Currently, your own avatar will be included as the null avatar id.
-    Q_INVOKABLE QVector<QUuid> getAvatarIdentifiers();
-    Q_INVOKABLE AvatarData* getAvatar(QUuid avatarID);
 
 
     void getObjectsToRemoveFromPhysics(VectorOfMotionStates& motionStates);
@@ -74,8 +71,8 @@ public slots:
     void updateAvatarRenderStatus(bool shouldRenderAvatars);
 
 private:
-    AvatarManager(QObject* parent = 0);
-    AvatarManager(const AvatarManager& other);
+    explicit AvatarManager(QObject* parent = 0);
+    explicit AvatarManager(const AvatarManager& other);
 
     void simulateAvatarFades(float deltaTime);
 

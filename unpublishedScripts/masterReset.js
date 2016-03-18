@@ -283,24 +283,35 @@ MasterReset = function() {
             damping: 0.5,
             collisionSoundURL: "http://hifi-content.s3.amazonaws.com/james/pistol/sounds/drop.wav",
             userData: JSON.stringify({
-                grabbableKey: {
-                    spatialKey: {
-                        rightRelativePosition: {
-                            x: 0.03,
-                            y: 0.0,
-                            z: -0.065
-                        },
-                        leftRelativePosition: {
-                            x: -0.03,
-                            y: 0.00,
-                            z: -0.065
-                        },
-                        relativeRotation: Quat.fromPitchYawRollDegrees(90, 90, 0)
-                    },
-                    invertSolidWhileHeld: true
+                "wearable": {
+                    "joints": {
+                        "RightHand": [{
+                            "x": 0.07079616189002991,
+                            "y": 0.20177987217903137,
+                            "z": 0.06374628841876984
+                        }, {
+                            "x": -0.5863648653030396,
+                            "y": -0.46007341146469116,
+                            "z": 0.46949487924575806,
+                            "w": -0.4733745753765106
+                        }],
+                        "LeftHand": [{
+                            "x": 0.0012094751000404358,
+                            "y": 0.1991066336631775,
+                            "z": 0.079972043633461
+                        }, {
+                            "x": 0.29249316453933716,
+                            "y": -0.6115763187408447,
+                            "z": 0.5668558478355408,
+                            "w": 0.46807748079299927
+                        }]
+                    }
                 },
-                resetMe: {
-                    resetMe: true
+                "grabbableKey": {
+                    "invertSolidWhileHeld": true
+                },
+                "resetMe": {
+                    "resetMe": true
                 }
             })
         });
@@ -318,7 +329,7 @@ MasterReset = function() {
         var BOW_ROTATION = Quat.fromPitchYawRollDegrees(-103.05, -178.60, -87.27);
         var MODEL_URL = "https://hifi-public.s3.amazonaws.com/models/bow/new/bow-deadly.fbx";
         var COLLISION_HULL_URL = "https://hifi-public.s3.amazonaws.com/models/bow/new/bow_collision_hull.obj";
-        
+
         var BOW_DIMENSIONS = {
             x: 0.04,
             y: 1.3,
@@ -362,19 +373,30 @@ MasterReset = function() {
                         resetMe: true
                     },
                     grabbableKey: {
-                        invertSolidWhileHeld: true,
-                        spatialKey: {
-                            rightRelativePosition: {
-                                x: 0.03,
-                                y: 0.08,
-                                z: 0.11
-                            },
-                            leftRelativePosition: {
-                                x: -0.03,
-                                y: 0.08,
-                                z: 0.11
-                            },
-                            relativeRotation: Quat.fromPitchYawRollDegrees(180, 90, 90)
+                        invertSolidWhileHeld: true
+                    },
+                    wearable: {
+                        joints: {
+                            RightHand: [{
+                                x: 0.03960523009300232,
+                                y: 0.01979270577430725,
+                                z: 0.03294898942112923
+                            }, {
+                                x: -0.7257906794548035,
+                                y: -0.4611682891845703,
+                                z: 0.4436084032058716,
+                                w: -0.25251442193984985
+                            }],
+                            LeftHand: [{
+                                x: 0.0055799782276153564,
+                                y: 0.04354757443070412,
+                                z: 0.05119767785072327
+                            }, {
+                                x: -0.14914104342460632,
+                                y: 0.6448180079460144,
+                                z: -0.2888556718826294,
+                                w: -0.6917579770088196
+                            }]
                         }
                     }
                 })
@@ -698,6 +720,7 @@ MasterReset = function() {
 
     function createTargets() {
 
+
         var MODEL_URL = 'http://hifi-public.s3.amazonaws.com/models/ping_pong_gun/target.fbx';
         var COLLISION_HULL_URL = 'http://hifi-public.s3.amazonaws.com/models/ping_pong_gun/target_collision_hull.obj';
 
@@ -848,6 +871,30 @@ MasterReset = function() {
                 },
                 grabbableKey: {
                     invertSolidWhileHeld: true
+                },
+                wearable: {
+                    joints: {
+                        RightHand: [{
+                            x: 0.0717092975974083,
+                            y: 0.1166968047618866,
+                            z: 0.07085515558719635
+                        }, {
+                            x: -0.7195770740509033,
+                            y: 0.175227552652359,
+                            z: 0.5953742265701294,
+                            w: 0.31150275468826294
+                        }],
+                        LeftHand: [{
+                            x: 0.0806504637002945,
+                            y: 0.09710478782653809,
+                            z: 0.08610185235738754
+                        }, {
+                            x: 0.5630447864532471,
+                            y: -0.2545935809612274,
+                            z: 0.7855332493782043,
+                            w: 0.033170729875564575
+                        }]
+                    }
                 }
             })
         });
@@ -914,6 +961,8 @@ MasterReset = function() {
                 y: 2.545,
                 z: 2.545
             },
+            intensity: 1.0,
+            falloffRadius: 0.3,
             cutoff: 90,
             color: {
                 red: 217,
@@ -942,6 +991,8 @@ MasterReset = function() {
                 y: 2.545,
                 z: 2.545
             },
+            intensity: 1.0,
+            falloffRadius: 0.3,
             cutoff: 90,
             color: {
                 red: 217,
@@ -1015,6 +1066,8 @@ MasterReset = function() {
                 y: 2.545,
                 z: 2.545
             },
+            intensity: 1.0,
+            falloffRadius: 0.3,
             cutoff: 90,
             color: {
                 red: 217,
@@ -1044,6 +1097,8 @@ MasterReset = function() {
                 y: 2.545,
                 z: 2.545
             },
+            intensity: 1.0,
+            falloffRadius: 0.3,
             cutoff: 90,
             color: {
                 red: 217,
@@ -1072,6 +1127,8 @@ MasterReset = function() {
                 y: 2.545,
                 z: 2.545
             },
+            intensity: 1.0,
+            falloffRadius: 0.3,
             cutoff: 90,
             color: {
                 red: 217,
@@ -1140,7 +1197,7 @@ MasterReset = function() {
         var dice2 = Entities.addEntity(diceProps);
 
     }
-    
+
     function createGates() {
         var MODEL_URL = 'http://hifi-public.s3.amazonaws.com/ryan/fence.fbx';
 
@@ -1182,8 +1239,9 @@ MasterReset = function() {
     }
 
     function createPingPongBallGun() {
-        var MODEL_URL = 'http://hifi-public.s3.amazonaws.com/models/ping_pong_gun/ping_pong_gun.fbx';
-        var COLLISION_HULL_URL = 'http://hifi-public.s3.amazonaws.com/models/ping_pong_gun/ping_pong_gun_convex.obj';
+        var MODEL_URL = 'http://hifi-content.s3.amazonaws.com/alan/dev/Pingpong-Gun-New.fbx';
+        var COLLISION_HULL_URL = 'http://hifi-content.s3.amazonaws.com/alan/dev/Pingpong-Gun-New.obj';
+
         var COLLISION_SOUND_URL = 'http://hifi-public.s3.amazonaws.com/sounds/Collisions-otherorganic/plastic_impact.L.wav';
         var position = {
             x: 548.6,
@@ -1208,9 +1266,9 @@ MasterReset = function() {
             },
             restitution: 0,
             dimensions: {
-                x: 0.08,
-                y: 0.21,
-                z: 0.47
+                x: 0.125,
+                y: 0.3875,
+                z: 0.9931
             },
             dynamic: true,
             collisionSoundURL: COLLISION_SOUND_URL,
@@ -1219,22 +1277,32 @@ MasterReset = function() {
                     resetMe: true
                 },
                 grabbableKey: {
-                    spatialKey: {
-                        rightRelativePosition: {
-                            x: -0.05,
-                            y: .06,
-                            z: 0.05
-                        },
-                        leftRelativePosition: {
-                            x: 0.05,
-                            y: 0.06,
-                            z: 0.05
-                        },
-                        relativeRotation: Quat.fromPitchYawRollDegrees(0, -90, -90)
-                    },
                     invertSolidWhileHeld: true
+                },
+                wearable: {
+                    joints: {
+                        RightHand: [{
+                            x: 0.1177130937576294,
+                            y: 0.12922893464565277,
+                            z: 0.08307232707738876
+                        }, {
+                            x: 0.4934672713279724,
+                            y: 0.3605862259864807,
+                            z: 0.6394805908203125,
+                            w: -0.4664038419723511
+                        }],
+                        LeftHand: [{
+                            x: 0.09151676297187805,
+                            y: 0.13639454543590546,
+                            z: 0.09354984760284424
+                        }, {
+                            x: -0.19628101587295532,
+                            y: 0.6418180465698242,
+                            z: 0.2830369472503662,
+                            w: 0.6851521730422974
+                        }]
+                    }
                 }
-
             })
         });
     }
@@ -1268,14 +1336,30 @@ MasterReset = function() {
                     resetMe: true
                 },
                 grabbableKey: {
-                    invertSolidWhileHeld: true,
-                    spatialKey: {
-                        relativePosition: {
-                            x: 0,
-                            y: 0.1,
-                            z: 0
-                        },
-                        relativeRotation: Quat.fromPitchYawRollDegrees(0, 0, 90)
+                    invertSolidWhileHeld: true
+                },
+                "wearable": {
+                    "joints": {
+                        "RightHand": [{
+                            "x": 0.11421211808919907,
+                            "y": 0.06508062779903412,
+                            "z": 0.06317152827978134
+                        }, {
+                            "x": -0.7886992692947388,
+                            "y": -0.6108893156051636,
+                            "z": -0.05003821849822998,
+                            "w": 0.047579944133758545
+                        }],
+                        "LeftHand": [{
+                            "x": 0.03530977666378021,
+                            "y": 0.11278322339057922,
+                            "z": 0.049768272787332535
+                        }, {
+                            "x": -0.050609711557626724,
+                            "y": -0.11595471203327179,
+                            "z": 0.3554558753967285,
+                            "w": 0.9260908961296082
+                        }]
                     }
                 }
             })

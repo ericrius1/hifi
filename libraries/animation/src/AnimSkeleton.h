@@ -23,8 +23,8 @@ public:
     using Pointer = std::shared_ptr<AnimSkeleton>;
     using ConstPointer = std::shared_ptr<const AnimSkeleton>;
 
-    AnimSkeleton(const FBXGeometry& fbxGeometry);
-    AnimSkeleton(const std::vector<FBXJoint>& joints);
+    explicit AnimSkeleton(const FBXGeometry& fbxGeometry);
+    explicit AnimSkeleton(const std::vector<FBXJoint>& joints);
     int nameToJointIndex(const QString& jointName) const;
     const QString& getJointName(int jointIndex) const;
     int getNumJoints() const;
@@ -53,6 +53,10 @@ public:
     AnimPose getAbsolutePose(int jointIndex, const AnimPoseVec& poses) const;
 
     void convertRelativePosesToAbsolute(AnimPoseVec& poses) const;
+    void convertAbsolutePosesToRelative(AnimPoseVec& poses) const;
+
+    void mirrorRelativePoses(AnimPoseVec& poses) const;
+    void mirrorAbsolutePoses(AnimPoseVec& poses) const;
 
 #ifndef NDEBUG
     void dump() const;
@@ -69,6 +73,7 @@ protected:
     AnimPoseVec _absoluteDefaultPoses;
     AnimPoseVec _relativePreRotationPoses;
     AnimPoseVec _relativePostRotationPoses;
+    std::vector<int> _mirrorMap;
 
     // no copies
     AnimSkeleton(const AnimSkeleton&) = delete;

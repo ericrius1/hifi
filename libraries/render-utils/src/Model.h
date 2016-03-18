@@ -70,7 +70,7 @@ public:
 
     // new Scene/Engine rendering support
     void setVisibleInScene(bool newValue, std::shared_ptr<render::Scene> scene);
-    bool needsFixupInScene() { return !_readyWhenAdded && readyToAddToScene(); }
+    bool needsFixupInScene();
     bool readyToAddToScene(RenderArgs* renderArgs = nullptr) {
         return !_needsReload && isRenderable() && isActive() && isLoaded();
     }
@@ -89,7 +89,7 @@ public:
     bool isVisible() const { return _isVisible; }
 
     void updateRenderItems();
-    AABox getPartBounds(int meshIndex, int partIndex, glm::vec3 modelPosition, glm::quat modelOrientation);
+    AABox getPartBounds(int meshIndex, int partIndex, glm::vec3 modelPosition, glm::quat modelOrientation) const;
 
     bool maybeStartBlender();
 
@@ -197,7 +197,7 @@ public:
 
     /// enables/disables scale to fit behavior, the model will be automatically scaled to the specified largest dimension
     bool getIsScaledToFit() const { return _scaledToFit; } /// is model scaled to fit
-    const glm::vec3& getScaleToFitDimensions() const { return _scaleToFitDimensions; } /// the dimensions model is scaled to
+    glm::vec3 getScaleToFitDimensions() const; /// the dimensions model is scaled to, including inferred y/z
 
     void setCauterizeBones(bool flag) { _cauterizeBones = flag; }
     bool getCauterizeBones() const { return _cauterizeBones; }
@@ -365,10 +365,12 @@ protected:
 
     QSet<std::shared_ptr<MeshPartPayload>> _renderItemsSet;
     QMap<render::ItemID, render::PayloadPointer> _renderItems;
-    bool _readyWhenAdded = false;
-    bool _needsReload = true;
-    bool _needsUpdateClusterMatrices = true;
-    bool _showCollisionHull = false;
+    bool _readyWhenAdded { false };
+    bool _needsReload { true };
+    bool _needsUpdateClusterMatrices { true };
+    bool _needsUpdateTransparentTextures { true };
+    bool _hasTransparentTextures { false };
+    bool _showCollisionHull { false };
 
     friend class ModelMeshPartPayload;
     RigPointer _rig;

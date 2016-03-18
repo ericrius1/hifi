@@ -77,24 +77,17 @@ public:
     virtual void downloadFramebuffer(const FramebufferPointer& srcFramebuffer, const Vec4i& region, QImage& destImage) = 0;
 
     // UBO class... layout MUST match the layout in TransformCamera.slh
-    class TransformObject {
-    public:
-        Mat4 _model;
-        Mat4 _modelInverse;
-    };
-
-    // UBO class... layout MUST match the layout in TransformCamera.slh
     class TransformCamera {
     public:
-        Mat4 _view;
+        mutable Mat4 _view;
         mutable Mat4 _viewInverse;
         mutable Mat4 _projectionViewUntranslated;
         Mat4 _projection;
         mutable Mat4 _projectionInverse;
         Vec4 _viewport; // Public value is int but float in the shader to stay in floats for all the transform computations.
 
-        const Backend::TransformCamera& recomputeDerived() const;
-        TransformCamera getEyeCamera(int eye, const StereoState& stereo) const;
+        const Backend::TransformCamera& recomputeDerived(const Transform& xformView) const;
+        TransformCamera getEyeCamera(int eye, const StereoState& stereo, const Transform& xformView) const;
     };
 
 

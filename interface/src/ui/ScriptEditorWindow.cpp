@@ -87,12 +87,11 @@ void ScriptEditorWindow::loadScriptMenu(const QString& scriptName) {
 }
 
 void ScriptEditorWindow::loadScriptClicked() {
-    auto scriptEngines = DependencyManager::get<ScriptEngines>();
     QString scriptName = QFileDialog::getOpenFileName(this, tr("Interface"),
-                                                      scriptEngines->getPreviousScriptLocation(),
+                                                      qApp->getPreviousScriptLocation(),
                                                       tr("JavaScript Files (*.js)"));
     if (!scriptName.isEmpty()) {
-        scriptEngines->setPreviousScriptLocation(scriptName);
+        qApp->setPreviousScriptLocation(scriptName);
         addScriptEditorWidget("loading...")->loadFile(scriptName);
         updateButtons();
     }
@@ -100,7 +99,7 @@ void ScriptEditorWindow::loadScriptClicked() {
 
 void ScriptEditorWindow::loadMenuAboutToShow() {
     _loadMenu->clear();
-    QStringList runningScripts = DependencyManager::get<ScriptEngines>()->getRunningScripts();;
+    QStringList runningScripts = DependencyManager::get<ScriptEngines>()->getRunningScripts();
     if (runningScripts.count() > 0) {
         QSignalMapper* signalMapper = new QSignalMapper(this);
         foreach (const QString& runningScript, runningScripts) {
@@ -172,6 +171,9 @@ void ScriptEditorWindow::tabSwitched(int tabIndex) {
 }
 
 void ScriptEditorWindow::tabCloseRequested(int tabIndex) {
+    if (ignoreCloseForModal(nullptr)) {
+        return;
+    }
     ScriptEditorWidget* closingScriptWidget = static_cast<ScriptEditorWidget*>(_ScriptEditorWindowUI->tabWidget
                                                                                ->widget(tabIndex));
     if(closingScriptWidget->questionSave()) {
@@ -179,7 +181,26 @@ void ScriptEditorWindow::tabCloseRequested(int tabIndex) {
     }
 }
 
+// If this operating system window causes a qml overlay modal dialog (which might not even be seen by the user), closing this window
+// will crash the code that was waiting on the dialog result. So that code whousl set inModalDialog to true while the question is up.
+// This code will not be necessary when switch out all operating system windows for qml overlays.
+bool ScriptEditorWindow::ignoreCloseForModal(QCloseEvent* event) {
+    if (!inModalDialog) {
+        return false;
+    }
+    // Deliberately not using OffscreenUi, so that the dialog is seen.
+    QMessageBox::information(this, tr("Interface"), tr("There is a modal dialog that must be answered before closing."),
+                             QMessageBox::Discard, QMessageBox::Discard);
+    if (event) {
+        event->ignore(); // don't close
+    }
+    return true;
+}
+
 void ScriptEditorWindow::closeEvent(QCloseEvent *event) {
+    if (ignoreCloseForModal(event)) {
+        return;
+    }
     bool unsaved_docs_warning = false;
     for (int i = 0; i < _ScriptEditorWindowUI->tabWidget->count(); i++){
         if(static_cast<ScriptEditorWidget*>(_ScriptEditorWindowUI->tabWidget->widget(i))->isModified()){

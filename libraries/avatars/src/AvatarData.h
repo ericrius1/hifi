@@ -52,9 +52,9 @@ typedef unsigned long long quint64;
 #include <RegisteredMetaTypes.h>
 #include <SimpleMovingAverage.h>
 #include <SpatiallyNestable.h>
+#include <NumericalConstants.h>
 
 #include "AABox.h"
-#include "HandData.h"
 #include "HeadData.h"
 #include "PathUtils.h"
 
@@ -150,6 +150,9 @@ class AvatarData : public QObject, public SpatiallyNestable {
     Q_PROPERTY(float headPitch READ getHeadPitch WRITE setHeadPitch)
     Q_PROPERTY(float headYaw READ getHeadYaw WRITE setHeadYaw)
     Q_PROPERTY(float headRoll READ getHeadRoll WRITE setHeadRoll)
+
+    Q_PROPERTY(glm::vec3 velocity READ getVelocity WRITE setVelocity)
+    Q_PROPERTY(glm::vec3 angularVelocity READ getAngularVelocity WRITE setAngularVelocity)
 
     Q_PROPERTY(float audioLoudness READ getAudioLoudness WRITE setAudioLoudness)
     Q_PROPERTY(float audioAverageLoudness READ getAudioAverageLoudness WRITE setAudioAverageLoudness)
@@ -287,7 +290,6 @@ public:
     KeyState keyState() const { return _keyState; }
 
     const HeadData* getHeadData() const { return _headData; }
-    const HandData* getHandData() const { return _handData; }
 
     bool hasIdentityChangedAfterParsing(const QByteArray& data);
     QByteArray identityByteArray();
@@ -334,8 +336,6 @@ public:
     int getAverageBytesReceivedPerSecond() const;
     int getReceiveRate() const;
 
-    void setVelocity(const glm::vec3 velocity) { _velocity = velocity; }
-    Q_INVOKABLE glm::vec3 getVelocity() const { return _velocity; }
     const glm::vec3& getTargetVelocity() const { return _targetVelocity; }
 
     bool shouldDie() const { return _owningAvatarMixer.isNull() || getUsecsSinceLastUpdate() > AVATAR_SILENCE_THRESHOLD_USECS; }
@@ -382,7 +382,6 @@ protected:
     bool _hasNewJointTranslations; // set in AvatarData, cleared in Avatar
 
     HeadData* _headData;
-    HandData* _handData;
 
     QUrl _faceModelURL; // These need to be empty so that on first time setting them they will not short circuit
     QUrl _skeletonModelURL; // These need to be empty so that on first time setting them they will not short circuit
@@ -406,7 +405,6 @@ protected:
     /// Loads the joint indices, names from the FST file (if any)
     virtual void updateJointMappings();
 
-    glm::vec3 _velocity;
     glm::vec3 _targetVelocity;
 
     AABox _localAABox;

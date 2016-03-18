@@ -22,7 +22,7 @@
 #include "Avatar.h"
 #include "AtRestDetector.h"
 #include "MyCharacterController.h"
-
+#include <ThreadSafeValueCache.h>
 
 class ModelItemID;
 
@@ -63,9 +63,9 @@ class MyAvatar : public Avatar {
     Q_PROPERTY(AudioListenerMode audioListenerMode READ getAudioListenerMode WRITE setAudioListenerMode)
     Q_PROPERTY(glm::vec3 customListenPosition READ getCustomListenPosition WRITE setCustomListenPosition)
     Q_PROPERTY(glm::quat customListenOrientation READ getCustomListenOrientation WRITE setCustomListenOrientation)
-    Q_PROPERTY(AudioListenerMode FROM_HEAD READ getAudioListenerModeHead)
-    Q_PROPERTY(AudioListenerMode FROM_CAMERA READ getAudioListenerModeCamera)
-    Q_PROPERTY(AudioListenerMode CUSTOM READ getAudioListenerModeCustom)
+    Q_PROPERTY(AudioListenerMode audioListenerModeHead READ getAudioListenerModeHead)
+    Q_PROPERTY(AudioListenerMode audioListenerModeCamera READ getAudioListenerModeCamera)
+    Q_PROPERTY(AudioListenerMode audioListenerModeCustom READ getAudioListenerModeCustom)
     //TODO: make gravity feature work Q_PROPERTY(glm::vec3 gravity READ getGravity WRITE setGravity)
 
 
@@ -79,8 +79,12 @@ class MyAvatar : public Avatar {
     Q_PROPERTY(controller::Pose leftHandTipPose READ getLeftHandTipPose)
     Q_PROPERTY(controller::Pose rightHandTipPose READ getRightHandTipPose)
 
+    Q_PROPERTY(glm::mat4 sensorToWorldMatrix READ getSensorToWorldMatrix)
+
+    Q_PROPERTY(float energy READ getEnergy WRITE setEnergy)
+
 public:
-    MyAvatar(RigPointer rig);
+    explicit MyAvatar(RigPointer rig);
     ~MyAvatar();
 
     virtual void simulateAttachments(float deltaTime) override;
@@ -97,8 +101,9 @@ public:
     const glm::vec3& getHMDSensorPosition() const { return _hmdSensorPosition; }
     const glm::quat& getHMDSensorOrientation() const { return _hmdSensorOrientation; }
     const glm::vec2& getHMDSensorFacingMovingAverage() const { return _hmdSensorFacingMovingAverage; }
-    glm::mat4 getSensorToWorldMatrix() const;
 
+    // thread safe
+    Q_INVOKABLE glm::mat4 getSensorToWorldMatrix() const;
 
     // Pass a recent sample of the HMD to the avatar.
     // This can also update the avatar's position to follow the HMD
@@ -110,10 +115,11 @@ public:
     // This is so the correct camera can be used for rendering.
     void updateSensorToWorldMatrix();
 
-    void setLeanScale(float scale) { _leanScale = scale; }
     void setRealWorldFieldOfView(float realWorldFov) { _realWorldFieldOfView.set(realWorldFov); }
 
+    void setLeanScale(float scale) { _leanScale = scale; }
     float getLeanScale() const { return _leanScale; }
+
     Q_INVOKABLE glm::vec3 getDefaultEyePosition() const;
 
     float getRealWorldFieldOfView() { return _realWorldFieldOfView.get(); }
@@ -148,6 +154,9 @@ public:
     Q_INVOKABLE QScriptValue addAnimationStateHandler(QScriptValue handler, QScriptValue propertiesList) { return _rig->addAnimationStateHandler(handler, propertiesList); }
     // Removes a handler previously added by addAnimationStateHandler.
     Q_INVOKABLE void removeAnimationStateHandler(QScriptValue handler) { _rig->removeAnimationStateHandler(handler); }
+
+    Q_INVOKABLE bool getSnapTurn() const { return _useSnapTurn; }
+    Q_INVOKABLE void setSnapTurn(bool on) { _useSnapTurn = on; }
 
     // get/set avatar data
     void saveData();
@@ -219,11 +228,16 @@ public:
     float getBoomLength() const { return _boomLength; }
     void setBoomLength(float boomLength) { _boomLength = boomLength; }
 
+    float getPitchSpeed() const { return _pitchSpeed; }
+    void setPitchSpeed(float speed) { _pitchSpeed = speed; }
+
+    float getYawSpeed() const { return _yawSpeed; }
+    void setYawSpeed(float speed) { _yawSpeed = speed; }
+
     static const float ZOOM_MIN;
     static const float ZOOM_MAX;
     static const float ZOOM_DEFAULT;
 
-    void doUpdateBillboard();
     void destroyAnimGraph();
 
     AudioListenerMode getAudioListenerMode() { return _audioListenerMode; }
@@ -233,7 +247,13 @@ public:
     glm::quat getCustomListenOrientation() { return _customListenOrientation; }
     void setCustomListenOrientation(glm::quat customListenOrientation) { _customListenOrientation = customListenOrientation; }
 
-    bool isHovering() const;
+    virtual void rebuildCollisionShape() override;
+
+    void setHandControllerPosesInWorldFrame(const controller::Pose& left, const controller::Pose& right);
+    controller::Pose getLeftHandControllerPoseInWorldFrame() const;
+    controller::Pose getRightHandControllerPoseInWorldFrame() const;
+    controller::Pose getLeftHandControllerPoseInAvatarFrame() const;
+    controller::Pose getRightHandControllerPoseInAvatarFrame() const;
 
 public slots:
     void increaseSize();
@@ -243,6 +263,7 @@ public slots:
     void goToLocation(const glm::vec3& newPosition,
                       bool hasOrientation = false, const glm::quat& newOrientation = glm::quat(),
                       bool shouldFaceLocation = false);
+    void goToLocation(const QVariant& properties);
 
     //  Set/Get update the thrust that will move the avatar around
     void addThrust(glm::vec3 newThrust) { _thrust += newThrust; };
@@ -251,13 +272,13 @@ public slots:
 
     Q_INVOKABLE void updateMotionBehaviorFromMenu();
 
-    virtual void rebuildCollisionShape() override;
-
     Q_INVOKABLE QUrl getAnimGraphUrl() const { return _animGraphUrl; }
 
     void setEnableDebugDrawDefaultPose(bool isEnabled);
     void setEnableDebugDrawAnimPose(bool isEnabled);
     void setEnableDebugDrawPosition(bool isEnabled);
+    void setEnableDebugDrawHandControllers(bool isEnabled);
+    void setEnableDebugDrawSensorToWorldMatrix(bool isEnabled);
     bool getEnableMeshVisible() const { return _skeletonModel.isVisible(); }
     void setEnableMeshVisible(bool isEnabled);
     void setUseAnimPreAndPostRotations(bool isEnabled);
@@ -272,6 +293,9 @@ signals:
     void transformChanged();
     void newCollisionSoundURL(const QUrl& url);
     void collisionWithEntity(const Collision& collision);
+    void energyChanged(float newEnergy);
+    void positionGoneTo();
+
 
 private:
 
@@ -323,6 +347,8 @@ private:
     bool _isBraking;
 
     float _boomLength;
+    float _yawSpeed; // degrees/sec
+    float _pitchSpeed; // degrees/sec
 
     glm::vec3 _thrust;  // impulse accumulator for outside sources
 
@@ -339,7 +365,6 @@ private:
     AvatarWeakPointer _lookAtTargetAvatar;
     glm::vec3 _targetAvatarPosition;
     bool _shouldRender;
-    bool _billboardValid;
     float _oculusYawOffset;
 
     eyeContactTarget _eyeContactTarget;
@@ -354,7 +379,6 @@ private:
     glm::vec3 applyScriptedMotor(float deltaTime, const glm::vec3& velocity);
     void updatePosition(float deltaTime);
     void updateCollisionSound(const glm::vec3& penetration, float deltaTime, float frequency);
-    void maybeUpdateBillboard();
     void initHeadBones();
     void initAnimGraph();
 
@@ -362,6 +386,7 @@ private:
     QUrl _fullAvatarURLFromPreferences;
     QString _fullAvatarModelName;
     QUrl _animGraphUrl {""};
+    bool _useSnapTurn { true };
 
     // cache of the current HMD sensor position and orientation
     // in sensor space.
@@ -377,16 +402,32 @@ private:
 
     // used to transform any sensor into world space, including the _hmdSensorMat, or hand controllers.
     glm::mat4 _sensorToWorldMatrix;
+    ThreadSafeValueCache<glm::mat4> _sensorToWorldMatrixCache { glm::mat4() };
 
     struct FollowHelper {
+        FollowHelper();
+
+        enum FollowType {
+            Rotation = 0,
+            Horizontal,
+            Vertical,
+            NumFollowTypes
+        };
         glm::mat4 _desiredBodyMatrix;
-        float _timeRemaining { 0.0f };
+        float _timeRemaining[NumFollowTypes];
 
         void deactivate();
+        void deactivate(FollowType type);
         void activate();
+        void activate(FollowType type);
         bool isActive() const;
-        bool shouldActivate(const MyAvatar& myAvatar, const glm::mat4& desiredBodyMatrix, const glm::mat4& currentBodyMatrix) const;
-        void prePhysicsUpdate(MyAvatar& myAvatar, const glm::mat4& bodySensorMatrix, const glm::mat4& currentBodyMatrix);
+        bool isActive(FollowType followType) const;
+        float getMaxTimeRemaining() const;
+        void decrementTimeRemaining(float dt);
+        bool shouldActivateRotation(const MyAvatar& myAvatar, const glm::mat4& desiredBodyMatrix, const glm::mat4& currentBodyMatrix) const;
+        bool shouldActivateVertical(const MyAvatar& myAvatar, const glm::mat4& desiredBodyMatrix, const glm::mat4& currentBodyMatrix) const;
+        bool shouldActivateHorizontal(const MyAvatar& myAvatar, const glm::mat4& desiredBodyMatrix, const glm::mat4& currentBodyMatrix) const;
+        void prePhysicsUpdate(MyAvatar& myAvatar, const glm::mat4& bodySensorMatrix, const glm::mat4& currentBodyMatrix, bool hasDriveInput);
         glm::mat4 postPhysicsUpdate(const MyAvatar& myAvatar, const glm::mat4& currentBodyMatrix);
     };
     FollowHelper _follow;
@@ -401,6 +442,8 @@ private:
 
     bool _enableDebugDrawDefaultPose { false };
     bool _enableDebugDrawAnimPose { false };
+    bool _enableDebugDrawHandControllers { false };
+    bool _enableDebugDrawSensorToWorldMatrix { false };
 
     AudioListenerMode _audioListenerMode;
     glm::vec3 _customListenPosition;
@@ -408,6 +451,25 @@ private:
 
     AtRestDetector _hmdAtRestDetector;
     bool _lastIsMoving { false };
+    bool _hoverReferenceCameraFacingIsCaptured { false };
+    glm::vec3 _hoverReferenceCameraFacing { 0.0f, 0.0f, -1.0f }; // hmd sensor space
+
+    // These are stored in WORLD frame
+    ThreadSafeValueCache<controller::Pose> _leftHandControllerPoseInWorldFrameCache { controller::Pose() };
+    ThreadSafeValueCache<controller::Pose> _rightHandControllerPoseInWorldFrameCache { controller::Pose() };
+
+    float AVATAR_MOVEMENT_ENERGY_CONSTANT { 0.001f };
+    float AUDIO_ENERGY_CONSTANT { 0.000001f };
+    float MAX_AVATAR_MOVEMENT_PER_FRAME { 30.0f };
+    float currentEnergy { 0.0f };
+    float energyChargeRate { 0.003f };
+    glm::vec3 priorVelocity;
+    glm::vec3 lastPosition;
+    float getAudioEnergy();
+    float getAccelerationEnergy();
+    float getEnergy();
+    void setEnergy(float value);
+    bool didTeleport();
 };
 
 QScriptValue audioListenModeToScriptValue(QScriptEngine* engine, const AudioListenerMode& audioListenerMode);

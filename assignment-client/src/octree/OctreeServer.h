@@ -127,8 +127,8 @@ public:
 public slots:
     /// runs the octree server assignment
     void run();
-    void nodeAdded(SharedNodePointer node);
-    void nodeKilled(SharedNodePointer node);
+    virtual void nodeAdded(SharedNodePointer node);
+    virtual void nodeKilled(SharedNodePointer node);
     void sendStatsPacket();
 
 private slots:
@@ -169,7 +169,7 @@ protected:
     int _statusPort;
     QString _statusHost;
 
-    char _persistFilename[MAX_FILENAME_LENGTH];
+    QString _persistFilePath;
     QString _persistAsFileType;
     int _packetsPerClientPerInterval;
     int _packetsTotalPerInterval;

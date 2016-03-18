@@ -82,8 +82,13 @@ void Connection::resetRTT() {
 
 SendQueue& Connection::getSendQueue() {
     if (!_sendQueue) {
+
+        // we may have a sequence number from the previous inactive queue - re-use that so that the
+        // receiver is getting the sequence numbers it expects (given that the connection must still be active)
+
         // Lasily create send queue
         _sendQueue = SendQueue::create(_parentSocket, _destination);
+        _lastReceivedACK = _sendQueue->getCurrentSequenceNumber();
 
 #ifdef UDT_CONNECTION_DEBUG
         qCDebug(networking) << "Created SendQueue for connection to" << _destination;
@@ -99,6 +104,9 @@ SendQueue& Connection::getSendQueue() {
         _sendQueue->setSyncInterval(_synInterval);
         _sendQueue->setEstimatedTimeout(estimatedTimeout());
         _sendQueue->setFlowWindowSize(std::min(_flowWindowSize, (int) _congestionControl->_congestionWindowSize));
+
+        // give the randomized sequence number to the congestion control object
+        _congestionControl->setInitialSendSequenceNumber(_sendQueue->getCurrentSequenceNumber());
     }
     
     return *_sendQueue;
@@ -277,7 +285,7 @@ void Connection::sendACK(bool wasCausedBySyncTimeout) {
         // grab the up to date packet receive speed and estimated bandwidth
         int32_t packetReceiveSpeed = _receiveWindow.getPacketReceiveSpeed();
         int32_t estimatedBandwidth = _receiveWindow.getEstimatedBandwidth();
-        
+
         // update those values in our connection stats
         _stats.recordReceiveRate(packetReceiveSpeed);
         _stats.recordEstimatedBandwidth(estimatedBandwidth);
@@ -536,7 +544,7 @@ void Connection::processACK(std::unique_ptr<ControlPacket> controlPacket) {
     // read the ACK sub-sequence number
     SequenceNumber currentACKSubSequenceNumber;
     controlPacket->readPrimitive(&currentACKSubSequenceNumber);
-    
+
     // Check if we need send an ACK2 for this ACK
     // This will be the case if it has been longer than the sync interval OR
     // it looks like they haven't received our ACK2 for this ACK
@@ -720,15 +728,28 @@ void Connection::processNAK(std::unique_ptr<ControlPacket> controlPacket) {
 }
 
 void Connection::processHandshake(std::unique_ptr<ControlPacket> controlPacket) {
+    SequenceNumber initialSequenceNumber;
+    controlPacket->readPrimitive(&initialSequenceNumber);
     
-    if (!_hasReceivedHandshake || _isReceivingData) {
+    if (!_hasReceivedHandshake || initialSequenceNumber != _initialReceiveSequenceNumber) {
         // server sent us a handshake - we need to assume this means state should be reset
         // as long as we haven't received a handshake yet or we have and we've received some data
+
+#ifdef UDT_CONNECTION_DEBUG
+        if (initialSequenceNumber != _initialReceiveSequenceNumber) {
+            qCDebug(networking) << "Resetting receive state, received a new initial sequence number in handshake";
+        }
+#endif
         resetReceiveState();
+        _initialReceiveSequenceNumber = initialSequenceNumber;
+        _lastReceivedSequenceNumber = initialSequenceNumber - 1;
+        _lastSentACK = initialSequenceNumber - 1;
     }
     
     // immediately respond with a handshake ACK
-    static auto handshakeACK = ControlPacket::create(ControlPacket::HandshakeACK, 0);
+    static auto handshakeACK = ControlPacket::create(ControlPacket::HandshakeACK, sizeof(SequenceNumber));
+    handshakeACK->seek(0);
+    handshakeACK->writePrimitive(initialSequenceNumber);
     _parentSocket->writeBasePacket(*handshakeACK, _destination);
     
     // indicate that handshake has been received
@@ -738,8 +759,11 @@ void Connection::processHandshake(std::unique_ptr<ControlPacket> controlPacket) 
 void Connection::processHandshakeACK(std::unique_ptr<ControlPacket> controlPacket) {
     // if we've decided to clean up the send queue then this handshake ACK should be ignored, it's useless
     if (_sendQueue) {
+        SequenceNumber initialSequenceNumber;
+        controlPacket->readPrimitive(&initialSequenceNumber);
+
         // hand off this handshake ACK to the send queue so it knows it can start sending
-        getSendQueue().handshakeACK();
+        getSendQueue().handshakeACK(initialSequenceNumber);
         
         // indicate that handshake ACK was received
         _hasReceivedHandshakeACK = true;

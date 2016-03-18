@@ -22,7 +22,6 @@
 
 #include <render/Scene.h>
 
-#include "Hand.h"
 #include "Head.h"
 #include "SkeletonModel.h"
 #include "world.h"
@@ -37,9 +36,6 @@ namespace render {
 
 static const float SCALING_RATIO = .05f;
 static const float SMOOTHING_RATIO = .05f; // 0 < ratio < 1
-
-static const float BILLBOARD_FIELD_OF_VIEW = 30.0f; // degrees
-static const float BILLBOARD_DISTANCE = 5.56f;       // meters
 
 extern const float CHAT_MESSAGE_SCALE;
 extern const float CHAT_MESSAGE_HEIGHT;
@@ -61,7 +57,7 @@ class Avatar : public AvatarData {
     Q_PROPERTY(glm::vec3 skeletonOffset READ getSkeletonOffset WRITE setSkeletonOffset)
 
 public:
-    Avatar(RigPointer rig = nullptr);
+    explicit Avatar(RigPointer rig = nullptr);
     ~Avatar();
 
     typedef render::Payload<AvatarData> Payload;
@@ -79,6 +75,8 @@ public:
     void removeFromScene(AvatarSharedPointer self, std::shared_ptr<render::Scene> scene,
                                 render::PendingChanges& pendingChanges);
 
+    void updateRenderItem(render::PendingChanges& pendingChanges);
+
     //setters
     void setDisplayingLookatVectors(bool displayingLookatVectors) { getHead()->setRenderLookatVectors(displayingLookatVectors); }
     void setDisplayingLookatTarget(bool displayingLookatTarget) { getHead()->setRenderLookatTarget(displayingLookatTarget); }
@@ -92,7 +90,7 @@ public:
     float getUniformScale() const { return getScale().y; }
     const Head* getHead() const { return static_cast<const Head*>(_headData); }
     Head* getHead() { return static_cast<Head*>(_headData); }
-    Hand* getHand() { return static_cast<Hand*>(_handData); }
+
     glm::quat getWorldAlignedOrientation() const;
 
     AABox getBounds() const;
@@ -119,7 +117,6 @@ public:
     virtual void setFaceModelURL(const QUrl& faceModelURL) override;
     virtual void setSkeletonModelURL(const QUrl& skeletonModelURL) override;
     virtual void setAttachmentData(const QVector<AttachmentData>& attachmentData) override;
-    virtual void setBillboard(const QByteArray& billboard) override;
 
     void setShowDisplayName(bool showDisplayName);
 
@@ -139,8 +136,6 @@ public:
     Q_INVOKABLE glm::vec3 getNeckPosition() const;
 
     Q_INVOKABLE glm::vec3 getAcceleration() const { return _acceleration; }
-    Q_INVOKABLE glm::vec3 getAngularVelocity() const { return _angularVelocity; }
-    Q_INVOKABLE glm::vec3 getAngularAcceleration() const { return _angularAcceleration; }
 
     Q_INVOKABLE bool getShouldRender() const { return !_shouldSkipRender; }
 
@@ -168,10 +163,10 @@ public:
     virtual void setOrientation(const glm::quat& orientation) override;
 
     // these call through to the SpatiallyNestable versions, but they are here to expose these to javascript.
-    Q_INVOKABLE virtual const QUuid getParentID() const { return SpatiallyNestable::getParentID(); }
-    Q_INVOKABLE virtual void setParentID(const QUuid& parentID);
-    Q_INVOKABLE virtual quint16 getParentJointIndex() const { return SpatiallyNestable::getParentJointIndex(); }
-    Q_INVOKABLE virtual void setParentJointIndex(quint16 parentJointIndex);
+    Q_INVOKABLE virtual const QUuid getParentID() const override { return SpatiallyNestable::getParentID(); }
+    Q_INVOKABLE virtual void setParentID(const QUuid& parentID) override;
+    Q_INVOKABLE virtual quint16 getParentJointIndex() const override { return SpatiallyNestable::getParentJointIndex(); }
+    Q_INVOKABLE virtual void setParentJointIndex(quint16 parentJointIndex) override;
 
     // NOT thread safe, must be called on main thread.
     glm::vec3 getUncachedLeftPalmPosition() const;
@@ -197,6 +192,7 @@ protected:
     glm::vec3 _skeletonOffset;
     std::vector<std::shared_ptr<Model>> _attachmentModels;
     std::vector<std::shared_ptr<Model>> _attachmentsToRemove;
+    std::vector<std::shared_ptr<Model>> _attachmentsToDelete;
 
     float _bodyYawDelta;  // degrees/sec
 
@@ -235,8 +231,8 @@ protected:
     float getPelvisFloatingHeight() const;
     glm::vec3 getDisplayNamePosition() const;
 
-    Transform calculateDisplayNameTransform(const ViewFrustum& frustum, const glm::vec3& textPosition) const;
-    void renderDisplayName(gpu::Batch& batch, const ViewFrustum& frustum, const glm::vec3& textPosition) const;
+    Transform calculateDisplayNameTransform(const ViewFrustum& view, const glm::vec3& textPosition) const;
+    void renderDisplayName(gpu::Batch& batch, const ViewFrustum& view, const glm::vec3& textPosition) const;
     virtual void renderBody(RenderArgs* renderArgs, ViewFrustum* renderFrustum, float glowLevel = 0.0f);
     virtual bool shouldRenderHead(const RenderArgs* renderArgs) const;
     virtual void fixupModelsInScene();
@@ -245,7 +241,7 @@ protected:
 
     virtual void updatePalms();
 
-    render::ItemID _renderItemID;
+    render::ItemID _renderItemID{ render::Item::INVALID_ITEM_ID };
 
     ThreadSafeValueCache<glm::vec3> _leftPalmPositionCache { glm::vec3() };
     ThreadSafeValueCache<glm::quat> _leftPalmRotationCache { glm::quat() };
@@ -254,14 +250,11 @@ protected:
 
 private:
     bool _initialized;
-    NetworkTexturePointer _billboardTexture;
-    bool _shouldRenderBillboard;
+    bool _shouldAnimate { true };
     bool _shouldSkipRender { false };
     bool _isLookAtTarget;
 
-    void renderBillboard(RenderArgs* renderArgs);
-
-    float getBillboardSize() const;
+    float getBoundingRadius() const;
 
     static int _jointConesID;
 

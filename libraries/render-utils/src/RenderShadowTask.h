@@ -15,27 +15,27 @@
 #include <gpu/Framebuffer.h>
 #include <gpu/Pipeline.h>
 
-#include <render/DrawTask.h>
+#include <render/CullTask.h>
 
 class ViewFrustum;
 
 class RenderShadowMap {
 public:
-    using JobModel = render::Job::ModelI<RenderShadowMap, render::ShapesIDsBounds>;
+    using JobModel = render::Job::ModelI<RenderShadowMap, render::ShapeBounds>;
 
     RenderShadowMap(render::ShapePlumberPointer shapePlumber) : _shapePlumber{ shapePlumber } {}
     void run(const render::SceneContextPointer& sceneContext, const render::RenderContextPointer& renderContext,
-             const render::ShapesIDsBounds& inShapes);
+             const render::ShapeBounds& inShapes);
 
 protected:
     render::ShapePlumberPointer _shapePlumber;
 };
 
-class RenderShadowTaskConfig : public render::Task::Config {
+class RenderShadowTaskConfig : public render::Task::Config::Persistent {
     Q_OBJECT
     Q_PROPERTY(bool enabled MEMBER enabled NOTIFY dirty)
 public:
-    RenderShadowTaskConfig() : render::Task::Config(false) {}
+    RenderShadowTaskConfig() : render::Task::Config::Persistent("Shadows", false) {}
 
 signals:
     void dirty();

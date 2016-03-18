@@ -43,7 +43,7 @@ Model::Model(RigPointer rig, QObject* parent) :
     _rotation(),
     _scale(1.0f, 1.0f, 1.0f),
     _scaleToFit(false),
-    _scaleToFitDimensions(0.0f),
+    _scaleToFitDimensions(1.0f),
     _scaledToFit(false),
     _snapModelToRegistrationPoint(false),
     _snappedToRegistrationPoint(false),
@@ -74,6 +74,21 @@ Model::~Model() {
 
 AbstractViewStateInterface* Model::_viewState = NULL;
 
+bool Model::needsFixupInScene() {
+    if (readyToAddToScene()) {
+        // Once textures are loaded, fixup if they are now transparent
+        if (!_needsReload && _needsUpdateTransparentTextures && _geometry->isLoadedWithTextures()) {
+            _needsUpdateTransparentTextures = false;
+            if (_hasTransparentTextures != _geometry->hasTransparentTextures()) {
+                return true;
+            }
+        }
+        if (!_readyWhenAdded) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void Model::setTranslation(const glm::vec3& translation) {
     _translation = translation;
@@ -92,15 +107,15 @@ void Model::setScale(const glm::vec3& scale) {
     _scaledToFit = false;
 }
 
-const float METERS_PER_MILLIMETER = 0.01f; 
+const float SCALE_CHANGE_EPSILON = 0.01f;
 
 void Model::setScaleInternal(const glm::vec3& scale) {
-    if (glm::distance(_scale, scale) > METERS_PER_MILLIMETER) {
+    if (glm::distance(_scale, scale) > SCALE_CHANGE_EPSILON) {
         _scale = scale;
         if (_scale.x == 0.0f || _scale.y == 0.0f || _scale.z == 0.0f) {
             assert(false);
         }
-        initJointTransforms();
+        simulate(0.0f, true);
     }
 }
 
@@ -728,6 +743,8 @@ void Model::setURL(const QUrl& url) {
     }
 
     _needsReload = true;
+    _needsUpdateTransparentTextures = true;
+    _hasTransparentTextures = false;
     _meshGroupsKnown = false;
     invalidCalculatedMeshBoxes();
     deleteGeometry();
@@ -907,6 +924,14 @@ void Model::setScaleToFit(bool scaleToFit, float largestDimension, bool forceRes
             _scaledToFit = false; // force rescaling
         }
     }
+}
+
+glm::vec3 Model::getScaleToFitDimensions() const {
+    if (_scaleToFitDimensions.y == FAKE_DIMENSION_PLACEHOLDER &&
+        _scaleToFitDimensions.z == FAKE_DIMENSION_PLACEHOLDER) {
+        return glm::vec3(_scaleToFitDimensions.x);
+    }
+    return _scaleToFitDimensions;
 }
 
 void Model::scaleToFit() {
@@ -1113,7 +1138,7 @@ void Model::deleteGeometry() {
     _blendedBlendshapeCoefficients.clear();
 }
 
-AABox Model::getPartBounds(int meshIndex, int partIndex, glm::vec3 modelPosition, glm::quat modelOrientation) {
+AABox Model::getPartBounds(int meshIndex, int partIndex, glm::vec3 modelPosition, glm::quat modelOrientation) const {
 
     if (!_geometry || !_geometry->isLoaded()) {
         return AABox();
@@ -1197,9 +1222,9 @@ void Model::segregateMeshGroups() {
             if (showingCollisionHull) {
                 if (!_collisionHullMaterial) {
                     _collisionHullMaterial = std::make_shared<model::Material>();
-                    _collisionHullMaterial->setDiffuse(glm::vec3(1.0f, 0.5f, 0.0f));
+                    _collisionHullMaterial->setAlbedo(glm::vec3(1.0f, 0.5f, 0.0f));
                     _collisionHullMaterial->setMetallic(0.02f);
-                    _collisionHullMaterial->setGloss(1.0f);
+                    _collisionHullMaterial->setRoughness(0.5f);
                 }
                 _renderItemsSet << std::make_shared<MeshPartPayload>(networkMesh._mesh, partIndex, _collisionHullMaterial, transform, offset);
             } else {

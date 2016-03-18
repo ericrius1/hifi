@@ -102,6 +102,13 @@ void AudioInjector::restart() {
     // reset the current send offset to zero
     _currentSendOffset = 0;
 
+    // reset state to start sending from beginning again
+    _nextFrame = 0;
+    if (_frameTimer) {
+        _frameTimer->invalidate();
+    }
+    _hasSentFirstFrame = false;
+
     // check our state to decide if we need extra handling for the restart request
     if (_state == State::Finished) {
         // we finished playing, need to reset state so we can get going again
@@ -117,7 +124,9 @@ void AudioInjector::restart() {
             injectLocally();
         } else {
             // wake the AudioInjectorManager back up if it's stuck waiting
-            injectorManager->restartFinishedInjector(this);
+            if (!injectorManager->restartFinishedInjector(this)) {
+                _state = State::Finished; // we're not playing, so reset the state used by isPlaying.
+            }
         }
     }
 }
@@ -246,6 +255,11 @@ int64_t AudioInjector::injectNextFrame() {
         }
     }
 
+    if (!_frameTimer->isValid()) {
+        // in the case where we have been restarted, the frame timer will be invalid and we need to start it back over here
+        _frameTimer->restart();
+    }
+
     int totalBytesLeftToCopy = (_options.stereo ? 2 : 1) * AudioConstants::NETWORK_FRAME_BYTES_PER_CHANNEL;
     if (!_options.loop) {
         // If we aren't looping, let's make sure we don't read past the end
@@ -295,14 +309,7 @@ int64_t AudioInjector::injectNextFrame() {
 
     if (audioMixer) {
         // send off this audio packet
-        auto bytesWritten = nodeList->sendUnreliablePacket(*_currentPacket, *audioMixer);
-        if (bytesWritten < 0) {
-            auto currentTime = _frameTimer->nsecsElapsed() / 1000;
-            qDebug() << this << "error sending audio injector packet. NF:"
-                << _nextFrame << "CT:" << currentTime
-                << "CF:" << currentTime / AudioConstants::NETWORK_FRAME_USECS;
-        }
-
+        nodeList->sendUnreliablePacket(*_currentPacket, *audioMixer);
         _outgoingSequenceNumber++;
     }
 
@@ -321,14 +328,16 @@ int64_t AudioInjector::injectNextFrame() {
     const int MAX_ALLOWED_FRAMES_TO_FALL_BEHIND = 7;
     int64_t currentTime = _frameTimer->nsecsElapsed() / 1000;
     auto currentFrameBasedOnElapsedTime = currentTime / AudioConstants::NETWORK_FRAME_USECS;
+
     if (currentFrameBasedOnElapsedTime - _nextFrame > MAX_ALLOWED_FRAMES_TO_FALL_BEHIND) {
         // If we are falling behind by more frames than our threshold, let's skip the frames ahead
-        qDebug() << "AudioInjector::injectNextFrame() skipping ahead, fell behind by " << (currentFrameBasedOnElapsedTime - _nextFrame) << " frames";
+        qDebug() << this << "injectNextFrame() skipping ahead, fell behind by " << (currentFrameBasedOnElapsedTime - _nextFrame) << " frames";
         _nextFrame = currentFrameBasedOnElapsedTime;
         _currentSendOffset = _nextFrame * AudioConstants::NETWORK_FRAME_BYTES_PER_CHANNEL * (_options.stereo ? 2 : 1) % _audioData.size();
     }
 
     int64_t playNextFrameAt = ++_nextFrame * AudioConstants::NETWORK_FRAME_USECS;
+    
     return std::max(INT64_C(0), playNextFrameAt - currentTime);
 }
 

@@ -19,8 +19,8 @@
 #include <GeometryCache.h>
 #include <PerfStat.h>
 
-#include "../render-utils/simple_vert.h"
-#include "../render-utils/simple_frag.h"
+#include <render-utils/simple_vert.h>
+#include <render-utils/simple_frag.h>
 
 // Sphere entities should fit inside a cube entity of the same size, so a sphere that has dimensions 1x1x1 
 // is a half unit sphere.  However, the geometry cache renders a UNIT sphere, so we need to scale down.
@@ -36,7 +36,9 @@ EntityItemPointer RenderableSphereEntityItem::factory(const EntityItemID& entity
 void RenderableSphereEntityItem::setUserData(const QString& value) {
     if (value != getUserData()) {
         SphereEntityItem::setUserData(value);
-        _procedural.reset();
+        if (_procedural) {
+            _procedural->parse(value);
+        }
     }
 }
 
@@ -64,15 +66,14 @@ void RenderableSphereEntityItem::render(RenderArgs* args) {
         return;
     }
     modelTransform.postScale(SPHERE_ENTITY_SCALE);
+    batch.setModelTransform(modelTransform); // use a transform with scale, rotation, registration point and translation
     if (_procedural->ready()) {
-        batch.setModelTransform(modelTransform); // use a transform with scale, rotation, registration point and translation
         _procedural->prepare(batch, getPosition(), getDimensions());
         auto color = _procedural->getColor(sphereColor);
         batch._glColor4f(color.r, color.g, color.b, color.a);
         DependencyManager::get<GeometryCache>()->renderSphere(batch);
     } else {
-        batch.setModelTransform(Transform());
-        DependencyManager::get<GeometryCache>()->renderSolidSphereInstance(batch, modelTransform, sphereColor);
+        DependencyManager::get<GeometryCache>()->renderSolidSphereInstance(batch, sphereColor);
     }
     static const auto triCount = DependencyManager::get<GeometryCache>()->getSphereTriangleCount();
     args->_details._trianglesRendered += (int)triCount;

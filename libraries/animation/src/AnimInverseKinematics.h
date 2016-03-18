@@ -25,7 +25,7 @@ class RotationConstraint;
 class AnimInverseKinematics : public AnimNode {
 public:
 
-    AnimInverseKinematics(const QString& id);
+    explicit AnimInverseKinematics(const QString& id);
     virtual ~AnimInverseKinematics() override;
 
     void loadDefaultPoses(const AnimPoseVec& poses);
@@ -40,6 +40,7 @@ public:
 protected:
     void computeTargets(const AnimVariantMap& animVars, std::vector<IKTarget>& targets, const AnimPoseVec& underPoses);
     void solveWithCyclicCoordinateDescent(const std::vector<IKTarget>& targets);
+    int solveTargetWithCCD(const IKTarget& target, AnimPoseVec& absolutePoses);
     virtual void setSkeletonInternal(AnimSkeleton::ConstPointer skeleton) override;
 
     // for AnimDebugDraw rendering

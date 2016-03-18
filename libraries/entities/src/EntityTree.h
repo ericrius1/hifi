@@ -114,8 +114,8 @@ public:
     // use this method if you have a pointer to the entity (avoid an extra entity lookup)
     bool updateEntity(EntityItemPointer entity, const EntityItemProperties& properties, const SharedNodePointer& senderNode = SharedNodePointer(nullptr));
 
-    void deleteEntity(const EntityItemID& entityID, bool force = false, bool ignoreWarnings = false);
-    void deleteEntities(QSet<EntityItemID> entityIDs, bool force = false, bool ignoreWarnings = false);
+    void deleteEntity(const EntityItemID& entityID, bool force = false, bool ignoreWarnings = true);
+    void deleteEntities(QSet<EntityItemID> entityIDs, bool force = false, bool ignoreWarnings = true);
 
     /// \param position point of query in world-frame (meters)
     /// \param targetRadius radius of query (meters)
@@ -241,6 +241,10 @@ public:
     Q_INVOKABLE int getJointIndex(const QUuid& entityID, const QString& name) const;
     Q_INVOKABLE QStringList getJointNames(const QUuid& entityID) const;
 
+    void knowAvatarID(QUuid avatarID) { _avatarIDs += avatarID; }
+    void forgetAvatarID(QUuid avatarID) { _avatarIDs -= avatarID; }
+    void deleteDescendantsOfAvatar(QUuid avatarID);
+
 public slots:
     void callLoader(EntityItemID entityID);
 
@@ -313,8 +317,11 @@ protected:
     quint64 _maxEditDelta = 0;
     quint64 _treeResetTime = 0;
 
-    void fixupMissingParents();
-    QVector<EntityItemWeakPointer> _missingParent;
+    void fixupMissingParents(); // try to hook members of _missingParent to parent instances
+    QVector<EntityItemWeakPointer> _missingParent; // entites with a parentID but no (yet) known parent instance
+    // we maintain a list of avatarIDs to notice when an entity is a child of one.
+    QSet<QUuid> _avatarIDs; // IDs of avatars connected to entity server
+    QHash<QUuid, QSet<EntityItemID>> _childrenOfAvatars;  // which entities are children of which avatars
 };
 
 #endif // hifi_EntityTree_h

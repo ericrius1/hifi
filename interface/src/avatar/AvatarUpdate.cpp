@@ -16,7 +16,7 @@
 #include <display-plugins/DisplayPlugin.h>
 #include "InterfaceLogging.h"
 
-AvatarUpdate::AvatarUpdate() : GenericThread(),  _lastAvatarUpdate(0) {
+AvatarUpdate::AvatarUpdate() : GenericThread(),  _lastAvatarUpdate(0), _isHMDMode(false) {
     setObjectName("Avatar Update"); // GenericThread::initialize uses this to set the thread name.
     Settings settings;
     const int DEFAULT_TARGET_AVATAR_SIMRATE = 60;
@@ -31,11 +31,14 @@ void AvatarUpdate::synchronousProcess() {
     // Keep our own updated value, so that our asynchronous code can consult it.
     _isHMDMode = qApp->isHMDMode();
     auto frameCount = qApp->getFrameCount();
-    _headPose = qApp->getActiveDisplayPlugin()->getHeadPose(frameCount);
 
-    if (_updateBillboard) {
-        DependencyManager::get<AvatarManager>()->getMyAvatar()->doUpdateBillboard();
-    }
+    QSharedPointer<AvatarManager> manager = DependencyManager::get<AvatarManager>();
+    MyAvatar* myAvatar = manager->getMyAvatar();
+    assert(myAvatar);
+
+    // transform the head pose from the displayPlugin into avatar coordinates.
+    glm::mat4 invAvatarMat = glm::inverse(createMatFromQuatAndPos(myAvatar->getOrientation(), myAvatar->getPosition()));
+    _headPose = invAvatarMat * (myAvatar->getSensorToWorldMatrix() * qApp->getActiveDisplayPlugin()->getHeadPose(frameCount));
 
     if (!isThreaded()) {
         process();

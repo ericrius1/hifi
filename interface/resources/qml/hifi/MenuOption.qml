@@ -10,6 +10,7 @@ QtObject {
     readonly property string animDebugDrawPosition: "Debug Draw Position";
     readonly property string antialiasing: "Antialiasing";
     readonly property string assetMigration: "ATP Asset Migration";
+    readonly property string assetServer: "Asset Server";
     readonly property string atmosphere: "Atmosphere";
     readonly property string attachments: "Attachments...";
     readonly property string audioNetworkStats: "Audio Network Stats";
@@ -35,7 +36,6 @@ QtObject {
     readonly property string centerPlayerInView: "Center Player In View";
     readonly property string chat: "Chat...";
     readonly property string collisions: "Collisions";
-    readonly property string comfortMode: "Comfort Mode";
     readonly property string connexion: "Activate 3D Connexion Devices";
     readonly property string console_: "Console...";
     readonly property string controlWithSpeech: "Control With Speech";
@@ -155,7 +155,6 @@ QtObject {
     readonly property string toolWindow: "Tool Window";
     readonly property string transmitterDrive: "Transmitter Drive";
     readonly property string turnWithHead: "Turn using Head";
-    readonly property string uploadAsset: "Upload File to Asset Server";
     readonly property string useAudioForMouth: "Use Audio for Mouth";
     readonly property string useCamera: "Use Camera";
     readonly property string velocityFilter: "Velocity Filter";

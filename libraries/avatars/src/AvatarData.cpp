@@ -57,14 +57,12 @@ AvatarData::AvatarData() :
     _hasNewJointRotations(true),
     _hasNewJointTranslations(true),
     _headData(NULL),
-    _handData(NULL),
     _faceModelURL("http://invalid.com"),
     _displayNameTargetAlpha(1.0f),
     _displayNameAlpha(1.0f),
     _billboard(),
     _errorLogExpiry(0),
     _owningAvatarMixer(),
-    _velocity(0.0f),
     _targetVelocity(0.0f),
     _localAABox(DEFAULT_LOCAL_AABOX_CORNER, DEFAULT_LOCAL_AABOX_SCALE)
 {
@@ -75,7 +73,6 @@ AvatarData::AvatarData() :
 
 AvatarData::~AvatarData() {
     delete _headData;
-    delete _handData;
 }
 
 // We cannot have a file-level variable (const or otherwise) in the header if it uses PathUtils, because that references Application, which will not yet initialized.
@@ -417,11 +414,6 @@ int AvatarData::parseDataFromBuffer(const QByteArray& buffer) {
     // lazily allocate memory for HeadData in case we're not an Avatar instance
     if (!_headData) {
         _headData = new HeadData(this);
-    }
-
-    // lazily allocate memory for HandData in case we're not an Avatar instance
-    if (!_handData) {
-        _handData = new HandData(this);
     }
 
     const unsigned char* startPosition = reinterpret_cast<const unsigned char*>(buffer.data());
@@ -1123,7 +1115,7 @@ void AvatarData::detachOne(const QString& modelURL, const QString& jointName) {
         return;
     }
     QVector<AttachmentData> attachmentData = getAttachmentData();
-    for (QVector<AttachmentData>::iterator it = attachmentData.begin(); it != attachmentData.end(); it++) {
+    for (QVector<AttachmentData>::iterator it = attachmentData.begin(); it != attachmentData.end(); ++it) {
         if (it->modelURL == modelURL && (jointName.isEmpty() || it->jointName == jointName)) {
             attachmentData.erase(it);
             setAttachmentData(attachmentData);
@@ -1142,7 +1134,7 @@ void AvatarData::detachAll(const QString& modelURL, const QString& jointName) {
         if (it->modelURL == modelURL && (jointName.isEmpty() || it->jointName == jointName)) {
             it = attachmentData.erase(it);
         } else {
-            it++;
+            ++it;
         }
     }
     setAttachmentData(attachmentData);

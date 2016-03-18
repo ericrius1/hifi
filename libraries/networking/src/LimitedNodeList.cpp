@@ -52,7 +52,6 @@ LimitedNodeList::LimitedNodeList(unsigned short socketListenPort, unsigned short
     _numCollectedPackets(0),
     _numCollectedBytes(0),
     _packetStatTimer(),
-    _thisNodeCanAdjustLocks(false),
     _thisNodeCanRez(true)
 {
     static bool firstCall = true;
@@ -78,7 +77,7 @@ LimitedNodeList::LimitedNodeList(unsigned short socketListenPort, unsigned short
     // check for local socket updates every so often
     const int LOCAL_SOCKET_UPDATE_INTERVAL_MSECS = 5 * 1000;
     QTimer* localSocketUpdate = new QTimer(this);
-    connect(localSocketUpdate, &QTimer::timeout, this, &LimitedNodeList::updateLocalSockAddr);
+    connect(localSocketUpdate, &QTimer::timeout, this, &LimitedNodeList::updateLocalSocket);
     localSocketUpdate->start(LOCAL_SOCKET_UPDATE_INTERVAL_MSECS);
 
     QTimer* silentNodeTimer = new QTimer(this);
@@ -86,7 +85,7 @@ LimitedNodeList::LimitedNodeList(unsigned short socketListenPort, unsigned short
     silentNodeTimer->start(NODE_SILENCE_THRESHOLD_MSECS);
 
     // check the local socket right now
-    updateLocalSockAddr();
+    updateLocalSocket();
 
     // set &PacketReceiver::handleVerifiedPacket as the verified packet callback for the udt::Socket
     _nodeSocket.setPacketHandler(
@@ -131,10 +130,10 @@ void LimitedNodeList::setSessionUUID(const QUuid& sessionUUID) {
     }
 }
 
-void LimitedNodeList::setThisNodeCanAdjustLocks(bool canAdjustLocks) {
-    if (_thisNodeCanAdjustLocks != canAdjustLocks) {
-        _thisNodeCanAdjustLocks = canAdjustLocks;
-        emit canAdjustLocksChanged(canAdjustLocks);
+void LimitedNodeList::setIsAllowedEditor(bool isAllowedEditor) {
+    if (_isAllowedEditor != isAllowedEditor) {
+        _isAllowedEditor = isAllowedEditor;
+        emit isAllowedEditorChanged(isAllowedEditor);
     }
 }
 
@@ -515,7 +514,7 @@ void LimitedNodeList::handleNodeKill(const SharedNodePointer& node) {
 
 SharedNodePointer LimitedNodeList::addOrUpdateNode(const QUuid& uuid, NodeType_t nodeType,
                                                    const HifiSockAddr& publicSocket, const HifiSockAddr& localSocket,
-                                                   bool canAdjustLocks, bool canRez,
+                                                   bool isAllowedEditor, bool canRez,
                                                    const QUuid& connectionSecret) {
     NodeHash::const_iterator it = _nodeHash.find(uuid);
 
@@ -524,14 +523,14 @@ SharedNodePointer LimitedNodeList::addOrUpdateNode(const QUuid& uuid, NodeType_t
 
         matchingNode->setPublicSocket(publicSocket);
         matchingNode->setLocalSocket(localSocket);
-        matchingNode->setCanAdjustLocks(canAdjustLocks);
+        matchingNode->setIsAllowedEditor(isAllowedEditor);
         matchingNode->setCanRez(canRez);
         matchingNode->setConnectionSecret(connectionSecret);
 
         return matchingNode;
     } else {
         // we didn't have this node, so add them
-        Node* newNode = new Node(uuid, nodeType, publicSocket, localSocket, canAdjustLocks, canRez, connectionSecret, this);
+        Node* newNode = new Node(uuid, nodeType, publicSocket, localSocket, isAllowedEditor, canRez, connectionSecret, this);
 
         if (nodeType == NodeType::AudioMixer) {
             LimitedNodeList::flagTimeForConnectionStep(LimitedNodeList::AddedAudioMixer);
@@ -672,7 +671,7 @@ const int NUM_BYTES_STUN_HEADER = 20;
 
 void LimitedNodeList::sendSTUNRequest() {
 
-    if (!_stunSockAddr.isNull()) {
+    if (!_stunSockAddr.getAddress().isNull()) {
         const int NUM_INITIAL_STUN_REQUESTS_BEFORE_FAIL = 10;
 
         if (!_hasCompletedInitialSTUN) {
@@ -841,7 +840,7 @@ void LimitedNodeList::startSTUNPublicSocketUpdate() {
 }
 
 void LimitedNodeList::possiblyTimeoutSTUNAddressLookup() {
-    if (_stunSockAddr.isNull()) {
+    if (_stunSockAddr.getAddress().isNull()) {
         // our stun address is still NULL, but we've been waiting for long enough - time to force a fail
         stopInitialSTUNUpdate(false);
     }
@@ -887,24 +886,68 @@ void LimitedNodeList::stopInitialSTUNUpdate(bool success) {
     stunOccasionalTimer->start(STUN_IP_ADDRESS_CHECK_INTERVAL_MSECS);
 }
 
-void LimitedNodeList::updateLocalSockAddr() {
-    HifiSockAddr newSockAddr(getLocalAddress(), _nodeSocket.localPort());
-    if (newSockAddr != _localSockAddr) {
+void LimitedNodeList::updateLocalSocket() {
+    // when update is called, if the local socket is empty then start with the guessed local socket
+    if (_localSockAddr.isNull()) {
+        setLocalSocket(HifiSockAddr { getGuessedLocalAddress(), _nodeSocket.localPort() });
+    }
 
-        if (_localSockAddr.isNull()) {
-            qCDebug(networking) << "Local socket is" << newSockAddr;
-        } else {
-            qCDebug(networking) << "Local socket has changed from" << _localSockAddr << "to" << newSockAddr;
+    // attempt to use Google's DNS to confirm that local IP
+    static const QHostAddress RELIABLE_LOCAL_IP_CHECK_HOST = QHostAddress { "8.8.8.8" };
+    static const int RELIABLE_LOCAL_IP_CHECK_PORT = 53;
+
+    QTcpSocket* localIPTestSocket = new QTcpSocket;
+
+    connect(localIPTestSocket, &QTcpSocket::connected, this, &LimitedNodeList::connectedForLocalSocketTest);
+    connect(localIPTestSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(errorTestingLocalSocket()));
+
+    // attempt to connect to our reliable host
+    localIPTestSocket->connectToHost(RELIABLE_LOCAL_IP_CHECK_HOST, RELIABLE_LOCAL_IP_CHECK_PORT);
+}
+
+void LimitedNodeList::connectedForLocalSocketTest() {
+    auto localIPTestSocket = qobject_cast<QTcpSocket*>(sender());
+
+    if (localIPTestSocket) {
+        auto localHostAddress = localIPTestSocket->localAddress();
+
+        if (localHostAddress.protocol() == QAbstractSocket::IPv4Protocol) {
+            _hasTCPCheckedLocalSocket = true;
+            setLocalSocket(HifiSockAddr { localHostAddress, _nodeSocket.localPort() });
         }
 
-        _localSockAddr = newSockAddr;
-
-        emit localSockAddrChanged(_localSockAddr);
+        localIPTestSocket->deleteLater();
     }
 }
 
-void LimitedNodeList::sendHeartbeatToIceServer(const HifiSockAddr& iceServerSockAddr) {
-    sendPacketToIceServer(PacketType::ICEServerHeartbeat, iceServerSockAddr, _sessionUUID);
+void LimitedNodeList::errorTestingLocalSocket() {
+    auto localIPTestSocket = qobject_cast<QTcpSocket*>(sender());
+
+    if (localIPTestSocket) {
+
+        // error connecting to the test socket - if we've never set our local socket using this test socket
+        // then use our possibly updated guessed local address as fallback
+        if (!_hasTCPCheckedLocalSocket) {
+            setLocalSocket(HifiSockAddr { getGuessedLocalAddress(), _nodeSocket.localPort() });
+        }
+
+        localIPTestSocket->deleteLater();;
+    }
+}
+
+void LimitedNodeList::setLocalSocket(const HifiSockAddr& sockAddr) {
+    if (sockAddr != _localSockAddr) {
+
+        if (_localSockAddr.isNull()) {
+            qCInfo(networking) << "Local socket is" << sockAddr;
+        } else {
+            qCInfo(networking) << "Local socket has changed from" << _localSockAddr << "to" << sockAddr;
+        }
+
+        _localSockAddr = sockAddr;
+
+        emit localSockAddrChanged(_localSockAddr);
+    }
 }
 
 void LimitedNodeList::sendPeerQueryToIceServer(const HifiSockAddr& iceServerSockAddr, const QUuid& clientID,
