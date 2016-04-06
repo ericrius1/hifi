@@ -13,7 +13,9 @@
     };
 
     Switch.prototype = {
-        prefix: 'hifi-home-dressing-room-disc-',
+        // prefix: 'hifi-home-dressing-room-disc-',
+        modelName: 'home_model_dressingRoomDiscModel',
+        lightMasterName: 'home_light__dressingRoomDiscLightMaster',
         clickReleaseOnEntity: function(entityID, mouseEvent) {
             if (!mouseEvent.isLeftButton) {
                 return;
@@ -93,7 +95,7 @@
             var results = Entities.findEntities(this.position, SEARCH_RADIUS);
             results.forEach(function(result) {
                 var properties = Entities.getEntityProperties(result);
-                if (properties.name === _this.prefix + "light-master") {
+                if (properties.name === _this.lightMasterName) {
                     found.push(result);
                 }
             });
@@ -105,7 +107,7 @@
             var results = Entities.findEntities(this.position, SEARCH_RADIUS);
             results.forEach(function(result) {
                 var properties = Entities.getEntityProperties(result);
-                if (properties.name === _this.prefix + "light-model") {
+                if (properties.name === _this.modelName) {
                     found.push(result);
                 }
             });
