@@ -15,7 +15,7 @@
     Switch.prototype = {
         // prefix: 'hifi-home-dressing-room-disc-',
         modelName: 'home_model_dressingRoomDiscModel',
-        lightMasterName: 'home_light__dressingRoomDiscLightMaster',
+        lightMasterName: 'home_light_dressingRoomDiscLightMaster',
         clickReleaseOnEntity: function(entityID, mouseEvent) {
             if (!mouseEvent.isLeftButton) {
                 return;
