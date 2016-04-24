@@ -2,7 +2,7 @@
 // Select a cell on a grid based on user's gaze
 
 
-
+MyAvatar.yaw = 0;
   var orientation = MyAvatar.orientation;
   orientation = Quat.safeEulerAngles(orientation);
   orientation.x = 0;
@@ -31,6 +31,23 @@ var overlayCell = Overlays.addOverlay("cube", {
 	visible: false,
 	solid: true 
 });
+
+var gridLines = [];
+var LINE_COLOR = {red: 200, green: 10, blue: 10};
+var lineProperties = {
+    lineWidth: 5,
+    color: LINE_COLOR,
+    ignoreRayIntersection: true, // always ignore this
+    visible: true,
+    alpha: 1
+};
+for (var xPos = center.x - GRID_SIZE/2; xPos < center.x + GRID_SIZE/2; xPos+= CELL_SIZE) {
+	print("LINE" + xPos)
+	lineProperties.start = {x: xPos, y: center.y + 0.1, z: center.z - GRID_SIZE/2};
+	lineProperties.end = {x: xPos, y: center.y + 0.1, z: center.z + GRID_SIZE/2};
+	var gridLine = Overlays.addOverlay("line3d", lineProperties);
+	gridLines.push(gridLine);
+}
 
 
 
@@ -95,6 +112,9 @@ function cleanup() {
 	Entities.deleteEntity(grid);
 	Overlays.deleteOverlay(overlayLine);
 	Overlays.deleteOverlay(overlayCell);
+	gridLines.forEach(function(gridLine) {
+		Overlays.deleteOverlay(gridLine);
+	});
 	Script.clearInterval(updateInterval);
 }
 
