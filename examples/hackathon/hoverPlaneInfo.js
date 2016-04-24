@@ -20,17 +20,17 @@ Script.scriptEnding.connect(cleanup);
 var intersectedWithPlane = false;
 
 
-var textMargin = .1;
-var textWidth = .1;
-var textHeight = .1;
+var textMargin = .05;
+var textWidth = 1;
+var textHeight = .4
 var infoPanelProps = {
   position: center,
   dimensions: { x: textWidth, y: textHeight },
-  backgroundColor: { red: 100, green: 0, blue: 0 },
-  color: {red: 200, green: 50, blue: 100},
-  text: "I'm a plane!",
+  backgroundColor: { red: 100, green: 0, blue: 100 },
+  color: {red: 200, green: 10, blue: 10},
   alpha: 0.9,
-  backgroundAlpha: 0.9,
+  lineHeight: .1,
+  backgroundAlpha: 0.5,
   ignoreRayIntersection: true,
   visible: false,
   isFacingAvatar: true
@@ -54,10 +54,11 @@ function castRay() {
     var intersection = Entities.findRayIntersection(pickRay, true);
     if (!intersectedWithPlane && intersection.intersects && intersection.properties.name === "plane") {
       //move text up
+      var userData = JSON.parse(intersection.properties.userData);
       intersectedWithPlane = true;
       var position = Vec3.sum(intersection.properties.position, {x: 0, y: intersection.properties.dimensions.y * 2, z: 0});
       shouldUpdateText=  false;
-      showPlaneInfo(position);
+      showPlaneInfo(position, userData);
     } else if(intersectedWithPlane){
       // Wait a bit, then hide text
       Script.setTimeout(function() {
@@ -67,8 +68,21 @@ function castRay() {
     }
 }
 
-function showPlaneInfo(position) {
-  Overlays.editOverlay(infoPanel, {visible: true, position: position});
+function showPlaneInfo(position, userData) {
+  print("USER DATA " + JSON.stringify(userData));
+  var flightNum  = userData[0];
+  if (flightNum.length === 0) {
+    flightNum = "Classified";
+  }
+  var registration = userData[9];
+  if (registration.length === 0) {
+    registration = "Classified";
+  }
+  Overlays.editOverlay(infoPanel, {
+    visible: true, 
+    position: position,
+    text: flightNum + "\n" + registration
+  });
 }
 
 function overlayLineOn(closePoint, farPoint) {
