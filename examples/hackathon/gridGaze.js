@@ -2,21 +2,26 @@
 // Select a cell on a grid based on user's gaze
 
 
-MyAvatar.yaw = 0;
+	
   var orientation = MyAvatar.orientation;
   orientation = Quat.safeEulerAngles(orientation);
   orientation.x = 0;
+  orientation.y = 0;
+  orientation.z = 0;
   orientation = Quat.fromVec3Degrees(orientation);
   var center = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(9, Quat.getFront(orientation)));
+  center.x = Math.floor(center.x * 4)/4;
+  center.z = Math.floor(center.z * 4)/4;
   center.y -= 2;
-  var UPDATE_TIME = 1000;
+  var UPDATE_TIME = 100;
   var overlayLine = null;
 
 var GRID_SIZE = 16
+var GRID_HEIGHT = 0.1;
 var grid = Entities.addEntity({
 	type: "Box",
 	position: center, 
-	dimensions: {x: GRID_SIZE, y: 0.1, z: GRID_SIZE},
+	dimensions: {x: GRID_SIZE, y: GRID_HEIGHT, z: GRID_SIZE},
 	color: {red: 200, green: 20, blue: 150}
 });
 
@@ -28,7 +33,7 @@ var overlayCell = Overlays.addOverlay("cube", {
 	position: cellPosition,
 	color: {red: 200, green: 10, blue: 10},
 	alpha: 1,
-	visible: false,
+	visible: false,	
 	solid: true 
 });
 
@@ -41,16 +46,17 @@ var lineProperties = {
     visible: true,
     alpha: 1
 };
-for (var xPos = center.x - GRID_SIZE/2; xPos < center.x + GRID_SIZE/2; xPos+= CELL_SIZE) {
-	lineProperties.start = {x: xPos, y: center.y + 0.1, z: center.z - GRID_SIZE/2};
-	lineProperties.end = {x: xPos, y: center.y + 0.1, z: center.z + GRID_SIZE/2};
+var lineHeight = GRID_HEIGHT/2 + 0.001;
+for (var xPos = center.x - GRID_SIZE/2; xPos <= center.x + GRID_SIZE/2; xPos+= CELL_SIZE) {
+	lineProperties.start = {x: xPos, y: center.y +lineHeight, z: center.z - GRID_SIZE/2};
+	lineProperties.end = {x: xPos, y: center.y +lineHeight, z: center.z + GRID_SIZE/2};
 	var gridLine = Overlays.addOverlay("line3d", lineProperties);
 	gridLines.push(gridLine);
 }
 
-for (zPos = center.z - GRID_SIZE/2; zPos < center.z + GRID_SIZE/2; zPos += CELL_SIZE) {
-	lineProperties.start = {x: center.x - GRID_SIZE/2, y: center.y + 0.1, z: zPos};
-	lineProperties.end = {x: center.x + GRID_SIZE/2, y: center.y + 0.1, z: zPos};
+for (zPos = center.z - GRID_SIZE/2; zPos <= center.z + GRID_SIZE/2; zPos += CELL_SIZE) {
+	lineProperties.start = {x: center.x - GRID_SIZE/2, y: center.y +lineHeight, z: zPos};
+	lineProperties.end = {x: center.x + GRID_SIZE/2, y: center.y +lineHeight, z: zPos};
 	var gridLine = Overlays.addOverlay("line3d", lineProperties);
 	gridLines.push(gridLine);
 }
@@ -80,8 +86,10 @@ function castRay() {
     var intersection = Entities.findRayIntersection(pickRay, true, [grid]);
     if (intersection.intersects) {
     	// Figure out what cell we hit
-    	Overlays.editOverlay(overlayCell, {position: {x: intersection.intersection.x, y: cellPosition.y, z: intersection.intersection.z}, visible: true});
-    	print("EBL intersection with grid");
+    	//mult by 4, floor it (which gives you cell num), then divide by 4 (pos in meters from grid origin)
+    	var adjustedXPos = ((Math.floor(intersection.intersection.x * 4))/4) + CELL_SIZE/2;
+    	var adjustedZPos = ((Math.floor(intersection.intersection.z * 4))/4) - CELL_SIZE/2;
+    	Overlays.editOverlay(overlayCell, {position: {x: adjustedXPos, y: cellPosition.y, z: adjustedZPos}, visible: true});
     } else {
     	Overlays.editOverlay(overlayCell, {visible: false});
     }
