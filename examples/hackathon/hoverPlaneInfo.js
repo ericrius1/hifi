@@ -18,13 +18,7 @@ var TIME_TILL_HIDE = 100;
 var shouldUpdateText = true;
 Script.scriptEnding.connect(cleanup);
 var intersectedWithPlane = false;
-var plane = Entities.addEntity({
-  type: "Box",
-  name: "plane",
-  dimensions: {x: 1, y: 1, z: 1},
-  color: {red: 200, green: 10, blue: 200},
-  position: center,
-});
+
 
 var textMargin = .1;
 var textWidth = .1;
@@ -105,7 +99,6 @@ function overlayLineOn(closePoint, farPoint) {
 };
 
 function cleanup() {
-  Entities.deleteEntity(plane);
   Overlays.deleteOverlay(infoPanel);  
   Overlays.deleteOverlay(overlayLine);
 	Script.clearInterval(updateInterval);
