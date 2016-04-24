@@ -42,9 +42,15 @@ var lineProperties = {
     alpha: 1
 };
 for (var xPos = center.x - GRID_SIZE/2; xPos < center.x + GRID_SIZE/2; xPos+= CELL_SIZE) {
-	print("LINE" + xPos)
 	lineProperties.start = {x: xPos, y: center.y + 0.1, z: center.z - GRID_SIZE/2};
 	lineProperties.end = {x: xPos, y: center.y + 0.1, z: center.z + GRID_SIZE/2};
+	var gridLine = Overlays.addOverlay("line3d", lineProperties);
+	gridLines.push(gridLine);
+}
+
+for (zPos = center.z - GRID_SIZE/2; zPos < center.z + GRID_SIZE/2; zPos += CELL_SIZE) {
+	lineProperties.start = {x: center.x - GRID_SIZE/2, y: center.y + 0.1, z: zPos};
+	lineProperties.end = {x: center.x + GRID_SIZE/2, y: center.y + 0.1, z: zPos};
 	var gridLine = Overlays.addOverlay("line3d", lineProperties);
 	gridLines.push(gridLine);
 }
