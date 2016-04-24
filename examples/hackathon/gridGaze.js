@@ -7,26 +7,29 @@
   orientation = Quat.safeEulerAngles(orientation);
   orientation.x = 0;
   orientation = Quat.fromVec3Degrees(orientation);
-  var center = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(6, Quat.getFront(orientation)));
+  var center = Vec3.sum(MyAvatar.getHeadPosition(), Vec3.multiply(9, Quat.getFront(orientation)));
   center.y -= 2;
   var UPDATE_TIME = 1000;
   var overlayLine = null;
 
+var GRID_SIZE = 16
 var grid = Entities.addEntity({
 	type: "Box",
 	position: center, 
-	dimensions: {x: 5, y: 0.1, z: 5},
+	dimensions: {x: GRID_SIZE, y: 0.1, z: GRID_SIZE},
 	color: {red: 200, green: 20, blue: 150}
 });
 
+var CELL_FRACTION_OF_GRID = 1/64;
+var CELL_SIZE = GRID_SIZE * CELL_FRACTION_OF_GRID;
+var cellPosition = {x: center.x, y: center.y - CELL_SIZE/2 + 0.055, z: center.z};
 var overlayCell = Overlays.addOverlay("cube", {
-	size: 1,
-	position: center,
+	size: CELL_SIZE,
+	position: cellPosition,
 	color: {red: 200, green: 10, blue: 10},
 	alpha: 1,
 	visible: false,
 	solid: true 
-
 });
 
 
@@ -53,7 +56,8 @@ function castRay() {
 	overlayLineOn(position, farPoint);
     var intersection = Entities.findRayIntersection(pickRay, true, [grid]);
     if (intersection.intersects) {
-    	Overlays.editOverlay(overlayCell, {position: intersection.intersection, visible: true});
+    	// Figure out what cell we hit
+    	Overlays.editOverlay(overlayCell, {position: {x: intersection.intersection.x, y: cellPosition.y, z: intersection.intersection.z}, visible: true});
     	print("EBL intersection with grid");
     } else {
     	Overlays.editOverlay(overlayCell, {visible: false});
